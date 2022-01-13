@@ -20,18 +20,16 @@ variables:
 
 steps:
 - task: UseDotNet@2
-  inputs:
-    displayName: 'Install dotnet core 6.x'
+  displayName: 'Install dotnet core 6.x'
+  inputs:    
     packageType: 'sdk'
     version: '6.0.x'
-    includePreviewVersions: true    
 
 - task: DotNetCoreCLI@2
-  inputs:
-    displayName: 'Build project'
-    command: 'build'
-    arguments: '--configuration $(buildConfiguration)'
   displayName: 'dotnet build $(buildConfiguration)'
+  inputs:    
+    command: 'build'
+    arguments: '-o $(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
   inputs:
