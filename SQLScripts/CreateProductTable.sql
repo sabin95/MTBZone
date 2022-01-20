@@ -3,5 +3,7 @@ CREATE TABLE Product (
     Title VARCHAR(255),
     Price FLOAT(26),
     Description VARCHAR(255),
-    CategoryId BIGINT
+    CategoryId BIGINT FOREIGN KEY REFERENCES [dbo].Category(Id),
 );
+
+drop table product
