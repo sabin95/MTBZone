@@ -2,9 +2,9 @@
 
 namespace CatalogAPI.Data
 {
-    public class CategoryContext : DbContext
+    public class CatalogContext : DbContext
     {
-        public CategoryContext(DbContextOptions<CategoryContext> dbContextOptions)
+        public CatalogContext(DbContextOptions<CatalogContext> dbContextOptions)
             :base(dbContextOptions)
         {
 
