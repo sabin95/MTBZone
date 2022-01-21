@@ -40,7 +40,7 @@ namespace CatalogAPI.Repository
             return result;
         }
 
-        public void AddCategoryById(CategoryModel categoryModel)
+        public void AddCategory(CategoryModel categoryModel)
         {
             if (categoryModel is null)
             {

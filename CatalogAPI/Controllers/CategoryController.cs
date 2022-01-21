@@ -47,7 +47,7 @@ namespace CatalogAPI.Controllers
         {
             try
             {
-                _categoryRepository.AddCategoryById(categoryModel);
+                _categoryRepository.AddCategory(categoryModel);
                 return Ok();
             }
             catch (Exception ex)
