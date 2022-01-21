@@ -5,5 +5,3 @@ CREATE TABLE Product (
     Description VARCHAR(255),
     CategoryId BIGINT FOREIGN KEY REFERENCES [dbo].Category(Id),
 );
-
-drop table product

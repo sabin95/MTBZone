@@ -1,5 +1,5 @@
-﻿using CatalogAPI.Models;
-using CatalogAPI.Repository;
+﻿using CatalogAPI.Repository;
+using CatalogAPI.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CatalogAPI.Controllers
@@ -15,7 +15,7 @@ namespace CatalogAPI.Controllers
         }
         
         [HttpPost]
-        public IActionResult AddProduct(ProductModel productModel)
+        public IActionResult AddProduct(ProductResult productModel)
         {
             try
             {
@@ -48,6 +48,10 @@ namespace CatalogAPI.Controllers
             try
             {
                 var product = await _productRepository.GetProductById(id);
+                if (product is null)
+                {
+                    return NotFound();
+                }
                 return Ok(product);
             }
             catch (Exception ex)
@@ -57,7 +61,7 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateProductById(long id, ProductModel productModel)
+        public IActionResult UpdateProductById(long id, ProductResult productModel)
         {
             try
             {

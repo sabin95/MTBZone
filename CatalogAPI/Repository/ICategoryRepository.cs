@@ -1,13 +1,13 @@
-﻿using CatalogAPI.Models;
+﻿using CatalogAPI.Results;
 
 namespace CatalogAPI.Repository
 {
     public interface ICategoryRepository
     {
-        public Task<List<CategoryModel>> GetAllCategoriesAsync();
-        public Task<CategoryModel> GetCategoryById(long id);
-        public void AddCategory(CategoryModel categoryModel);
-        public void EditCategoryById(long id,CategoryModel category);
+        public Task<List<CategoryResult>> GetAllCategoriesAsync();
+        public Task<CategoryResult> GetCategoryById(long id);
+        public void AddCategory(CategoryResult categoryModel);
+        public void EditCategoryById(long id,CategoryResult category);
         public void DeleteCategoryById(long id);
     }
 }

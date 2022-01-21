@@ -1,6 +1,6 @@
 ﻿namespace CatalogAPI.Data
 {
-    public class Products
+    public class Product
     {
         public long Id { get; set; }
         public double Price { get; set; }

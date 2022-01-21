@@ -1,13 +1,13 @@
-﻿using CatalogAPI.Models;
+﻿using CatalogAPI.Results;
 
 namespace CatalogAPI.Repository
 {
     public interface IProductRepository
     {
-        public void AddProduct(ProductModel model);
-        public Task<List<ProductModel>> GetAllProducts();
-        public Task<ProductModel> GetProductById(long id);
-        public void EditProductById(long id, ProductModel model);
+        public void AddProduct(ProductResult model);
+        public Task<List<ProductResult>> GetAllProducts();
+        public Task<ProductResult> GetProductById(long id);
+        public void EditProductById(long id, ProductResult model);
         public void DeleteProductById(long id);
 
     }

@@ -1,5 +1,5 @@
 ﻿using CatalogAPI.Data;
-using CatalogAPI.Models;
+using CatalogAPI.Results;
 using Microsoft.EntityFrameworkCore;
 
 namespace CatalogAPI.Repository
@@ -10,15 +10,15 @@ namespace CatalogAPI.Repository
 
         public ProductRepository(CatalogContext catalogContext)
         {
-           _catalogContext = catalogContext;
+            _catalogContext = catalogContext;
         }
-        public void AddProduct(ProductModel model)
+        public void AddProduct(ProductResult model)
         {
             if (model is null)
             {
                 throw new ArgumentNullException(nameof(model), "Product should not be null!");
             }
-            var product = new Products()
+            var product = new Product()
             {
                 Id = model.Id,
                 CategoryId = model.CategoryId,
@@ -26,26 +26,26 @@ namespace CatalogAPI.Repository
                 Price = model.Price,
                 Title = model.Title
             };
-            _catalogContext.Product.Add(product);
+            _catalogContext.Products.Add(product);
             _catalogContext.SaveChangesAsync();
         }
 
         public void DeleteProductById(long id)
         {
-            if(id<0)
+            if (id < 0)
             {
                 throw new ArgumentNullException(nameof(id), "Id cannot be lower than 0!");
             }
-            var result = _catalogContext.Product.FirstOrDefault(x => x.Id == id);
-            if(result == null)
+            var result = _catalogContext.Products.FirstOrDefault(x => x.Id == id);
+            if (result == null)
             {
-                throw new ArgumentNullException(nameof(result), "Product does not exist!");
+                throw new ArgumentException(nameof(result), "Product does not exist!");
             }
-            _catalogContext.Product.Remove(result);
+            _catalogContext.Products.Remove(result);
             _catalogContext.SaveChangesAsync();
         }
 
-        public void EditProductById(long id, ProductModel model)
+        public void EditProductById(long id, ProductResult model)
         {
             if (id < 0)
             {
@@ -55,10 +55,10 @@ namespace CatalogAPI.Repository
             {
                 throw new ArgumentNullException(nameof(model), "Product cannot be null!");
             }
-            var productToBeUpdated = _catalogContext.Product.FirstOrDefault(x => x.Id == id);
+            var productToBeUpdated = _catalogContext.Products.FirstOrDefault(x => x.Id == id);
             if (productToBeUpdated == null)
             {
-                throw new ArgumentNullException(nameof(productToBeUpdated), "Product does not exist!");
+                throw new ArgumentException(nameof(productToBeUpdated), "Product does not exist!");
             }
             productToBeUpdated.Id = model.Id;
             productToBeUpdated.Title = model.Title;
@@ -68,9 +68,9 @@ namespace CatalogAPI.Repository
             _catalogContext.SaveChangesAsync();
         }
 
-        public async Task<List<ProductModel>> GetAllProducts()
+        public async Task<List<ProductResult>> GetAllProducts()
         {
-            var results = await _catalogContext.Product.Select(x => new ProductModel
+            var results = await _catalogContext.Products.Select(x => new ProductResult
             {
                 Id = x.Id,
                 CategoryId = x.CategoryId,
@@ -81,22 +81,26 @@ namespace CatalogAPI.Repository
             return results;
         }
 
-        public async Task<ProductModel> GetProductById(long id)
+        public async Task<ProductResult> GetProductById(long id)
         {
-            var result = await _catalogContext.Product.Where(x => x.Id == id)
-                    .Select(x => new ProductModel
-                    {
-                        Id = x.Id,
-                        CategoryId = x.CategoryId,
-                        Description = x.Description,
-                        Price = x.Price,
-                        Title = x.Title
-                    }).FirstOrDefaultAsync();
+            var result = await _catalogContext.Products.FirstOrDefaultAsync(x => x.Id == id);
             if (result == null)
             {
-                throw new ArgumentNullException(nameof(result), "No product found for this id!");
+                return null;
             }
-            return result;
-        }       
+            var product =  new ProductResult()
+            {
+                Id = result.Id,
+                CategoryId = result.CategoryId,
+                Description = result.Description,
+                Price = result.Price,
+                Title = result.Title
+            };
+            if(product==null)
+            {
+                return null;
+            }
+            return product;
+        }
     }
 }

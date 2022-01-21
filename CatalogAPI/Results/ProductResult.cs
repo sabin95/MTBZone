@@ -1,6 +1,6 @@
-﻿namespace CatalogAPI.Models
+﻿namespace CatalogAPI.Results
 {
-    public class ProductModel
+    public class ProductResult
     {
         public long Id { get; set; }
         public double Price { get; set; }

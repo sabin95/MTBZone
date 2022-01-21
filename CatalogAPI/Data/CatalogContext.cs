@@ -10,7 +10,7 @@ namespace CatalogAPI.Data
 
         }
 
-        public DbSet<Categories> Category { get; set; }
-        public DbSet<Products> Product { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Product> Products { get; set; }
     }
 }

@@ -1,5 +1,5 @@
-﻿using CatalogAPI.Models;
-using CatalogAPI.Repository;
+﻿using CatalogAPI.Repository;
+using CatalogAPI.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CatalogAPI.Controllers
@@ -34,6 +34,10 @@ namespace CatalogAPI.Controllers
             try
             {
                 var category = await _categoryRepository.GetCategoryById(id);
+                if (category is null)
+                {
+                    return NotFound();
+                }
                 return Ok(category);
             }
             catch (Exception ex)
@@ -42,8 +46,8 @@ namespace CatalogAPI.Controllers
             }
         }
 
-        [HttpPost("category")]
-        public IActionResult AddCategory([FromBody] CategoryModel categoryModel)
+        [HttpPost]
+        public IActionResult AddCategory([FromBody] CategoryResult categoryModel)
         {
             try
             {
@@ -57,7 +61,7 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult EditCategoryById([FromRoute] long id,[FromBody] CategoryModel categoryModel)
+        public IActionResult EditCategoryById([FromRoute] long id,[FromBody] CategoryResult categoryModel)
         {
             try
             {

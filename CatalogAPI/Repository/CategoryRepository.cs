@@ -1,5 +1,5 @@
 ﻿using CatalogAPI.Data;
-using CatalogAPI.Models;
+using CatalogAPI.Results;
 using Microsoft.EntityFrameworkCore;
 
 namespace CatalogAPI.Repository
@@ -12,9 +12,9 @@ namespace CatalogAPI.Repository
         {
             _context = context;
         }
-        public async Task<List<CategoryModel>> GetAllCategoriesAsync()
+        public async Task<List<CategoryResult>> GetAllCategoriesAsync()
         {
-            var results = await _context.Category.Select(x=> new CategoryModel
+            var results = await _context.Categories.Select(x=> new CategoryResult
             {
                 Id = x.Id,
                 Name = x.Name                    
@@ -22,40 +22,41 @@ namespace CatalogAPI.Repository
             return results;
         }
 
-        public async Task<CategoryModel> GetCategoryById(long id)
+        public async Task<CategoryResult> GetCategoryById(long id)
         {
-            if(id<0)
-            {
-                throw new ArgumentNullException(nameof(id), "Id should be equal or greater than 0!");
-            }
-            var result = await _context.Category.Where(x => x.Id == id).Select(x => new CategoryModel
-            {
-                Id = x.Id,
-                Name = x.Name
-            }).FirstOrDefaultAsync();
+            var result = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if (result == null)
             {
-                throw new ArgumentNullException(nameof(result),"No category found for this id!");
+                return null;
             }
-            return result;
+            var category = new CategoryResult()
+            {
+                Id = result.Id,
+                Name = result.Name
+            };
+            if (category == null)
+            {
+                return null;
+            }
+            return category;
         }
 
-        public void AddCategory(CategoryModel categoryModel)
+        public void AddCategory(CategoryResult categoryModel)
         {
             if (categoryModel is null)
             {
                 throw new ArgumentNullException(nameof(categoryModel), "Category should not be null!");
             }
-            var category = new Categories()
+            var category = new Category()
             {
                 Id = categoryModel.Id,
                 Name = categoryModel.Name
             };
-            _context.Category.Add(category);
+            _context.Categories.Add(category);
             _context.SaveChangesAsync();
         }
 
-        public void EditCategoryById(long id,CategoryModel categoryModel)
+        public void EditCategoryById(long id,CategoryResult categoryModel)
         {
             if(id<0)
             {
@@ -65,10 +66,10 @@ namespace CatalogAPI.Repository
             {
                 throw new ArgumentNullException(nameof(categoryModel), "Category should not be null!");
             }
-            var categoryToBeUpdated = _context.Category.FirstOrDefault(x => x.Id == id);
+            var categoryToBeUpdated = _context.Categories.FirstOrDefault(x => x.Id == id);
             if (categoryToBeUpdated is null)
             {
-                throw new ArgumentNullException(nameof(categoryToBeUpdated), "Category does not exist!");
+                throw new ArgumentException(nameof(categoryToBeUpdated), "Category does not exist!");
             }
             categoryToBeUpdated.Id = categoryModel.Id;
             categoryToBeUpdated.Name = categoryModel.Name;
@@ -80,12 +81,12 @@ namespace CatalogAPI.Repository
             {
                 throw new ArgumentNullException(nameof(id), "Id should be greater than 0!");
             }
-            var categoryToBeDeleted = _context.Category.FirstOrDefault(x => x.Id == id);
+            var categoryToBeDeleted = _context.Categories.FirstOrDefault(x => x.Id == id);
             if(categoryToBeDeleted is null)
             {
-                throw new ArgumentNullException(nameof(categoryToBeDeleted), "Category does not exist!");
+                throw new ArgumentException(nameof(categoryToBeDeleted), "Category does not exist!");
             }
-            _context.Category.Remove(categoryToBeDeleted);
+            _context.Categories.Remove(categoryToBeDeleted);
             _context.SaveChangesAsync();
         }
     }

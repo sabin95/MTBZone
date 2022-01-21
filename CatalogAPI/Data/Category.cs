@@ -1,6 +1,6 @@
-﻿namespace CatalogAPI.Models
+﻿namespace CatalogAPI.Data
 {
-    public class CategoryModel
+    public class Category
     {
         public long Id { get; set; }
         public string Name { get; set; }
