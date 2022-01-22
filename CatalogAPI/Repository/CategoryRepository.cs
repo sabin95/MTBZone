@@ -34,10 +34,6 @@ namespace CatalogAPI.Repository
                 Id = result.Id,
                 Name = result.Name
             };
-            if (category == null)
-            {
-                return null;
-            }
             return category;
         }
 

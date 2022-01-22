@@ -96,10 +96,6 @@ namespace CatalogAPI.Repository
                 Price = result.Price,
                 Title = result.Title
             };
-            if(product==null)
-            {
-                return null;
-            }
             return product;
         }
     }
