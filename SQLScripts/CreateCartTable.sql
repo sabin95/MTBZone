@@ -1,0 +1,3 @@
+CREATE TABLE Carts (
+    Id BIGINT PRIMARY KEY    
+);

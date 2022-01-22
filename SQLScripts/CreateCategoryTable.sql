@@ -1,4 +1,4 @@
-CREATE TABLE Category (
+CREATE TABLE Categories (
     Id BIGINT PRIMARY KEY,
     Name VARCHAR(255)
 );
