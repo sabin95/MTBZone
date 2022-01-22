@@ -1,0 +1,5 @@
+CREATE TABLE Category (
+    Id BIGINT PRIMARY KEY,
+    Name VARCHAR(255)
+);
+
