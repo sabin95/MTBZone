@@ -48,6 +48,10 @@ namespace CartAPI.Controllers
             try
             {
                 var result = await _cartRepository.GetCartById(id);
+                if (result is null)
+                {
+                    return NotFound();
+                }
                 return Ok(result);
             }
             catch (Exception ex)

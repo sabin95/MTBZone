@@ -61,7 +61,7 @@ namespace CartAPI.Repository
             {
                 throw new ArgumentException(nameof(cartId), "Cart id must be greater than 0!");
             }
-            var cart = GetCartById(cartId);
+            var cart = await GetCartById(cartId);
             if(cart is null)
             {
                 throw new ArgumentException(nameof(cart), "No cart exists for this id!");
@@ -75,6 +75,7 @@ namespace CartAPI.Repository
                 CartId = cartId
             };
             _cartContext.Items.Add(itemToBeAdded);
+            bool hasChanges = _cartContext.ChangeTracker.HasChanges();
             await _cartContext.SaveChangesAsync();
         }
         public void RemoveItemFromCart(long itemId, long cartId)
@@ -97,7 +98,7 @@ namespace CartAPI.Repository
                 CartId = itemFromCart.CartId
             };
             _cartContext.Items.Remove(item);
-            _cartContext.SaveChanges();
+            _cartContext.SaveChangesAsync();
         }
 
         private ItemResult GetItemById(long id)
