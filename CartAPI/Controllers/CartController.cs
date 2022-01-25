@@ -1,4 +1,5 @@
-﻿using CartAPI.Repository;
+﻿using CartAPI.Commands;
+using CartAPI.Repository;
 using CartAPI.Results;
 using Microsoft.AspNetCore.Mvc;
 
@@ -48,6 +49,34 @@ namespace CartAPI.Controllers
             {
                 var result = await _cartRepository.GetCartById(id);
                 return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("AddItemToCart")]
+        public IActionResult AddItemToCart([FromBody] ItemCommand item, [FromHeader] long cartId)
+        {
+            try
+            {
+                _cartRepository.AddItemToCart(item, cartId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("RemoveItemToCart")]
+        public IActionResult RemoveItemFromCart([FromHeader] long itemId, [FromHeader] long cartId)
+        {
+            try
+            {
+                _cartRepository.RemoveItemFromCart(itemId, cartId);
+                return Ok();
             }
             catch (Exception ex)
             {
