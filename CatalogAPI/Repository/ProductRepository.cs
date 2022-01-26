@@ -12,7 +12,7 @@ namespace CatalogAPI.Repository
         {
             _catalogContext = catalogContext;
         }
-        public void AddProduct(ProductResult model)
+        public async Task AddProduct(ProductResult model)
         {
             if (model is null)
             {
@@ -27,25 +27,25 @@ namespace CatalogAPI.Repository
                 Title = model.Title
             };
             _catalogContext.Products.Add(product);
-            _catalogContext.SaveChangesAsync();
+            await _catalogContext.SaveChangesAsync();
         }
 
-        public void DeleteProductById(long id)
+        public async Task DeleteProductById(long id)
         {
             if (id < 0)
             {
                 throw new ArgumentNullException(nameof(id), "Id cannot be lower than 0!");
             }
-            var result = _catalogContext.Products.FirstOrDefault(x => x.Id == id);
+            var result = await _catalogContext.Products.FirstOrDefaultAsync(x => x.Id == id);
             if (result == null)
             {
                 throw new ArgumentException(nameof(result), "Product does not exist!");
             }
             _catalogContext.Products.Remove(result);
-            _catalogContext.SaveChangesAsync();
+            await _catalogContext.SaveChangesAsync();
         }
 
-        public void EditProductById(long id, ProductResult model)
+        public async Task EditProductById(long id, ProductResult model)
         {
             if (id < 0)
             {
@@ -55,7 +55,7 @@ namespace CatalogAPI.Repository
             {
                 throw new ArgumentNullException(nameof(model), "Product cannot be null!");
             }
-            var productToBeUpdated = _catalogContext.Products.FirstOrDefault(x => x.Id == id);
+            var productToBeUpdated = await _catalogContext.Products.FirstOrDefaultAsync(x => x.Id == id);
             if (productToBeUpdated == null)
             {
                 throw new ArgumentException(nameof(productToBeUpdated), "Product does not exist!");
@@ -65,7 +65,7 @@ namespace CatalogAPI.Repository
             productToBeUpdated.Price = model.Price;
             productToBeUpdated.Description = model.Description;
             productToBeUpdated.CategoryId = model.CategoryId;
-            _catalogContext.SaveChangesAsync();
+            await _catalogContext.SaveChangesAsync();
         }
 
         public async Task<List<ProductResult>> GetAllProducts()

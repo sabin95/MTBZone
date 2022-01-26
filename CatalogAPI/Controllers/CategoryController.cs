@@ -47,11 +47,11 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddCategory([FromBody] CategoryResult categoryModel)
+        public async Task<IActionResult> AddCategory([FromBody] CategoryResult categoryModel)
         {
             try
             {
-                _categoryRepository.AddCategory(categoryModel);
+                await _categoryRepository.AddCategory(categoryModel);
                 return Ok();
             }
             catch (Exception ex)
@@ -61,11 +61,11 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult EditCategoryById([FromRoute] long id,[FromBody] CategoryResult categoryModel)
+        public async Task<IActionResult> EditCategoryById([FromRoute] long id,[FromBody] CategoryResult categoryModel)
         {
             try
             {
-                _categoryRepository.EditCategoryById(id, categoryModel);
+                await _categoryRepository.EditCategoryById(id, categoryModel);
                 return Ok();
             }
             catch(Exception ex)
@@ -75,11 +75,11 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteCategoryById ([FromRoute] long id)
+        public async Task<IActionResult> DeleteCategoryById ([FromRoute] long id)
         {
             try
             {
-                _categoryRepository.DeleteCategoryById(id);
+                await _categoryRepository.DeleteCategoryById(id);
                 return Ok();
             }
             catch (Exception ex)

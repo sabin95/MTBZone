@@ -15,11 +15,11 @@ namespace CartAPI.Controllers
             _cartRepository = cartRepository;
         }
         [HttpPost]
-        public IActionResult CreateCart(CartResult cartResult)
+        public async Task<IActionResult> CreateCart(CartResult cartResult)
         {
             try
             {
-                _cartRepository.CreateCart(cartResult);
+                await _cartRepository.CreateCart(cartResult);
                 return Ok();
             }
             catch (Exception ex)
@@ -61,11 +61,11 @@ namespace CartAPI.Controllers
         }
 
         [HttpPost("AddItemToCart")]
-        public IActionResult AddItemToCart([FromBody] ItemCommand item, [FromHeader] long cartId)
+        public async Task<IActionResult> AddItemToCart([FromBody] ItemCommand item, [FromHeader] long cartId)
         {
             try
             {
-                _cartRepository.AddItemToCart(item, cartId);
+                await _cartRepository.AddItemToCart(item, cartId);
                 return Ok();
             }
             catch (Exception ex)
@@ -75,11 +75,11 @@ namespace CartAPI.Controllers
         }
 
         [HttpDelete("RemoveItemToCart")]
-        public IActionResult RemoveItemFromCart([FromHeader] long itemId, [FromHeader] long cartId)
+        public async Task<IActionResult> RemoveItemFromCart([FromHeader] long itemId, [FromHeader] long cartId)
         {
             try
             {
-                _cartRepository.RemoveItemFromCart(itemId, cartId);
+                await _cartRepository.RemoveItemFromCart(itemId, cartId);
                 return Ok();
             }
             catch (Exception ex)

@@ -37,7 +37,7 @@ namespace CatalogAPI.Repository
             return category;
         }
 
-        public void AddCategory(CategoryResult categoryModel)
+        public async Task AddCategory(CategoryResult categoryModel)
         {
             if (categoryModel is null)
             {
@@ -49,10 +49,10 @@ namespace CatalogAPI.Repository
                 Name = categoryModel.Name
             };
             _context.Categories.Add(category);
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
-        public void EditCategoryById(long id,CategoryResult categoryModel)
+        public async Task EditCategoryById(long id,CategoryResult categoryModel)
         {
             if(id<0)
             {
@@ -62,28 +62,28 @@ namespace CatalogAPI.Repository
             {
                 throw new ArgumentNullException(nameof(categoryModel), "Category should not be null!");
             }
-            var categoryToBeUpdated = _context.Categories.FirstOrDefault(x => x.Id == id);
+            var categoryToBeUpdated =await  _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if (categoryToBeUpdated is null)
             {
                 throw new ArgumentException(nameof(categoryToBeUpdated), "Category does not exist!");
             }
             categoryToBeUpdated.Id = categoryModel.Id;
             categoryToBeUpdated.Name = categoryModel.Name;
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
-        public void DeleteCategoryById(long id)
+        public async Task DeleteCategoryById(long id)
         {
             if(id<0)
             {
                 throw new ArgumentNullException(nameof(id), "Id should be greater than 0!");
             }
-            var categoryToBeDeleted = _context.Categories.FirstOrDefault(x => x.Id == id);
+            var categoryToBeDeleted = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if(categoryToBeDeleted is null)
             {
                 throw new ArgumentException(nameof(categoryToBeDeleted), "Category does not exist!");
             }
             _context.Categories.Remove(categoryToBeDeleted);
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
     }
 }

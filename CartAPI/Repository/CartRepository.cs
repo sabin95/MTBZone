@@ -14,7 +14,7 @@ namespace CartAPI.Repository
             _cartContext = cartContext;
         }       
 
-        public void CreateCart(CartResult cartResult)
+        public async Task CreateCart(CartResult cartResult)
         {
             if (cartResult == null)
             {
@@ -25,7 +25,7 @@ namespace CartAPI.Repository
                 Id = cartResult.Id
             };
             _cartContext.Carts.Add(cart);
-            _cartContext.SaveChangesAsync();
+            await _cartContext.SaveChangesAsync();
         }
 
         public async Task<List<CartResult>> GetAllCartsAsync()
@@ -62,7 +62,7 @@ namespace CartAPI.Repository
                 throw new ArgumentException(nameof(cartId), "Cart id must be greater than 0!");
             }
             var cart = await GetCartById(cartId);
-            if(cart is null)
+            if (cart is null)
             {
                 throw new ArgumentException(nameof(cart), "No cart exists for this id!");
             }
@@ -78,7 +78,7 @@ namespace CartAPI.Repository
             bool hasChanges = _cartContext.ChangeTracker.HasChanges();
             await _cartContext.SaveChangesAsync();
         }
-        public void RemoveItemFromCart(long itemId, long cartId)
+        public async Task RemoveItemFromCart(long itemId, long cartId)
         {
             if (cartId < 0)
             {
@@ -88,7 +88,7 @@ namespace CartAPI.Repository
             {
                 throw new ArgumentException(nameof(itemId), "Cart id must be greater than 0!");
             }
-            var itemFromCart = GetItemById(itemId);
+            var itemFromCart = await GetItemById(itemId);
             var item = new Item()
             {
                 Id = itemFromCart.Id,
@@ -98,16 +98,16 @@ namespace CartAPI.Repository
                 CartId = itemFromCart.CartId
             };
             _cartContext.Items.Remove(item);
-            _cartContext.SaveChangesAsync();
+            await _cartContext.SaveChangesAsync();
         }
 
-        private ItemResult GetItemById(long id)
+        private async Task<ItemResult> GetItemById(long id)
         {
             if (id < 0)
             {
                 throw new ArgumentException(nameof(id), "Cart id must be greater than 0!");
             }
-            var result = _cartContext.Items.FirstOrDefault(x => x.Id == id);
+            var result = await _cartContext.Items.FirstOrDefaultAsync(x => x.Id == id);
             if (result is null)
             {
                 throw new ArgumentException(nameof(result), "No item found for this id!");

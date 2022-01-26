@@ -15,11 +15,11 @@ namespace CatalogAPI.Controllers
         }
         
         [HttpPost]
-        public IActionResult AddProduct(ProductResult productModel)
+        public async Task<IActionResult> AddProduct(ProductResult productModel)
         {
             try
             {
-                _productRepository.AddProduct(productModel);
+                await _productRepository.AddProduct(productModel);
                 return Ok();
             }
             catch (Exception ex)
@@ -61,11 +61,11 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateProductById(long id, ProductResult productModel)
+        public async Task<IActionResult> UpdateProductById(long id, ProductResult productModel)
         {
             try
             {
-                _productRepository.EditProductById(id, productModel);
+                await _productRepository.EditProductById(id, productModel);
                 return Ok();
             }
             catch (Exception ex)
@@ -75,11 +75,11 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpDelete]
-        public IActionResult DeleteById(long id)
+        public async Task<IActionResult> DeleteById(long id)
         {
             try
             {
-                _productRepository.DeleteProductById(id);
+                await _productRepository.DeleteProductById(id);
                 return Ok();
             }
             catch (Exception ex)
