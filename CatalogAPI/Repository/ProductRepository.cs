@@ -1,4 +1,5 @@
-﻿using CatalogAPI.Data;
+﻿using CatalogAPI.Commands;
+using CatalogAPI.Data;
 using CatalogAPI.Results;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,22 +13,30 @@ namespace CatalogAPI.Repository
         {
             _catalogContext = catalogContext;
         }
-        public async Task AddProduct(ProductResult model)
+        public async Task<ProductResult> AddProduct(ProductCommand productCommand)
         {
-            if (model is null)
+            if (productCommand is null)
             {
-                throw new ArgumentNullException(nameof(model), "Product should not be null!");
+                throw new ArgumentNullException(nameof(productCommand), "Product should not be null!");
             }
             var product = new Product()
             {
-                Id = model.Id,
-                CategoryId = model.CategoryId,
-                Description = model.Description,
-                Price = model.Price,
-                Title = model.Title
+                CategoryId = productCommand.CategoryId,
+                Description = productCommand.Description,
+                Price = productCommand.Price,
+                Title = productCommand.Title
             };
             _catalogContext.Products.Add(product);
             await _catalogContext.SaveChangesAsync();
+            var productResult = new ProductResult()
+            {
+                Id = product.Id,
+                Title = product.Title,                
+                Price = productCommand.Price,
+                Description = productCommand.Description,
+                CategoryId = productCommand.CategoryId,
+            };
+            return productResult;
         }
 
         public async Task DeleteProductById(long id)
@@ -45,27 +54,35 @@ namespace CatalogAPI.Repository
             await _catalogContext.SaveChangesAsync();
         }
 
-        public async Task EditProductById(long id, ProductResult model)
+        public async Task<ProductResult> EditProductById(long id, ProductCommand productCommand)
         {
             if (id < 0)
             {
                 throw new ArgumentNullException(nameof(id), "Id cannot be lower than 0!");
             }
-            if (model == null)
+            if (productCommand == null)
             {
-                throw new ArgumentNullException(nameof(model), "Product cannot be null!");
+                throw new ArgumentNullException(nameof(productCommand), "Product cannot be null!");
             }
             var productToBeUpdated = await _catalogContext.Products.FirstOrDefaultAsync(x => x.Id == id);
             if (productToBeUpdated == null)
             {
                 throw new ArgumentException(nameof(productToBeUpdated), "Product does not exist!");
             }
-            productToBeUpdated.Id = model.Id;
-            productToBeUpdated.Title = model.Title;
-            productToBeUpdated.Price = model.Price;
-            productToBeUpdated.Description = model.Description;
-            productToBeUpdated.CategoryId = model.CategoryId;
+            productToBeUpdated.Title = productCommand.Title;
+            productToBeUpdated.Price = productCommand.Price;
+            productToBeUpdated.Description = productCommand.Description;
+            productToBeUpdated.CategoryId = productCommand.CategoryId;
             await _catalogContext.SaveChangesAsync();
+            var productResult = new ProductResult()
+            {
+                Id = productToBeUpdated.Id,
+                Title = productToBeUpdated.Title,
+                Price = productToBeUpdated.Price,
+                Description = productToBeUpdated.Description,
+                CategoryId = productToBeUpdated.CategoryId
+            };
+            return productResult;
         }
 
         public async Task<List<ProductResult>> GetAllProducts()

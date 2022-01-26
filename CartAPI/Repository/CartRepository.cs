@@ -14,18 +14,17 @@ namespace CartAPI.Repository
             _cartContext = cartContext;
         }       
 
-        public async Task CreateCart(CartResult cartResult)
+        public async Task<CartResult> CreateCart()
         {
-            if (cartResult == null)
-            {
-                throw new ArgumentNullException(nameof(cartResult),"Cart cannot be null!");
-            }
-            var cart = new Cart()
-            {
-                Id = cartResult.Id
-            };
+            var cart = new Cart();
             _cartContext.Carts.Add(cart);
             await _cartContext.SaveChangesAsync();
+
+            var cartResult = new CartResult()
+            {
+                Id = cart.Id
+            };
+            return cartResult;
         }
 
         public async Task<List<CartResult>> GetAllCartsAsync()
@@ -34,6 +33,10 @@ namespace CartAPI.Repository
             {
                 Id = c.Id
             }).ToListAsync();
+            foreach(var result in results)
+            {
+                result.Items = await GetItemsByCartId(result.Id);
+            }
             return results;
         }
 
@@ -44,51 +47,56 @@ namespace CartAPI.Repository
             {
                 return null;
             }
+            var itemsForCart = await GetItemsByCartId(id);
             var cart = new CartResult()
             {
-                Id = result.Id
+                Id = result.Id,
+                Items = itemsForCart.ToList()
             };
             return cart;
         }
 
-        public async Task AddItemToCart(ItemCommand itemCommand, long cartId)
+        public async Task<ItemResult> AddItemToCart(AddItemToCartCommand itemCommand)
         {
             if (itemCommand == null)
             {
                 throw new ArgumentNullException(nameof(itemCommand), "Cart cannot be null!");
             }
-            if (cartId<0)
-            {
-                throw new ArgumentException(nameof(cartId), "Cart id must be greater than 0!");
-            }
-            var cart = await GetCartById(cartId);
+            var cart = await GetCartById(itemCommand.CartId);
             if (cart is null)
             {
                 throw new ArgumentException(nameof(cart), "No cart exists for this id!");
             }
             var itemToBeAdded = new Item()
             {
-                Id = itemCommand.Id,
                 Title = itemCommand.Title,
                 Price = itemCommand.Price,
                 Quantity = itemCommand.Quantity,
-                CartId = cartId
+                CartId = itemCommand.CartId
             };
             _cartContext.Items.Add(itemToBeAdded);
-            bool hasChanges = _cartContext.ChangeTracker.HasChanges();
             await _cartContext.SaveChangesAsync();
-        }
-        public async Task RemoveItemFromCart(long itemId, long cartId)
-        {
-            if (cartId < 0)
+            var result = new ItemResult()
             {
-                throw new ArgumentException(nameof(cartId), "Cart id must be greater than 0!");
-            }
+                Id=itemToBeAdded.Id,
+                Title=itemToBeAdded.Title,
+                Price=itemToBeAdded.Price,
+                Quantity=itemToBeAdded.Quantity,
+                CartId=itemToBeAdded.CartId
+            };
+            return result;
+        }
+        public async Task RemoveItemFromCart(long itemId)
+        {
             if (itemId<0)
             {
                 throw new ArgumentException(nameof(itemId), "Cart id must be greater than 0!");
             }
-            var itemFromCart = await GetItemById(itemId);
+            var itemFromCart = await _cartContext.Items.FirstOrDefaultAsync(x => x.Id == itemId);
+            if (itemFromCart is null)
+            {
+                throw new ArgumentException(nameof(itemFromCart), "No item found for this id!");
+            }
             var item = new Item()
             {
                 Id = itemFromCart.Id,
@@ -101,26 +109,31 @@ namespace CartAPI.Repository
             await _cartContext.SaveChangesAsync();
         }
 
-        private async Task<ItemResult> GetItemById(long id)
+        private async Task<List<ItemResult>> GetItemsByCartId(long cartId)
         {
-            if (id < 0)
+            if (cartId < 0)
             {
-                throw new ArgumentException(nameof(id), "Cart id must be greater than 0!");
+                throw new ArgumentException(nameof(cartId), "Cart id must be greater than 0!");
             }
-            var result = await _cartContext.Items.FirstOrDefaultAsync(x => x.Id == id);
-            if (result is null)
+            var cartResult = await _cartContext.Carts.FirstOrDefaultAsync(x => x.Id == cartId);
+            if (cartResult is null)
             {
-                throw new ArgumentException(nameof(result), "No item found for this id!");
+                throw new ArgumentException(nameof(cartResult), "No cart found for this id!");
             }
-            var item = new ItemResult()
+            var items = await _cartContext.Items.Where(x=>x.CartId == cartId).ToListAsync();
+            var itemsResult = new List<ItemResult>();
+            foreach(var item in items)
             {
-                Id = result.Id,
-                Title = result.Title,
-                Price=result.Price,
-                Quantity=result.Quantity,
-                CartId=result.CartId
-            };
-            return item;
+                itemsResult.Add(new ItemResult()
+                {
+                    Id = item.Id,
+                    Title = item.Title,
+                    Price = item.Price,
+                    Quantity = item.Quantity,
+                    CartId = item.CartId
+                });
+            }
+            return itemsResult;
         }
     }
 }

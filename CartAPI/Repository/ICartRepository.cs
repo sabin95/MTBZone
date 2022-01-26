@@ -5,10 +5,10 @@ namespace CartAPI.Repository
 {
     public interface ICartRepository
     {
-        public Task CreateCart(CartResult cartResult);
+        public Task<CartResult> CreateCart();
         public Task<List<CartResult>> GetAllCartsAsync();
         public Task<CartResult> GetCartById(long id);
-        public Task AddItemToCart(ItemCommand itemCommand, long cartId);
-        public Task RemoveItemFromCart(long itemId, long cartId);
+        public Task<ItemResult> AddItemToCart(AddItemToCartCommand itemCommand);
+        public Task RemoveItemFromCart(long itemId);
     }
 }

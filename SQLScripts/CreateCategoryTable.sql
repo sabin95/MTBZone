@@ -1,5 +1,5 @@
 CREATE TABLE Categories (
-    Id BIGINT PRIMARY KEY,
+    Id BIGINT IDENTITY(1,1) PRIMARY KEY,
     Name VARCHAR(255)
 );
 
