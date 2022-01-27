@@ -92,7 +92,7 @@ namespace CartAPI.Repository
             {
                 throw new ArgumentException(nameof(itemId), "Cart id must be greater than 0!");
             }
-            var itemFromCart = await _cartContext.Items.FirstOrDefaultAsync(x => x.Id == itemId);
+            var itemFromCart = await _cartContext.Items.AsNoTracking().FirstOrDefaultAsync(x => x.Id == itemId);
             if (itemFromCart is null)
             {
                 throw new ArgumentException(nameof(itemFromCart), "No item found for this id!");

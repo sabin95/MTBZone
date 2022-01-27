@@ -74,8 +74,8 @@ namespace CartAPI.Controllers
             }
         }
 
-        [HttpPut("RemoveItemToCart")]
-        public async Task<IActionResult> RemoveItemFromCart([FromHeader] long itemId)
+        [HttpPut("RemoveItemToCart/{itemId}")]
+        public async Task<IActionResult> RemoveItemFromCart([FromRoute] long itemId)
         {
             try
             {
