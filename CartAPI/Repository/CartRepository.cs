@@ -16,13 +16,17 @@ namespace CartAPI.Repository
 
         public async Task<CartResult> CreateCart()
         {
-            var cart = new Cart();
+            var cart = new Cart()
+            {
+                State= Utils.Utils.CartState.Active.ToString()
+            };
             _cartContext.Carts.Add(cart);
             await _cartContext.SaveChangesAsync();
 
             var cartResult = new CartResult()
             {
-                Id = cart.Id
+                Id = cart.Id,
+                State= cart.State.ToString()
             };
             return cartResult;
         }
@@ -31,7 +35,8 @@ namespace CartAPI.Repository
         {
             var results = await _cartContext.Carts.Select(c => new CartResult()
             {
-                Id = c.Id
+                Id = c.Id,
+                State = c.State.ToString()
             }).ToListAsync();
             foreach(var result in results)
             {
@@ -51,6 +56,7 @@ namespace CartAPI.Repository
             var cart = new CartResult()
             {
                 Id = result.Id,
+                State = result.State.ToString(),
                 Items = itemsForCart.ToList()
             };
             return cart;
@@ -134,6 +140,29 @@ namespace CartAPI.Repository
                 });
             }
             return itemsResult;
+        }
+
+        public async Task<CartResult> OrderCart(long cartId)
+        {
+            var cart = await _cartContext.Carts.FirstOrDefaultAsync(c => c.Id == cartId);
+            if (cart == null)
+            {
+                return null;
+            }
+            cart.State = Utils.Utils.CartState.Ordered.ToString();
+            var itemsForCart = await GetItemsByCartId(cartId);
+            if(itemsForCart.Count==0)
+            {
+                throw new ArgumentException(nameof(itemsForCart), "Cannot make an order if you have no items in the cart!");
+            }
+            await _cartContext.SaveChangesAsync();
+            var cartResult = new CartResult()
+            {
+                Id = cart.Id,
+                State = cart.State,
+                Items = itemsForCart.ToList()
+            };
+            return cartResult;
         }
     }
 }

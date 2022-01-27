@@ -60,6 +60,24 @@ namespace CartAPI.Controllers
             }
         }
 
+        [HttpPut("OrderCart/{itemId}")]
+        public async Task<ActionResult> OrderCart([FromRoute] long itemId)
+        {
+            try
+            {
+                var result = await _cartRepository.OrderCart(itemId);
+                if (result is null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPut("AddItemToCart")]
         public async Task<IActionResult> AddItemToCart([FromBody] AddItemToCartCommand item)
         {
