@@ -1,4 +1,5 @@
-﻿using CatalogAPI.Results;
+﻿using CatalogAPI.Commands;
+using CatalogAPI.Results;
 
 namespace CatalogAPI.Repository
 {
@@ -6,8 +7,8 @@ namespace CatalogAPI.Repository
     {
         public Task<List<CategoryResult>> GetAllCategoriesAsync();
         public Task<CategoryResult> GetCategoryById(long id);
-        public void AddCategory(CategoryResult categoryModel);
-        public void EditCategoryById(long id,CategoryResult category);
-        public void DeleteCategoryById(long id);
+        public Task<CategoryResult> AddCategory(CategoryCommand categoryCommand);
+        public Task<CategoryResult> EditCategoryById(long id, CategoryCommand categoryCommand);
+        public Task DeleteCategoryById(long id);
     }
 }

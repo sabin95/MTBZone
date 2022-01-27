@@ -1,4 +1,5 @@
-﻿using CatalogAPI.Repository;
+﻿using CatalogAPI.Commands;
+using CatalogAPI.Repository;
 using CatalogAPI.Results;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,12 +48,12 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddCategory([FromBody] CategoryResult categoryModel)
+        public async Task<IActionResult> AddCategory([FromBody] CategoryCommand categoryCommand)
         {
             try
             {
-                _categoryRepository.AddCategory(categoryModel);
-                return Ok();
+                var result = await _categoryRepository.AddCategory(categoryCommand);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -61,12 +62,12 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult EditCategoryById([FromRoute] long id,[FromBody] CategoryResult categoryModel)
+        public async Task<IActionResult> EditCategoryById([FromRoute] long id,[FromBody] CategoryCommand categoryCommand)
         {
             try
             {
-                _categoryRepository.EditCategoryById(id, categoryModel);
-                return Ok();
+                var result = await _categoryRepository.EditCategoryById(id, categoryCommand);
+                return Ok(result);
             }
             catch(Exception ex)
             {
@@ -75,11 +76,11 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteCategoryById ([FromRoute] long id)
+        public async Task<IActionResult> DeleteCategoryById ([FromRoute] long id)
         {
             try
             {
-                _categoryRepository.DeleteCategoryById(id);
+                await _categoryRepository.DeleteCategoryById(id);
                 return Ok();
             }
             catch (Exception ex)

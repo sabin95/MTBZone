@@ -1,4 +1,5 @@
-﻿using CatalogAPI.Repository;
+﻿using CatalogAPI.Commands;
+using CatalogAPI.Repository;
 using CatalogAPI.Results;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,12 +16,12 @@ namespace CatalogAPI.Controllers
         }
         
         [HttpPost]
-        public IActionResult AddProduct(ProductResult productModel)
+        public async Task<IActionResult> AddProduct(ProductCommand productCommand)
         {
             try
             {
-                _productRepository.AddProduct(productModel);
-                return Ok();
+                var result = await _productRepository.AddProduct(productCommand);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -61,12 +62,12 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateProductById(long id, ProductResult productModel)
+        public async Task<IActionResult> UpdateProductById(long id, ProductCommand productCommand)
         {
             try
             {
-                _productRepository.EditProductById(id, productModel);
-                return Ok();
+                var result = await _productRepository.EditProductById(id, productCommand);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -75,11 +76,11 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpDelete]
-        public IActionResult DeleteById(long id)
+        public async Task<IActionResult> DeleteById(long id)
         {
             try
             {
-                _productRepository.DeleteProductById(id);
+                await _productRepository.DeleteProductById(id);
                 return Ok();
             }
             catch (Exception ex)

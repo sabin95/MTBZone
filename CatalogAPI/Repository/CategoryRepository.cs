@@ -1,4 +1,5 @@
-﻿using CatalogAPI.Data;
+﻿using CatalogAPI.Commands;
+using CatalogAPI.Data;
 using CatalogAPI.Results;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,53 +38,64 @@ namespace CatalogAPI.Repository
             return category;
         }
 
-        public void AddCategory(CategoryResult categoryModel)
+        public async Task<CategoryResult> AddCategory(CategoryCommand categoryCommand)
         {
-            if (categoryModel is null)
+            if (categoryCommand is null)
             {
-                throw new ArgumentNullException(nameof(categoryModel), "Category should not be null!");
+                throw new ArgumentNullException(nameof(categoryCommand), "Category should not be null!");
             }
             var category = new Category()
             {
-                Id = categoryModel.Id,
-                Name = categoryModel.Name
+                Name = categoryCommand.Name
             };
             _context.Categories.Add(category);
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+
+            var categoryResult = new CategoryResult()
+            {
+                Id = category.Id,
+                Name = category.Name
+            };
+            return categoryResult;
         }
 
-        public void EditCategoryById(long id,CategoryResult categoryModel)
+        public async Task<CategoryResult> EditCategoryById(long id, CategoryCommand categoryCommand)
         {
             if(id<0)
             {
                 throw new ArgumentNullException(nameof(id), "Id should be grater than 0!");
             }
-            if(categoryModel is null)
+            if(categoryCommand is null)
             {
-                throw new ArgumentNullException(nameof(categoryModel), "Category should not be null!");
+                throw new ArgumentNullException(nameof(categoryCommand), "Category should not be null!");
             }
-            var categoryToBeUpdated = _context.Categories.FirstOrDefault(x => x.Id == id);
+            var categoryToBeUpdated =await  _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if (categoryToBeUpdated is null)
             {
                 throw new ArgumentException(nameof(categoryToBeUpdated), "Category does not exist!");
             }
-            categoryToBeUpdated.Id = categoryModel.Id;
-            categoryToBeUpdated.Name = categoryModel.Name;
-            _context.SaveChangesAsync();
+            categoryToBeUpdated.Name = categoryCommand.Name;
+            await _context.SaveChangesAsync();
+            var categoryResult = new CategoryResult()
+            {
+                Id = id,
+                Name = categoryToBeUpdated.Name
+            };
+            return categoryResult;
         }
-        public void DeleteCategoryById(long id)
+        public async Task DeleteCategoryById(long id)
         {
             if(id<0)
             {
                 throw new ArgumentNullException(nameof(id), "Id should be greater than 0!");
             }
-            var categoryToBeDeleted = _context.Categories.FirstOrDefault(x => x.Id == id);
+            var categoryToBeDeleted = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if(categoryToBeDeleted is null)
             {
                 throw new ArgumentException(nameof(categoryToBeDeleted), "Category does not exist!");
             }
             _context.Categories.Remove(categoryToBeDeleted);
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
     }
 }
