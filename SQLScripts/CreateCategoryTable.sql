@@ -1,0 +1,5 @@
+CREATE TABLE Categories (
+    Id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    Name VARCHAR(255)
+);
+

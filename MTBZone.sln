@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTBZone", "MTBZone\MTBZone.csproj", "{93EB29D9-927C-404A-8746-896D490CFC8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatalogAPI", "CatalogAPI\CatalogAPI.csproj", "{489D5062-26FF-4590-8C98-EBC12C30F9FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartAPI", "CartAPI\CartAPI.csproj", "{6FEF4F26-7648-42F7-9C06-137D2449C65B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{93EB29D9-927C-404A-8746-896D490CFC8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93EB29D9-927C-404A-8746-896D490CFC8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{93EB29D9-927C-404A-8746-896D490CFC8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{93EB29D9-927C-404A-8746-896D490CFC8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{489D5062-26FF-4590-8C98-EBC12C30F9FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{489D5062-26FF-4590-8C98-EBC12C30F9FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{489D5062-26FF-4590-8C98-EBC12C30F9FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{489D5062-26FF-4590-8C98-EBC12C30F9FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FEF4F26-7648-42F7-9C06-137D2449C65B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FEF4F26-7648-42F7-9C06-137D2449C65B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FEF4F26-7648-42F7-9C06-137D2449C65B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FEF4F26-7648-42F7-9C06-137D2449C65B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

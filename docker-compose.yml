@@ -1,0 +1,15 @@
+version: "3.7"
+volumes:
+  sqldata:
+services:  
+  sqlserver:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqldata:/var/opt/mssql
+    environment:
+        MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD}"
+        ACCEPT_EULA: "Y"
+    env_file:
+    - variables.env
