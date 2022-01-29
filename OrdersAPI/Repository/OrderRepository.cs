@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CartAPI.Events;
+using Microsoft.EntityFrameworkCore;
 using OrdersAPI.Data;
 using OrdersAPI.Results;
 
@@ -21,6 +22,26 @@ namespace OrdersAPI.Repository
                 State = x.State
             }).ToListAsync();
             return results;
+        }
+
+        public async Task CreateOrder(CartOrdered cartOrdered)
+        {
+            var order = new Order()
+            {
+                State = Utils.Utils.State.Pending.ToString(),
+                
+            };
+            _orderContext.Orders.Add(order);
+            await _orderContext.SaveChangesAsync();
+
+            order.Items = cartOrdered.Items.Select(x => new Item()
+            {
+                Title = x.Title,
+                Quantity = x.Quantity,
+                Price = x.Price,
+                OrderId = order.Id
+            }).ToList();
+            await _orderContext.SaveChangesAsync();
         }
     }
 }

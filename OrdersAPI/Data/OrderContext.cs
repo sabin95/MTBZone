@@ -11,5 +11,6 @@ namespace OrdersAPI.Data
         }
 
         public DbSet<Order> Orders { get; set; }
+        public DbSet<Item> OrderItems { get; set; }
     }
 }

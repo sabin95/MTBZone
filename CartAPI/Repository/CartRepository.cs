@@ -1,17 +1,21 @@
 ﻿using CartAPI.Commands;
 using CartAPI.Data;
+using CartAPI.Events;
 using CartAPI.Results;
 using Microsoft.EntityFrameworkCore;
+using MTBZone.RabbitMQ.Sender;
 
 namespace CartAPI.Repository
 {
     public class CartRepository : ICartRepository
     {
         private readonly CartContext _cartContext;
+        private readonly IRabbitMQSender _rabbitMQSender;
 
-        public CartRepository(CartContext cartContext)
+        public CartRepository(CartContext cartContext,IRabbitMQSender rabbitMQSender)
         {
             _cartContext = cartContext;
+            _rabbitMQSender = rabbitMQSender;
         }       
 
         public async Task<CartResult> CreateCart()
@@ -156,6 +160,18 @@ namespace CartAPI.Repository
                 throw new ArgumentException(nameof(itemsForCart), "Cannot make an order if you have no items in the cart!");
             }
             await _cartContext.SaveChangesAsync();
+            var message = new CartOrdered()
+            {
+                Id=cart.Id,
+                Items = itemsForCart.Select(x=>new CartOrderedItem()
+                    {
+                    Id = x.Id,
+                    Price = x.Price,
+                    Quantity=x.Quantity,
+                    Title=x.Title
+                }).ToList()
+            };
+            _rabbitMQSender.Send(message);
             var cartResult = new CartResult()
             {
                 Id = cart.Id,
