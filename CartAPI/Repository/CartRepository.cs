@@ -1,57 +1,77 @@
 ﻿using CartAPI.Commands;
 using CartAPI.Data;
+using CartAPI.Events;
 using CartAPI.Results;
 using Microsoft.EntityFrameworkCore;
+using MTBZone.RabbitMQ.Sender;
 
 namespace CartAPI.Repository
 {
     public class CartRepository : ICartRepository
     {
         private readonly CartContext _cartContext;
+        private readonly IRabbitMQSender _rabbitMQSender;
 
-        public CartRepository(CartContext cartContext)
+        public CartRepository(CartContext cartContext,IRabbitMQSender rabbitMQSender)
         {
             _cartContext = cartContext;
+            _rabbitMQSender = rabbitMQSender;
         }       
 
         public async Task<CartResult> CreateCart()
         {
-            var cart = new Cart();
+            var cart = new Cart()
+            {
+                State= Utils.Utils.CartState.Active.ToString()
+            };
             _cartContext.Carts.Add(cart);
             await _cartContext.SaveChangesAsync();
 
             var cartResult = new CartResult()
             {
-                Id = cart.Id
+                Id = cart.Id,
+                State= cart.State.ToString()
             };
             return cartResult;
         }
 
         public async Task<List<CartResult>> GetAllCartsAsync()
         {
-            var results = await _cartContext.Carts.Select(c => new CartResult()
+            var results = await _cartContext.Carts.Include(o=>o.Items).Select(c => new CartResult()
             {
-                Id = c.Id
+                Id = c.Id,
+                State = c.State.ToString(),
+                Items = c.Items.Select(ci=>new ItemResult()
+                {
+                    Id = ci.Id,
+                    Title = ci.Title,
+                    Price = ci.Price,
+                    Quantity = ci.Quantity,
+                    CartId = ci.CartId
+                }).ToList()
             }).ToListAsync();
-            foreach(var result in results)
-            {
-                result.Items = await GetItemsByCartId(result.Id);
-            }
             return results;
         }
 
         public async Task<CartResult> GetCartById(long id)
         {
-            var result = await _cartContext.Carts.FirstOrDefaultAsync(c => c.Id == id);
+            var result = await _cartContext.Carts.Include(o=>o.Items).FirstOrDefaultAsync(c => c.Id == id);
             if (result == null)
             {
                 return null;
             }
-            var itemsForCart = await GetItemsByCartId(id);
             var cart = new CartResult()
             {
                 Id = result.Id,
-                Items = itemsForCart.ToList()
+                State = result.State.ToString(),
+                Items = result.Items.Select(ci => new ItemResult()
+                {
+                    Id = ci.Id,
+                    Title = ci.Title,
+                    Price = ci.Price,
+                    Quantity = ci.Quantity,
+                    CartId = ci.CartId
+                }).ToList()
             };
             return cart;
         }
@@ -109,31 +129,38 @@ namespace CartAPI.Repository
             await _cartContext.SaveChangesAsync();
         }
 
-        private async Task<List<ItemResult>> GetItemsByCartId(long cartId)
+        public async Task<CartResult> OrderCart(long cartId)
         {
-            if (cartId < 0)
+            var cart = await GetCartById(cartId);
+            if (cart == null)
             {
-                throw new ArgumentException(nameof(cartId), "Cart id must be greater than 0!");
+                return null;
             }
-            var cartResult = await _cartContext.Carts.FirstOrDefaultAsync(x => x.Id == cartId);
-            if (cartResult is null)
+            cart.State = Utils.Utils.CartState.Ordered.ToString();
+            if(cart.Items.Count==0)
             {
-                throw new ArgumentException(nameof(cartResult), "No cart found for this id!");
+                throw new ArgumentException(nameof(cart.Items.Count), "Cannot make an order if you have no items in the cart!");
             }
-            var items = await _cartContext.Items.Where(x=>x.CartId == cartId).ToListAsync();
-            var itemsResult = new List<ItemResult>();
-            foreach(var item in items)
+            await _cartContext.SaveChangesAsync();
+            var message = new CartOrdered()
             {
-                itemsResult.Add(new ItemResult()
-                {
-                    Id = item.Id,
-                    Title = item.Title,
-                    Price = item.Price,
-                    Quantity = item.Quantity,
-                    CartId = item.CartId
-                });
-            }
-            return itemsResult;
+                Id=cart.Id,
+                Items = cart.Items.Select(x=>new CartOrderedItem()
+                    {
+                    Id = x.Id,
+                    Price = x.Price,
+                    Quantity=x.Quantity,
+                    Title=x.Title
+                }).ToList()
+            };
+            _rabbitMQSender.Send(message);
+            var cartResult = new CartResult()
+            {
+                Id = cart.Id,
+                State = cart.State,
+                Items = cart.Items.ToList()
+            };
+            return cartResult;
         }
     }
 }

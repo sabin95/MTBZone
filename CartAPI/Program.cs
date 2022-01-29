@@ -1,6 +1,7 @@
 using CartAPI.Data;
 using CartAPI.Repository;
 using Microsoft.EntityFrameworkCore;
+using MTBZone.RabbitMQ.Sender;
 
 var builder = WebApplication.CreateBuilder(args);
 var ConnectionString = builder.Configuration["CartAPI:ConnectionString"];
@@ -14,8 +15,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CartContext>(options =>
     options.UseSqlServer(ConnectionString));
 builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddSingleton<IRabbitMQSender, RabbitMQSender>();
 
 var app = builder.Build();
+var rabbitMQ = app.Services.GetService<IRabbitMQSender>();
+rabbitMQ.Initialize("Carts");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

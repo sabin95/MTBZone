@@ -1,8 +1,6 @@
-﻿using static CartAPI.Utils.Utils;
-
-namespace CartAPI.Results
+﻿namespace OrdersAPI.Results
 {
-    public class CartResult
+    public class OrderResult
     {
         public long Id { get; set; }
         public string State { get; set; }

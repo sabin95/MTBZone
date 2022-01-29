@@ -10,5 +10,6 @@ namespace CartAPI.Repository
         public Task<CartResult> GetCartById(long id);
         public Task<ItemResult> AddItemToCart(AddItemToCartCommand itemCommand);
         public Task RemoveItemFromCart(long itemId);
+        public Task<CartResult> OrderCart(long cartId);
     }
 }
