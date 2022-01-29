@@ -15,9 +15,10 @@ namespace MTBZone.RabbitMQ.Receiver
             var connection = factory.CreateConnection();
             var channel = connection.CreateModel();
 
+            channel.ExchangeDeclare(exchange, "topic", durable: true);
 
             channel.QueueDeclare(queue: queue,
-                               durable: false,
+                               durable: true,
                                exclusive: false,
                                autoDelete: true,
                                arguments: null);

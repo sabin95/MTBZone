@@ -14,7 +14,6 @@ namespace OrdersAPI.EventHandlers.Carts
         }
         public async Task Handle(CartOrdered message)
         {
-            Console.WriteLine(message.ToString());
             await _orderRepository.CreateOrder(message);
         }
     }

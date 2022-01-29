@@ -17,7 +17,7 @@ namespace MTBZone.RabbitMQ.Sender
             var factory = new ConnectionFactory() { HostName = "localhost", Port = 5672 };
             using var connection = factory.CreateConnection();
             using var channel = connection.CreateModel();
-            channel.ExchangeDeclare(exchange, "topic");
+            channel.ExchangeDeclare(exchange, "topic",durable:true);
             channel.BasicPublish(exchange: exchange,
                                           routingKey: typeof(T).Name,
                                           mandatory: true,
