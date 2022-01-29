@@ -16,44 +16,22 @@ namespace OrdersAPI.Repository
 
         public async Task<List<OrderResult>> GetAllOrders()
         {
-            var results = await _orderContext.Orders.Select(x => new OrderResult()
+            var results = await _orderContext.Orders.Include(y => y.Items).Select(x => new OrderResult()
             {
                 Id = x.Id,
-                State = x.State
+                State = x.State,
+                Items = x.Items.Select(xi => new ItemResult()
+                {
+                    Id = xi.Id,
+                    Title = xi.Title,
+                    Price = xi.Price,
+                    Quantity = xi.Quantity,
+                    OrderId = xi.OrderId
+                }).ToList()
             }).ToListAsync();
-            foreach(var result in results)
-            {
-                result.Items = await GetItemsByOrderId(result.Id);
-            }
             return results;
         }
 
-        private async Task<List<ItemResult>> GetItemsByOrderId(long orderId)
-        {
-            if (orderId < 0)
-            {
-                throw new ArgumentException(nameof(orderId), "Order id must be greater than 0!");
-            }
-            var orderResult = await _orderContext.OrderItems.FirstOrDefaultAsync(x => x.Id == orderId);
-            if (orderResult is null)
-            {
-                throw new ArgumentException(nameof(orderResult), "No Order found for this id!");
-            }
-            var items = await _orderContext.OrderItems.Where(x => x.OrderId == orderId).ToListAsync();
-            var itemsResult = new List<ItemResult>();
-            foreach (var item in items)
-            {
-                itemsResult.Add(new ItemResult()
-                {
-                    Id = item.Id,
-                    Title = item.Title,
-                    Price = item.Price,
-                    Quantity = item.Quantity,
-                    OrderId = item.OrderId
-                });
-            }
-            return itemsResult;
-        }
 
         public async Task CreateOrder(CartOrdered cartOrdered)
         {
