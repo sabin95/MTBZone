@@ -4,4 +4,5 @@ CREATE TABLE Items (
     Price FLOAT(26),
     Quantity BIGINT,
     CartId BIGINT FOREIGN KEY REFERENCES [dbo].Carts(Id),
+    ExternalId BIGINT
 );

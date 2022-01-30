@@ -19,12 +19,18 @@ namespace CatalogAPI.Repository
             {
                 throw new ArgumentNullException(nameof(productCommand), "Product should not be null!");
             }
+            var category = await _catalogContext.Categories.FirstOrDefaultAsync(x=>x.Id==productCommand.CategoryId);
+            if (category == null)
+            {
+                throw new ArgumentNullException(nameof(category), "No category found for this id!");
+            }
             var product = new Product()
             {
                 CategoryId = productCommand.CategoryId,
                 Description = productCommand.Description,
                 Price = productCommand.Price,
-                Title = productCommand.Title
+                Title = productCommand.Title,
+                Stock = 0
             };
             _catalogContext.Products.Add(product);
             await _catalogContext.SaveChangesAsync();
@@ -69,6 +75,11 @@ namespace CatalogAPI.Repository
             {
                 throw new ArgumentException(nameof(productToBeUpdated), "Product does not exist!");
             }
+            var category = await _catalogContext.Categories.FirstOrDefaultAsync(x => x.Id == productCommand.CategoryId);
+            if (category == null)
+            {
+                throw new ArgumentNullException(nameof(category), "No category found for this id!");
+            }
             productToBeUpdated.Title = productCommand.Title;
             productToBeUpdated.Price = productCommand.Price;
             productToBeUpdated.Description = productCommand.Description;
@@ -93,7 +104,8 @@ namespace CatalogAPI.Repository
                 CategoryId = x.CategoryId,
                 Description = x.Description,
                 Price = x.Price,
-                Title = x.Title
+                Title = x.Title,
+                Stock = x.Stock
             }).ToListAsync();
             return results;
         }
@@ -111,9 +123,73 @@ namespace CatalogAPI.Repository
                 CategoryId = result.CategoryId,
                 Description = result.Description,
                 Price = result.Price,
-                Title = result.Title
+                Title = result.Title,
+                Stock = result.Stock
             };
             return product;
         }
+
+        public async Task<ProductResult> IncreaseStockPerProduct(long productId, long quantity)
+        {
+            if (productId<0)
+            {
+                throw new ArgumentException(nameof(productId), "ProductId cannot be lower than 0!");
+            }
+            if (quantity < 0)
+            {
+                throw new ArgumentException(nameof(quantity), "Quantity cannot be lower than 0!");
+            }
+            var product= await _catalogContext.Products.FirstOrDefaultAsync(x=>x.Id == productId);
+            if (product == null)
+            {
+                throw new ArgumentException(nameof(product), "No product found for this id!");
+            }
+            product.Stock = product.Stock + quantity;
+            await _catalogContext.SaveChangesAsync();
+            var productResult = new ProductResult()
+            {
+                Id = product.Id,
+                Stock = product.Stock,
+                CategoryId = product.CategoryId,
+                Description = product.Description,
+                Price = product.Price,
+                Title = product.Title
+            };
+            return productResult;
+        }
+        public async Task<ProductResult> DecreaseStockPerProduct(long productId, long quantity)
+        {
+            if (productId < 0)
+            {
+                throw new ArgumentException(nameof(productId), "ProductId cannot be lower than 0!");
+            }
+            if (quantity < 0)
+            {
+                throw new ArgumentException(nameof(quantity), "Quantity cannot be lower than 0!");
+            }
+            var product = await _catalogContext.Products.FirstOrDefaultAsync(x => x.Id == productId);
+            if (product == null)
+            {
+                throw new ArgumentException(nameof(product), "No product found for this id!");
+            }
+            if(product.Stock<quantity)
+            {
+                throw new ArgumentException(nameof(quantity), "Quantity cannot be greater than actual stock!");
+            }
+            product.Stock = product.Stock - quantity;
+            await _catalogContext.SaveChangesAsync();
+            var productResult = new ProductResult()
+            {
+                Id = product.Id,
+                Stock = product.Stock,
+                CategoryId = product.CategoryId,
+                Description = product.Description,
+                Price = product.Price,
+                Title = product.Title
+            };
+            return productResult;
+        }
+
+
     }
 }

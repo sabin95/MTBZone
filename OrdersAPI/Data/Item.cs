@@ -7,5 +7,6 @@
         public double Price { get; set; }
         public long Quantity { get; set; }
         public long OrderId { get; set; }
+        public long ExternalId { get; set; }
     }
 }

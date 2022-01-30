@@ -10,6 +10,8 @@ namespace CatalogAPI.Repository
         public Task<ProductResult> GetProductById(long id);
         public Task<ProductResult> EditProductById(long id, ProductCommand productCommand);
         public Task DeleteProductById(long id);
+        public Task<ProductResult> IncreaseStockPerProduct(long productId, long quantity);
+        public Task<ProductResult> DecreaseStockPerProduct(long productId, long quantity);
 
     }
 }

@@ -1,12 +1,13 @@
-﻿
-namespace CartAPI.Events
+﻿namespace OrdersAPI.Events
 {
-    public class CartOrdered
+    public class OrderCreated
     {
         public long Id { get; set; }
-        public List<CartOrderedItem> Items { get; set; }
+        public string State { get; set; }
+        public List<OrderCreatedItem> Items { get; set; }
     }
-    public class CartOrderedItem
+
+    public class OrderCreatedItem
     {
         public long Id { get; set; }
         public string Title { get; set; }
