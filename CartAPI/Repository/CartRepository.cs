@@ -47,7 +47,8 @@ namespace CartAPI.Repository
                     Title = ci.Title,
                     Price = ci.Price,
                     Quantity = ci.Quantity,
-                    CartId = ci.CartId
+                    CartId = ci.CartId,
+                    ExternalId = ci.ExternalId
                 }).ToList()
             }).ToListAsync();
             return results;
@@ -70,7 +71,8 @@ namespace CartAPI.Repository
                     Title = ci.Title,
                     Price = ci.Price,
                     Quantity = ci.Quantity,
-                    CartId = ci.CartId
+                    CartId = ci.CartId,
+                    ExternalId = ci.ExternalId
                 }).ToList()
             };
             return cart;
@@ -87,12 +89,14 @@ namespace CartAPI.Repository
             {
                 throw new ArgumentException(nameof(cart), "No cart exists for this id!");
             }
+            //TO DO : verify if product exists for externalId
             var itemToBeAdded = new Item()
             {
                 Title = itemCommand.Title,
                 Price = itemCommand.Price,
                 Quantity = itemCommand.Quantity,
-                CartId = itemCommand.CartId
+                CartId = itemCommand.CartId,
+                ExternalId = itemCommand.ExternalId
             };
             _cartContext.Items.Add(itemToBeAdded);
             await _cartContext.SaveChangesAsync();
@@ -102,7 +106,8 @@ namespace CartAPI.Repository
                 Title=itemToBeAdded.Title,
                 Price=itemToBeAdded.Price,
                 Quantity=itemToBeAdded.Quantity,
-                CartId=itemToBeAdded.CartId
+                CartId=itemToBeAdded.CartId,
+                ExternalId=itemToBeAdded.ExternalId
             };
             return result;
         }
@@ -123,7 +128,8 @@ namespace CartAPI.Repository
                 Title = itemFromCart.Title,
                 Price = itemFromCart.Price,
                 Quantity = itemFromCart.Quantity,
-                CartId = itemFromCart.CartId
+                CartId = itemFromCart.CartId,
+                ExternalId = itemFromCart.ExternalId
             };
             _cartContext.Items.Remove(item);
             await _cartContext.SaveChangesAsync();
@@ -150,7 +156,8 @@ namespace CartAPI.Repository
                     Id = x.Id,
                     Price = x.Price,
                     Quantity=x.Quantity,
-                    Title=x.Title
+                    Title=x.Title,
+                    ExternalId=x.ExternalId
                 }).ToList()
             };
             _rabbitMQSender.Send(message);

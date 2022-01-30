@@ -4,4 +4,5 @@ CREATE TABLE OrderItems (
     Price FLOAT(26),
     Quantity BIGINT,
     OrderId BIGINT FOREIGN KEY REFERENCES [dbo].Orders(Id),
+    ExternalId BIGINT
 );
