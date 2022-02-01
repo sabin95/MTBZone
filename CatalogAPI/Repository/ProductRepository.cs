@@ -2,6 +2,7 @@
 using CatalogAPI.Data;
 using CatalogAPI.Results;
 using Microsoft.EntityFrameworkCore;
+using OrdersAPI.Events;
 
 namespace CatalogAPI.Repository
 {
@@ -19,7 +20,7 @@ namespace CatalogAPI.Repository
             {
                 throw new ArgumentNullException(nameof(productCommand), "Product should not be null!");
             }
-            var category = await _catalogContext.Categories.FirstOrDefaultAsync(x=>x.Id==productCommand.CategoryId);
+            var category = await _catalogContext.Categories.FirstOrDefaultAsync(x => x.Id == productCommand.CategoryId);
             if (category == null)
             {
                 throw new ArgumentNullException(nameof(category), "No category found for this id!");
@@ -37,7 +38,7 @@ namespace CatalogAPI.Repository
             var productResult = new ProductResult()
             {
                 Id = product.Id,
-                Title = product.Title,                
+                Title = product.Title,
                 Price = productCommand.Price,
                 Description = productCommand.Description,
                 CategoryId = productCommand.CategoryId,
@@ -117,7 +118,7 @@ namespace CatalogAPI.Repository
             {
                 return null;
             }
-            var product =  new ProductResult()
+            var product = new ProductResult()
             {
                 Id = result.Id,
                 CategoryId = result.CategoryId,
@@ -130,34 +131,6 @@ namespace CatalogAPI.Repository
         }
 
         public async Task<ProductResult> IncreaseStockPerProduct(long productId, long quantity)
-        {
-            if (productId<0)
-            {
-                throw new ArgumentException(nameof(productId), "ProductId cannot be lower than 0!");
-            }
-            if (quantity < 0)
-            {
-                throw new ArgumentException(nameof(quantity), "Quantity cannot be lower than 0!");
-            }
-            var product= await _catalogContext.Products.FirstOrDefaultAsync(x=>x.Id == productId);
-            if (product == null)
-            {
-                throw new ArgumentException(nameof(product), "No product found for this id!");
-            }
-            product.Stock = product.Stock + quantity;
-            await _catalogContext.SaveChangesAsync();
-            var productResult = new ProductResult()
-            {
-                Id = product.Id,
-                Stock = product.Stock,
-                CategoryId = product.CategoryId,
-                Description = product.Description,
-                Price = product.Price,
-                Title = product.Title
-            };
-            return productResult;
-        }
-        public async Task<ProductResult> DecreaseStockPerProduct(long productId, long quantity)
         {
             if (productId < 0)
             {
@@ -172,11 +145,7 @@ namespace CatalogAPI.Repository
             {
                 throw new ArgumentException(nameof(product), "No product found for this id!");
             }
-            if(product.Stock<quantity)
-            {
-                throw new ArgumentException(nameof(quantity), "Quantity cannot be greater than actual stock!");
-            }
-            product.Stock = product.Stock - quantity;
+            product.Stock += quantity;
             await _catalogContext.SaveChangesAsync();
             var productResult = new ProductResult()
             {
@@ -188,6 +157,21 @@ namespace CatalogAPI.Repository
                 Title = product.Title
             };
             return productResult;
+        }
+        public async Task DecreaseStockPerProduct(List<OrderCreatedItem> orderCreatedItems)
+        {
+            var itemsExternalIds = orderCreatedItems.Select(x => x.ExternalId).ToList();
+            var products = await _catalogContext.Products.Where(x => itemsExternalIds.Contains(x.Id)).ToListAsync();
+            var dictOrder = orderCreatedItems.ToDictionary(i => i.ExternalId, i => i.Quantity);
+            foreach (var product in products)
+            {
+                if (product.Stock < dictOrder[product.Id])
+                {
+                    throw new ArgumentException("Quantity cannot be greater than actual stock!");
+                }
+                product.Stock -= dictOrder[product.Id];
+            }
+            await _catalogContext.SaveChangesAsync();
         }
 
 

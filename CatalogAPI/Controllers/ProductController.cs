@@ -102,19 +102,5 @@ namespace CatalogAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        [HttpPut("DecreaseStockPerProduct")]
-        public async Task<IActionResult> DecreaseStockPerProduct(long productId, long quantity)
-        {
-            try
-            {
-                var result = await _productRepository.DecreaseStockPerProduct(productId, quantity);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
     }
 }

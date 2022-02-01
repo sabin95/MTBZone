@@ -1,5 +1,6 @@
 ﻿using CatalogAPI.Commands;
 using CatalogAPI.Results;
+using OrdersAPI.Events;
 
 namespace CatalogAPI.Repository
 {
@@ -11,7 +12,7 @@ namespace CatalogAPI.Repository
         public Task<ProductResult> EditProductById(long id, ProductCommand productCommand);
         public Task DeleteProductById(long id);
         public Task<ProductResult> IncreaseStockPerProduct(long productId, long quantity);
-        public Task<ProductResult> DecreaseStockPerProduct(long productId, long quantity);
+        public Task DecreaseStockPerProduct(List<OrderCreatedItem> orderCreatedItems);
 
     }
 }
