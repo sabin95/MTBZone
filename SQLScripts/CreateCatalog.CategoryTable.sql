@@ -1,4 +1,4 @@
-CREATE TABLE Categories (
+CREATE TABLE Catalog.Categories (
     Id BIGINT IDENTITY(1,1) PRIMARY KEY,
     Name VARCHAR(255)
 );

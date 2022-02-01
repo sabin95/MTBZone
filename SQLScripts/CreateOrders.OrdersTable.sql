@@ -1,4 +1,4 @@
-CREATE TABLE Orders (
+CREATE TABLE Orders.Orders (
     Id BIGINT IDENTITY(1,1) PRIMARY KEY,
     State VARCHAR(255)
 );

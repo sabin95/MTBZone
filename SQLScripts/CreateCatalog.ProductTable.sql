@@ -1,8 +1,8 @@
-CREATE TABLE Products (
+CREATE TABLE Catalog.Products (
     Id BIGINT IDENTITY(1,1) PRIMARY KEY,
     Title VARCHAR(255),
     Price FLOAT(26),
     Description VARCHAR(255),
     Stock BIGINT,
-    CategoryId BIGINT FOREIGN KEY REFERENCES [dbo].Categories(Id),
+    CategoryId BIGINT FOREIGN KEY REFERENCES [Catalog].Categories(Id),
 );
