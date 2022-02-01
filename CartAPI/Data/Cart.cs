@@ -1,7 +1,9 @@
-﻿using static CartAPI.Utils.Utils;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using static CartAPI.Utils.Utils;
 
 namespace CartAPI.Data
 {
+    [Table("Carts", Schema = "Cart")]
     public class Cart
     {
         public long Id { get; set; }

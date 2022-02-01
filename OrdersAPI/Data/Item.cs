@@ -1,5 +1,8 @@
-﻿namespace OrdersAPI.Data
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace OrdersAPI.Data
 {
+    [Table("Items", Schema = "Orders")]
     public class Item
     {
         public long Id { get; set; }

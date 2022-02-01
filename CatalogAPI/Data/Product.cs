@@ -1,5 +1,8 @@
-﻿namespace CatalogAPI.Data
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CatalogAPI.Data
 {
+    [Table("Products", Schema = "Catalog")]
     public class Product
     {
         public long Id { get; set; }

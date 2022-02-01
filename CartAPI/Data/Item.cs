@@ -1,5 +1,8 @@
-﻿namespace CartAPI.Data
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CartAPI.Data
 {
+    [Table("Items", Schema = "Cart")]
     public class Item
     {
         public long Id { get; set; } 
