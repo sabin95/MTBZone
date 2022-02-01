@@ -54,7 +54,7 @@ namespace CartAPI.Repository
             return results;
         }
 
-        public async Task<CartResult> GetCartById(long id)
+        public async Task<CartResult> GetCartById(Guid id)
         {
             var result = await _cartContext.Carts.Include(o=>o.Items).FirstOrDefaultAsync(c => c.Id == id);
             if (result == null)
@@ -111,12 +111,8 @@ namespace CartAPI.Repository
             };
             return result;
         }
-        public async Task RemoveItemFromCart(long itemId)
+        public async Task RemoveItemFromCart(Guid itemId)
         {
-            if (itemId<0)
-            {
-                throw new ArgumentException(nameof(itemId), "Cart id must be greater than 0!");
-            }
             var itemFromCart = await _cartContext.Items.AsNoTracking().FirstOrDefaultAsync(x => x.Id == itemId);
             if (itemFromCart is null)
             {
@@ -135,7 +131,7 @@ namespace CartAPI.Repository
             await _cartContext.SaveChangesAsync();
         }
 
-        public async Task<CartResult> OrderCart(long cartId)
+        public async Task<CartResult> OrderCart(Guid cartId)
         {
             var cart = await GetCartById(cartId);
             if (cart == null)

@@ -23,7 +23,7 @@ namespace CatalogAPI.Repository
             return results;
         }
 
-        public async Task<CategoryResult> GetCategoryById(long id)
+        public async Task<CategoryResult> GetCategoryById(Guid id)
         {
             var result = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if (result == null)
@@ -59,12 +59,8 @@ namespace CatalogAPI.Repository
             return categoryResult;
         }
 
-        public async Task<CategoryResult> EditCategoryById(long id, CategoryCommand categoryCommand)
+        public async Task<CategoryResult> EditCategoryById(Guid id, CategoryCommand categoryCommand)
         {
-            if(id<0)
-            {
-                throw new ArgumentNullException(nameof(id), "Id should be grater than 0!");
-            }
             if(categoryCommand is null)
             {
                 throw new ArgumentNullException(nameof(categoryCommand), "Category should not be null!");
@@ -83,12 +79,8 @@ namespace CatalogAPI.Repository
             };
             return categoryResult;
         }
-        public async Task DeleteCategoryById(long id)
+        public async Task DeleteCategoryById(Guid id)
         {
-            if(id<0)
-            {
-                throw new ArgumentNullException(nameof(id), "Id should be greater than 0!");
-            }
             var categoryToBeDeleted = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if(categoryToBeDeleted is null)
             {

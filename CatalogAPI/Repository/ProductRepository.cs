@@ -46,12 +46,8 @@ namespace CatalogAPI.Repository
             return productResult;
         }
 
-        public async Task DeleteProductById(long id)
+        public async Task DeleteProductById(Guid id)
         {
-            if (id < 0)
-            {
-                throw new ArgumentNullException(nameof(id), "Id cannot be lower than 0!");
-            }
             var result = await _catalogContext.Products.FirstOrDefaultAsync(x => x.Id == id);
             if (result == null)
             {
@@ -61,12 +57,8 @@ namespace CatalogAPI.Repository
             await _catalogContext.SaveChangesAsync();
         }
 
-        public async Task<ProductResult> EditProductById(long id, ProductCommand productCommand)
+        public async Task<ProductResult> EditProductById(Guid id, ProductCommand productCommand)
         {
-            if (id < 0)
-            {
-                throw new ArgumentNullException(nameof(id), "Id cannot be lower than 0!");
-            }
             if (productCommand == null)
             {
                 throw new ArgumentNullException(nameof(productCommand), "Product cannot be null!");
@@ -111,7 +103,7 @@ namespace CatalogAPI.Repository
             return results;
         }
 
-        public async Task<ProductResult> GetProductById(long id)
+        public async Task<ProductResult> GetProductById(Guid id)
         {
             var result = await _catalogContext.Products.FirstOrDefaultAsync(x => x.Id == id);
             if (result == null)
@@ -130,12 +122,8 @@ namespace CatalogAPI.Repository
             return product;
         }
 
-        public async Task<ProductResult> IncreaseStockPerProduct(long productId, long quantity)
+        public async Task<ProductResult> IncreaseStockPerProduct(Guid productId, long quantity)
         {
-            if (productId < 0)
-            {
-                throw new ArgumentException(nameof(productId), "ProductId cannot be lower than 0!");
-            }
             if (quantity < 0)
             {
                 throw new ArgumentException(nameof(quantity), "Quantity cannot be lower than 0!");

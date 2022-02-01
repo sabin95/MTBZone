@@ -30,7 +30,7 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategoryById([FromRoute]long id)
+        public async Task<IActionResult> GetCategoryById([FromRoute] Guid id)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditCategoryById([FromRoute] long id,[FromBody] CategoryCommand categoryCommand)
+        public async Task<IActionResult> EditCategoryById([FromRoute] Guid id,[FromBody] CategoryCommand categoryCommand)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategoryById ([FromRoute] long id)
+        public async Task<IActionResult> DeleteCategoryById ([FromRoute] Guid id)
         {
             try
             {

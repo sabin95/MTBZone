@@ -5,11 +5,11 @@ namespace OrdersAPI.Data
     [Table("Items", Schema = "Orders")]
     public class Item
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
         public string Title { get; set; }
         public double Price { get; set; }
         public long Quantity { get; set; }
-        public long OrderId { get; set; }
-        public long ExternalId { get; set; }
+        public Guid OrderId { get; set; }
+        public Guid ExternalId { get; set; }
     }
 }

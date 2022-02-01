@@ -7,9 +7,9 @@ namespace CartAPI.Repository
     {
         public Task<CartResult> CreateCart();
         public Task<List<CartResult>> GetAllCartsAsync();
-        public Task<CartResult> GetCartById(long id);
+        public Task<CartResult> GetCartById(Guid id);
         public Task<ItemResult> AddItemToCart(AddItemToCartCommand itemCommand);
-        public Task RemoveItemFromCart(long itemId);
-        public Task<CartResult> OrderCart(long cartId);
+        public Task RemoveItemFromCart(Guid itemId);
+        public Task<CartResult> OrderCart(Guid cartId);
     }
 }
