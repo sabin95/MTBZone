@@ -36,17 +36,20 @@ namespace CartAPI.Repository
 
         public async Task<List<CartResult>> GetAllCartsAsync()
         {
-            var results = _mapper.Map<List<CartResult>>(await _cartContext.Carts.Include(o => o.Items).ToListAsync());
+            var carts = await _cartContext.Carts.Include(o => o.Items).ToListAsync();
+            var results = _mapper.Map<List<CartResult>>(carts);
             return results;
         }
 
         public async Task<CartResult> GetCartById(Guid id)
         {
-            var result = _mapper.Map<CartResult>(await _cartContext.Carts.Include(o => o.Items).FirstOrDefaultAsync(c => c.Id == id));
-            if (result == null)
+            var cart = await _cartContext.Carts.Include(o => o.Items).FirstOrDefaultAsync(c => c.Id == id);
+            if (cart == null)
             {
                 return null;
             }
+            var result = _mapper.Map<CartResult>(cart);
+
             return result;
         }
 
