@@ -44,7 +44,7 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProductById(long id)
+        public async Task<IActionResult> GetProductById(Guid id)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProductById(long id, ProductCommand productCommand)
+        public async Task<IActionResult> UpdateProductById(Guid id, ProductCommand productCommand)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteById(long id)
+        public async Task<IActionResult> DeleteById(Guid id)
         {
             try
             {
@@ -90,7 +90,7 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpPut("IncreaseStockPerProduct")]
-        public async Task<IActionResult> IncreaseStockPerProduct(long productId, long quantity)
+        public async Task<IActionResult> IncreaseStockPerProduct(Guid productId, long quantity)
         {
             try
             {
@@ -98,20 +98,6 @@ namespace CatalogAPI.Controllers
                 return Ok(result);
             }
             catch(Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPut("DecreaseStockPerProduct")]
-        public async Task<IActionResult> DecreaseStockPerProduct(long productId, long quantity)
-        {
-            try
-            {
-                var result = await _productRepository.DecreaseStockPerProduct(productId, quantity);
-                return Ok(result);
-            }
-            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }

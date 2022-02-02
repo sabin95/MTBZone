@@ -43,7 +43,7 @@ namespace CartAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCartById(long id)
+        public async Task<IActionResult> GetCartById(Guid id)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace CartAPI.Controllers
         }
 
         [HttpPut("OrderCart/{itemId}")]
-        public async Task<ActionResult> OrderCart([FromRoute] long itemId)
+        public async Task<ActionResult> OrderCart([FromRoute] Guid itemId)
         {
             try
             {
@@ -93,7 +93,7 @@ namespace CartAPI.Controllers
         }
 
         [HttpPut("RemoveItemToCart/{itemId}")]
-        public async Task<IActionResult> RemoveItemFromCart([FromRoute] long itemId)
+        public async Task<IActionResult> RemoveItemFromCart([FromRoute] Guid itemId)
         {
             try
             {

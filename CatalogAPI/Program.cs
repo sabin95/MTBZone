@@ -22,6 +22,7 @@ builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddSingleton<IRabbitMQReceiver, RabbitMQReceiver>();
 builder.Services.AddSingleton<IHandler<OrderCreated>, OrderCreatedHandler>();
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 var orderCreatedHandler = app.Services.GetService<IHandler<OrderCreated>>();

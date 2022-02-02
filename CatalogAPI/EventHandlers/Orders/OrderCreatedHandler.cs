@@ -14,10 +14,7 @@ namespace CatalogAPI.EventHandlers.Orders
         }
         public async Task Handle(OrderCreated message)
         {
-            foreach(var item in message.Items)
-            {
-                await _productRepository.DecreaseStockPerProduct(item.ExternalId, item.Quantity);
-            }
+            await _productRepository.DecreaseStockPerProduct(message.Items);
         }
     }
 }

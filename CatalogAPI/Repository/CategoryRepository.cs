@@ -1,4 +1,5 @@
-﻿using CatalogAPI.Commands;
+﻿using AutoMapper;
+using CatalogAPI.Commands;
 using CatalogAPI.Data;
 using CatalogAPI.Results;
 using Microsoft.EntityFrameworkCore;
@@ -8,33 +9,28 @@ namespace CatalogAPI.Repository
     public class CategoryRepository : ICategoryRepository
     {
         private readonly CatalogContext _context;
+        private readonly IMapper _mapper;
 
-        public CategoryRepository(CatalogContext context)
+        public CategoryRepository(CatalogContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
         public async Task<List<CategoryResult>> GetAllCategoriesAsync()
         {
-            var results = await _context.Categories.Select(x=> new CategoryResult
-            {
-                Id = x.Id,
-                Name = x.Name                    
-            }).ToListAsync();
+            var categories = await _context.Categories.ToListAsync();
+            var results = _mapper.Map<List<CategoryResult>>(categories);
             return results;
         }
 
-        public async Task<CategoryResult> GetCategoryById(long id)
+        public async Task<CategoryResult> GetCategoryById(Guid id)
         {
             var result = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if (result == null)
             {
                 return null;
             }
-            var category = new CategoryResult()
-            {
-                Id = result.Id,
-                Name = result.Name
-            };
+            var category = _mapper.Map<CategoryResult>(result);
             return category;
         }
 
@@ -59,12 +55,8 @@ namespace CatalogAPI.Repository
             return categoryResult;
         }
 
-        public async Task<CategoryResult> EditCategoryById(long id, CategoryCommand categoryCommand)
+        public async Task<CategoryResult> EditCategoryById(Guid id, CategoryCommand categoryCommand)
         {
-            if(id<0)
-            {
-                throw new ArgumentNullException(nameof(id), "Id should be grater than 0!");
-            }
             if(categoryCommand is null)
             {
                 throw new ArgumentNullException(nameof(categoryCommand), "Category should not be null!");
@@ -83,12 +75,8 @@ namespace CatalogAPI.Repository
             };
             return categoryResult;
         }
-        public async Task DeleteCategoryById(long id)
+        public async Task DeleteCategoryById(Guid id)
         {
-            if(id<0)
-            {
-                throw new ArgumentNullException(nameof(id), "Id should be greater than 0!");
-            }
             var categoryToBeDeleted = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if(categoryToBeDeleted is null)
             {

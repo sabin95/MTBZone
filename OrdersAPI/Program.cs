@@ -23,6 +23,7 @@ builder.Services.AddTransient<IOrderRepository, OrderRepository>();
 builder.Services.AddSingleton<IRabbitMQReceiver, RabbitMQReceiver>();
 builder.Services.AddSingleton<IHandler<CartOrdered>, CartOrderedHandler>();
 builder.Services.AddSingleton<IRabbitMQSender, RabbitMQSender>();
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 var cartOrderedHandler = app.Services.GetService<IHandler<CartOrdered>>();

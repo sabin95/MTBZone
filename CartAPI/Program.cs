@@ -16,6 +16,7 @@ builder.Services.AddDbContext<CartContext>(options =>
     options.UseSqlServer(ConnectionString));
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddSingleton<IRabbitMQSender, RabbitMQSender>();
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 var rabbitMQ = app.Services.GetService<IRabbitMQSender>();

@@ -1,0 +1,5 @@
+CREATE TABLE Catalog.Categories (
+    Id UNIQUEIDENTIFIER DEFAULT NEWID() PRIMARY KEY,
+    Name VARCHAR(255)
+);
+

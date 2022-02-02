@@ -1,4 +1,5 @@
-﻿using CartAPI.Events;
+﻿using AutoMapper;
+using CartAPI.Events;
 using Microsoft.EntityFrameworkCore;
 using MTBZone.RabbitMQ.Sender;
 using OrdersAPI.Data;
@@ -11,29 +12,19 @@ namespace OrdersAPI.Repository
     {
         private readonly OrderContext _orderContext;
         private readonly IRabbitMQSender _rabbitMQSender;
+        private readonly IMapper _mapper;
 
-        public OrderRepository(OrderContext orderContext, IRabbitMQSender rabbitMQSender)
+        public OrderRepository(OrderContext orderContext, IRabbitMQSender rabbitMQSender, IMapper mapper)
         {
             _orderContext = orderContext;
             _rabbitMQSender = rabbitMQSender;
+            _mapper = mapper;
         }
 
         public async Task<List<OrderResult>> GetAllOrders()
         {
-            var results = await _orderContext.Orders.Include(y => y.Items).Select(x => new OrderResult()
-            {
-                Id = x.Id,
-                State = x.State,
-                Items = x.Items.Select(xi => new ItemResult()
-                {
-                    Id = xi.Id,
-                    Title = xi.Title,
-                    Price = xi.Price,
-                    Quantity = xi.Quantity,
-                    OrderId = xi.OrderId,
-                    ExternalId = xi.ExternalId
-                }).ToList()
-            }).ToListAsync();
+            var orders = await _orderContext.Orders.Include(y => y.Items).ToListAsync();
+            var results = _mapper.Map<List<OrderResult>>(orders);
             return results;
         }
 
