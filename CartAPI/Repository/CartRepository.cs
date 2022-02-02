@@ -1,4 +1,5 @@
-﻿using CartAPI.Commands;
+﻿using AutoMapper;
+using CartAPI.Commands;
 using CartAPI.Data;
 using CartAPI.Events;
 using CartAPI.Results;
@@ -11,11 +12,13 @@ namespace CartAPI.Repository
     {
         private readonly CartContext _cartContext;
         private readonly IRabbitMQSender _rabbitMQSender;
+        private readonly IMapper _mapper;
 
-        public CartRepository(CartContext cartContext,IRabbitMQSender rabbitMQSender)
+        public CartRepository(CartContext cartContext,IRabbitMQSender rabbitMQSender, IMapper mapper)
         {
             _cartContext = cartContext;
             _rabbitMQSender = rabbitMQSender;
+            _mapper = mapper;
         }       
 
         public async Task<CartResult> CreateCart()
@@ -27,55 +30,24 @@ namespace CartAPI.Repository
             _cartContext.Carts.Add(cart);
             await _cartContext.SaveChangesAsync();
 
-            var cartResult = new CartResult()
-            {
-                Id = cart.Id,
-                State= cart.State.ToString()
-            };
+            var cartResult = _mapper.Map<CartResult>(cart);
             return cartResult;
         }
 
         public async Task<List<CartResult>> GetAllCartsAsync()
         {
-            var results = await _cartContext.Carts.Include(o=>o.Items).Select(c => new CartResult()
-            {
-                Id = c.Id,
-                State = c.State.ToString(),
-                Items = c.Items.Select(ci=>new ItemResult()
-                {
-                    Id = ci.Id,
-                    Title = ci.Title,
-                    Price = ci.Price,
-                    Quantity = ci.Quantity,
-                    CartId = ci.CartId,
-                    ExternalId = ci.ExternalId
-                }).ToList()
-            }).ToListAsync();
+            var results = _mapper.Map<List<CartResult>>(await _cartContext.Carts.Include(o => o.Items).ToListAsync());
             return results;
         }
 
         public async Task<CartResult> GetCartById(Guid id)
         {
-            var result = await _cartContext.Carts.Include(o=>o.Items).FirstOrDefaultAsync(c => c.Id == id);
+            var result = _mapper.Map<CartResult>(await _cartContext.Carts.Include(o => o.Items).FirstOrDefaultAsync(c => c.Id == id));
             if (result == null)
             {
                 return null;
             }
-            var cart = new CartResult()
-            {
-                Id = result.Id,
-                State = result.State.ToString(),
-                Items = result.Items.Select(ci => new ItemResult()
-                {
-                    Id = ci.Id,
-                    Title = ci.Title,
-                    Price = ci.Price,
-                    Quantity = ci.Quantity,
-                    CartId = ci.CartId,
-                    ExternalId = ci.ExternalId
-                }).ToList()
-            };
-            return cart;
+            return result;
         }
 
         public async Task<ItemResult> AddItemToCart(AddItemToCartCommand itemCommand)
@@ -100,15 +72,7 @@ namespace CartAPI.Repository
             };
             _cartContext.Items.Add(itemToBeAdded);
             await _cartContext.SaveChangesAsync();
-            var result = new ItemResult()
-            {
-                Id=itemToBeAdded.Id,
-                Title=itemToBeAdded.Title,
-                Price=itemToBeAdded.Price,
-                Quantity=itemToBeAdded.Quantity,
-                CartId=itemToBeAdded.CartId,
-                ExternalId=itemToBeAdded.ExternalId
-            };
+            var result = _mapper.Map<ItemResult>(itemToBeAdded);
             return result;
         }
         public async Task RemoveItemFromCart(Guid itemId)
@@ -118,15 +82,7 @@ namespace CartAPI.Repository
             {
                 throw new ArgumentException(nameof(itemFromCart), "No item found for this id!");
             }
-            var item = new Item()
-            {
-                Id = itemFromCart.Id,
-                Title = itemFromCart.Title,
-                Price = itemFromCart.Price,
-                Quantity = itemFromCart.Quantity,
-                CartId = itemFromCart.CartId,
-                ExternalId = itemFromCart.ExternalId
-            };
+            var item = _mapper.Map<Item>(itemFromCart);
             _cartContext.Items.Remove(item);
             await _cartContext.SaveChangesAsync();
         }
@@ -157,12 +113,7 @@ namespace CartAPI.Repository
                 }).ToList()
             };
             _rabbitMQSender.Send(message);
-            var cartResult = new CartResult()
-            {
-                Id = cart.Id,
-                State = cart.State,
-                Items = cart.Items.ToList()
-            };
+            var cartResult = _mapper.Map<CartResult>(cart);
             return cartResult;
         }
     }

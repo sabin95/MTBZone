@@ -1,4 +1,5 @@
-﻿using CatalogAPI.Commands;
+﻿using AutoMapper;
+using CatalogAPI.Commands;
 using CatalogAPI.Data;
 using CatalogAPI.Results;
 using Microsoft.EntityFrameworkCore;
@@ -8,18 +9,16 @@ namespace CatalogAPI.Repository
     public class CategoryRepository : ICategoryRepository
     {
         private readonly CatalogContext _context;
+        private readonly IMapper _mapper;
 
-        public CategoryRepository(CatalogContext context)
+        public CategoryRepository(CatalogContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
         public async Task<List<CategoryResult>> GetAllCategoriesAsync()
         {
-            var results = await _context.Categories.Select(x=> new CategoryResult
-            {
-                Id = x.Id,
-                Name = x.Name                    
-            }).ToListAsync();
+            var results = _mapper.Map<List<CategoryResult>>(await _context.Categories.ToListAsync());
             return results;
         }
 
@@ -30,11 +29,7 @@ namespace CatalogAPI.Repository
             {
                 return null;
             }
-            var category = new CategoryResult()
-            {
-                Id = result.Id,
-                Name = result.Name
-            };
+            var category = _mapper.Map<CategoryResult>(result);
             return category;
         }
 

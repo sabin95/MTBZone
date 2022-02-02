@@ -1,4 +1,5 @@
-﻿using CatalogAPI.Commands;
+﻿using AutoMapper;
+using CatalogAPI.Commands;
 using CatalogAPI.Data;
 using CatalogAPI.Results;
 using Microsoft.EntityFrameworkCore;
@@ -9,10 +10,12 @@ namespace CatalogAPI.Repository
     public class ProductRepository : IProductRepository
     {
         private readonly CatalogContext _catalogContext;
+        private readonly IMapper _mapper;
 
-        public ProductRepository(CatalogContext catalogContext)
+        public ProductRepository(CatalogContext catalogContext, IMapper mapper)
         {
             _catalogContext = catalogContext;
+            _mapper = mapper;
         }
         public async Task<ProductResult> AddProduct(ProductCommand productCommand)
         {
@@ -78,28 +81,13 @@ namespace CatalogAPI.Repository
             productToBeUpdated.Description = productCommand.Description;
             productToBeUpdated.CategoryId = productCommand.CategoryId;
             await _catalogContext.SaveChangesAsync();
-            var productResult = new ProductResult()
-            {
-                Id = productToBeUpdated.Id,
-                Title = productToBeUpdated.Title,
-                Price = productToBeUpdated.Price,
-                Description = productToBeUpdated.Description,
-                CategoryId = productToBeUpdated.CategoryId
-            };
+            var productResult = _mapper.Map<ProductResult>(productToBeUpdated);
             return productResult;
         }
 
         public async Task<List<ProductResult>> GetAllProducts()
         {
-            var results = await _catalogContext.Products.Select(x => new ProductResult
-            {
-                Id = x.Id,
-                CategoryId = x.CategoryId,
-                Description = x.Description,
-                Price = x.Price,
-                Title = x.Title,
-                Stock = x.Stock
-            }).ToListAsync();
+            var results = _mapper.Map<List<ProductResult>>(await _catalogContext.Products.ToListAsync());
             return results;
         }
 
@@ -110,15 +98,7 @@ namespace CatalogAPI.Repository
             {
                 return null;
             }
-            var product = new ProductResult()
-            {
-                Id = result.Id,
-                CategoryId = result.CategoryId,
-                Description = result.Description,
-                Price = result.Price,
-                Title = result.Title,
-                Stock = result.Stock
-            };
+            var product = _mapper.Map<ProductResult>(result);
             return product;
         }
 
