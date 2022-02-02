@@ -87,7 +87,8 @@ namespace CatalogAPI.Repository
 
         public async Task<List<ProductResult>> GetAllProducts()
         {
-            var results = _mapper.Map<List<ProductResult>>(await _catalogContext.Products.ToListAsync());
+            var products = await _catalogContext.Products.ToListAsync();
+            var results = _mapper.Map<List<ProductResult>>(products);
             return results;
         }
 

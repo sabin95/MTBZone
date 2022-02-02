@@ -18,7 +18,8 @@ namespace CatalogAPI.Repository
         }
         public async Task<List<CategoryResult>> GetAllCategoriesAsync()
         {
-            var results = _mapper.Map<List<CategoryResult>>(await _context.Categories.ToListAsync());
+            var categories = await _context.Categories.ToListAsync();
+            var results = _mapper.Map<List<CategoryResult>>(categories);
             return results;
         }
 

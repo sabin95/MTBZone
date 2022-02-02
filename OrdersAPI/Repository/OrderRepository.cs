@@ -23,7 +23,8 @@ namespace OrdersAPI.Repository
 
         public async Task<List<OrderResult>> GetAllOrders()
         {
-            var results = _mapper.Map<List<OrderResult>>(await _orderContext.Orders.Include(y => y.Items).ToListAsync());
+            var orders = await _orderContext.Orders.Include(y => y.Items).ToListAsync();
+            var results = _mapper.Map<List<OrderResult>>(orders);
             return results;
         }
 
