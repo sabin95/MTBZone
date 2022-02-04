@@ -1,3 +1,0 @@
-CREATE TABLE Carts (
-    Id BIGINT IDENTITY(1,1) PRIMARY KEY    
-);

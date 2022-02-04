@@ -1,6 +1,10 @@
 using CatalogAPI.Data;
+using CatalogAPI.EventHandlers.Orders;
 using CatalogAPI.Repository;
 using Microsoft.EntityFrameworkCore;
+using MTBZone.RabbitMQ.Receiver;
+using OrdersAPI.Events;
+using RabbitMQ.Receiver;
 
 var builder = WebApplication.CreateBuilder(args);
 var ConnectionString = builder.Configuration["CatalogAPI:ConnectionString"];
@@ -12,11 +16,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CatalogContext>(options => 
-    options.UseSqlServer(ConnectionString));
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
+    options.UseSqlServer(ConnectionString),
+    ServiceLifetime.Singleton);
+builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+builder.Services.AddTransient<IProductRepository, ProductRepository>();
+builder.Services.AddSingleton<IRabbitMQReceiver, RabbitMQReceiver>();
+builder.Services.AddSingleton<IHandler<OrderCreated>, OrderCreatedHandler>();
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
+var orderCreatedHandler = app.Services.GetService<IHandler<OrderCreated>>();
+var rabbitMQReceiver = app.Services.GetService<IRabbitMQReceiver>();
+rabbitMQReceiver.Receive<OrderCreated, IHandler<OrderCreated>>(orderCreatedHandler, "Order-To-Products", "Orders");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

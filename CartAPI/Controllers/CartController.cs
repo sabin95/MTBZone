@@ -43,11 +43,29 @@ namespace CartAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCartById(long id)
+        public async Task<IActionResult> GetCartById(Guid id)
         {
             try
             {
                 var result = await _cartRepository.GetCartById(id);
+                if (result is null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("OrderCart/{itemId}")]
+        public async Task<ActionResult> OrderCart([FromRoute] Guid itemId)
+        {
+            try
+            {
+                var result = await _cartRepository.OrderCart(itemId);
                 if (result is null)
                 {
                     return NotFound();
@@ -75,7 +93,7 @@ namespace CartAPI.Controllers
         }
 
         [HttpPut("RemoveItemToCart/{itemId}")]
-        public async Task<IActionResult> RemoveItemFromCart([FromRoute] long itemId)
+        public async Task<IActionResult> RemoveItemFromCart([FromRoute] Guid itemId)
         {
             try
             {
