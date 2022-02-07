@@ -23,6 +23,8 @@ builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddSingleton<IRabbitMQReceiver, RabbitMQReceiver>();
 builder.Services.AddSingleton<IHandler<OrderCreated>, OrderCreatedHandler>();
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services
+  .AddAWSLambdaHosting(LambdaEventSource.RestApi);
 
 var app = builder.Build();
 var orderCreatedHandler = app.Services.GetService<IHandler<OrderCreated>>();

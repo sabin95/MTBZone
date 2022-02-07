@@ -7,6 +7,10 @@ terraform {
   }
 }
 
+locals{
+  CatalogAPI_zipName = "CatalogAPI.zip"
+}
+
 provider "aws" {
   region = "eu-central-1"
 }
@@ -113,6 +117,31 @@ resource "aws_iam_role" "CatalogAPILambdaRole" {
 EOF
 }
 
+resource "aws_iam_policy" "CatalogAPILambdaPolicy" {
+  name        = "CatalogAPILambdaPolicy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ec2:CreateNetworkInterface",
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DeleteNetworkInterface"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_policy_attachment" "CatalogAPILambdaPolicyAttachment" {
+  name       = "CatalogAPILambdaPolicyAttachment"
+  roles      = [aws_iam_role.CatalogAPILambdaRole.name]
+  policy_arn = aws_iam_policy.CatalogAPILambdaPolicy.arn
+}
+
 resource "aws_db_instance" "MTBZoneDB" {
   allocated_storage    = 20
   engine               = "sqlserver-ex"
@@ -128,18 +157,16 @@ resource "aws_db_instance" "MTBZoneDB" {
   vpc_security_group_ids = [aws_security_group.MTBZoneDBSecurityGroup.id]
 }
 
-# resource "aws_lambda_function" "CatalogAPILambda" {
-#   filename      = "lambda_function_payload.zip"
-#   function_name = "CatalogAPILambda"
-#   role          = aws_iam_role.CatalogAPILambdaRole.arn
-#   handler       = "index.test"
+resource "aws_lambda_function" "CatalogAPILambda" {
+  filename      = local.CatalogAPI_zipName
+  function_name = "CatalogAPILambda"
+  role          = aws_iam_role.CatalogAPILambdaRole.arn
+  handler       = "bootstrap"
+  runtime = "provided.al2"
 
-#   # The filebase64sha256() function is available in Terraform 0.11.12 and later
-#   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
-#   # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
-#   source_code_hash = filebase64sha256("lambda_function_payload.zip")
-#   vpc_config {
-#     subnet_ids = [aws_subnet.MTBZoneLambdaSubnet.id]
-#     security_group_ids = [aws_security_group.MTBZoneLambdaSecurityGroup.id]
-#   }
-# }
+  source_code_hash = filebase64sha256(local.CatalogAPI_zipName)
+  vpc_config {
+    subnet_ids = [aws_subnet.MTBZoneLambdaSubnet.id]
+    security_group_ids = [aws_security_group.MTBZoneLambdaSecurityGroup.id]
+  }
+}
