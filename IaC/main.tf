@@ -8,7 +8,7 @@ terraform {
 }
 
 locals{
-  CatalogAPI_zipName = "CatalogAPI.zip"
+  CatalogAPI_zipName = "../CatalogAPI/bin/Release/net6.0/CatalogAPI.zip"
 }
 
 provider "aws" {
@@ -36,11 +36,24 @@ resource "aws_vpc" "MTBZoneVPC" {
   enable_dns_support = true
 }
 
-resource "aws_internet_gateway" "MTBZoneiGW" {
+resource "aws_egress_only_internet_gateway" "MTBZoneiGW" {
   vpc_id = aws_vpc.MTBZoneVPC.id
 
   tags = {
     Name = "MTBZoneiGW"
+  }
+}
+
+resource "aws_route_table" "MTBZoneRouteTable" {
+  vpc_id = aws_vpc.MTBZoneVPC.id  
+
+  route {
+    ipv6_cidr_block        = "::/0"
+    egress_only_gateway_id = aws_egress_only_internet_gateway.MTBZoneiGW.id
+  }
+
+  tags = {
+    Name = "MTBZoneRouteTable"
   }
 }
 
@@ -142,6 +155,8 @@ resource "aws_iam_policy_attachment" "CatalogAPILambdaPolicyAttachment" {
   policy_arn = aws_iam_policy.CatalogAPILambdaPolicy.arn
 }
 
+
+
 resource "aws_db_instance" "MTBZoneDB" {
   allocated_storage    = 20
   engine               = "sqlserver-ex"
@@ -151,7 +166,7 @@ resource "aws_db_instance" "MTBZoneDB" {
   password             = var.db_password
   skip_final_snapshot  = true
   license_model = "license-included"
-  publicly_accessible = true
+  # publicly_accessible = true
   identifier = "mtbzone-db"
   db_subnet_group_name   = aws_db_subnet_group.MTBZoneDBSubnetGroup.name
   vpc_security_group_ids = [aws_security_group.MTBZoneDBSecurityGroup.id]
@@ -163,10 +178,76 @@ resource "aws_lambda_function" "CatalogAPILambda" {
   role          = aws_iam_role.CatalogAPILambdaRole.arn
   handler       = "bootstrap"
   runtime = "provided.al2"
+  timeout = 60
 
   source_code_hash = filebase64sha256(local.CatalogAPI_zipName)
   vpc_config {
     subnet_ids = [aws_subnet.MTBZoneLambdaSubnet.id]
     security_group_ids = [aws_security_group.MTBZoneLambdaSecurityGroup.id]
   }
+  environment {
+    variables = {
+      ConnectionString = "Server=${aws_db_instance.MTBZoneDB.address};Database=MTBZone; user id=${var.db_username};password=${var.db_password};"
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "CatalogAPILambdaLogGroup" {
+  name = "/aws/lambda/${aws_lambda_function.CatalogAPILambda.function_name}"
+
+  retention_in_days = 7
+}
+
+
+resource "aws_apigatewayv2_api" "CatalogAPIGW" {
+  name          = "CatalogAPIGW"
+  protocol_type = "HTTP"
+}
+
+resource "aws_apigatewayv2_stage" "CatalogAPIGWStage" {
+  api_id = aws_apigatewayv2_api.CatalogAPIGW.id
+
+  name        = "dev"
+  auto_deploy = true
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.CatalogAPIGWLogGroup.arn
+
+    format = jsonencode({
+      requestId               = "$context.requestId"
+      sourceIp                = "$context.identity.sourceIp"
+      requestTime             = "$context.requestTime"
+      protocol                = "$context.protocol"
+      httpMethod              = "$context.httpMethod"
+      resourcePath            = "$context.resourcePath"
+      routeKey                = "$context.routeKey"
+      status                  = "$context.status"
+      responseLength          = "$context.responseLength"
+      integrationErrorMessage = "$context.integrationErrorMessage"
+      }
+    )
+  }
+}
+
+resource "aws_cloudwatch_log_group" "CatalogAPIGWLogGroup" {
+  name = "/aws/api_gw/${aws_apigatewayv2_api.CatalogAPIGW.name}"
+
+  retention_in_days = 7
+}
+
+resource "aws_apigatewayv2_integration" "CatalogAPIGWIntegration" {
+  api_id           = aws_apigatewayv2_api.CatalogAPIGW.id
+  integration_type = "AWS_PROXY"  
+
+  integration_method        = "POST"
+  integration_uri           = aws_lambda_function.CatalogAPILambda.invoke_arn
+}
+
+resource "aws_lambda_permission" "CatalogAPIGWPermission" {
+  statement_id  = "CatalogAPIGWPermission"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.CatalogAPILambda.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  source_arn = "${aws_apigatewayv2_api.CatalogAPIGW.execution_arn}/*/*"
 }
