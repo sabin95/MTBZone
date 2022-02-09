@@ -4,6 +4,10 @@ terraform {
       source = "hashicorp/aws"
       version = "3.74.0"
     }
+    http = {
+      source = "hashicorp/http"
+      version = "2.1.0"
+    }
   }
 }
 
@@ -11,8 +15,12 @@ locals{
   CatalogAPI_zipName = "../CatalogAPI/bin/Release/net6.0/CatalogAPI.zip"
 }
 
+provider "http" {
+}
+
 provider "aws" {
   region = "eu-central-1"
+  profile = "sabin-trial"
 }
 
 variable "db_username" {
@@ -21,6 +29,10 @@ variable "db_username" {
 
 variable "db_password" {
   
+}
+
+data "http" "myip" {
+  url = "http://ipv4.icanhazip.com"
 }
 
 data "aws_availability_zones" "available" {
@@ -36,7 +48,7 @@ resource "aws_vpc" "MTBZoneVPC" {
   enable_dns_support = true
 }
 
-resource "aws_egress_only_internet_gateway" "MTBZoneiGW" {
+resource "aws_internet_gateway" "MTBZoneiGW" {
   vpc_id = aws_vpc.MTBZoneVPC.id
 
   tags = {
@@ -47,14 +59,15 @@ resource "aws_egress_only_internet_gateway" "MTBZoneiGW" {
 resource "aws_route_table" "MTBZoneRouteTable" {
   vpc_id = aws_vpc.MTBZoneVPC.id  
 
-  route {
-    ipv6_cidr_block        = "::/0"
-    egress_only_gateway_id = aws_egress_only_internet_gateway.MTBZoneiGW.id
-  }
-
   tags = {
     Name = "MTBZoneRouteTable"
   }
+}
+
+resource "aws_route" "MTBZoneRouteTableIGWRoute" {
+  route_table_id          = aws_route_table.MTBZoneRouteTable.id
+  destination_cidr_block  = "0.0.0.0/0"
+  gateway_id              = aws_internet_gateway.MTBZoneiGW.id
 }
 
 resource "aws_subnet" "MTBZoneDBSubnet" {
@@ -65,6 +78,12 @@ resource "aws_subnet" "MTBZoneDBSubnet" {
   tags = {
     Name = "MTBZoneDBSubnet"
   }
+}
+
+resource "aws_route_table_association" "MTBZoneRouteTableToDBSubnet" {
+  count = length(aws_subnet.MTBZoneDBSubnet)
+  route_table_id = aws_route_table.MTBZoneRouteTable.id
+  subnet_id      = aws_subnet.MTBZoneDBSubnet[count.index].id
 }
 
 resource "aws_subnet" "MTBZoneLambdaSubnet" {
@@ -80,13 +99,6 @@ resource "aws_security_group" "MTBZoneDBSecurityGroup" {
   name        = "MTBZoneDBSecurityGroup"
   vpc_id      = aws_vpc.MTBZoneVPC.id
 
-  ingress {
-    from_port        = 1433
-    to_port          = 1433
-    protocol         = "tcp"
-    cidr_blocks      = [aws_subnet.MTBZoneLambdaSubnet.cidr_block]
-  }
-
   tags = {
     Name = "MTBZoneDBSecurityGroup"
   }
@@ -99,6 +111,42 @@ resource "aws_security_group" "MTBZoneLambdaSecurityGroup" {
   tags = {
     Name = "MTBZoneLambdaSecurityGroup"
   }
+}
+
+resource "aws_security_group_rule" "MTBZoneDBSecurityGroupLambdaIngressRule" {
+  type              = "ingress"
+  from_port         = 1433
+  to_port           = 1433
+  protocol          = "tcp"
+  security_group_id = aws_security_group.MTBZoneDBSecurityGroup.id
+  source_security_group_id = aws_security_group.MTBZoneLambdaSecurityGroup.id
+}
+
+resource "aws_security_group_rule" "MTBZoneDBSecurityGroupMyipIngressRule" {
+  type              = "ingress"
+  from_port         = 1433
+  to_port           = 1433
+  protocol          = "tcp"
+  security_group_id = aws_security_group.MTBZoneDBSecurityGroup.id
+  cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
+}
+
+resource "aws_security_group_rule" "MTBZoneDBSecurityGroupMyipEgressRule" {
+  type              = "egress"
+  from_port         = 1433
+  to_port           = 1433
+  protocol          = "tcp"
+  security_group_id = aws_security_group.MTBZoneDBSecurityGroup.id
+  cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
+}
+
+resource "aws_security_group_rule" "MTBZoneLambdaSecurityGroupDBEgressRule" {
+  type              = "egress"
+  from_port         = 1433
+  to_port           = 1433
+  protocol          = "tcp"
+  security_group_id = aws_security_group.MTBZoneLambdaSecurityGroup.id
+  source_security_group_id = aws_security_group.MTBZoneDBSecurityGroup.id
 }
 
 resource "aws_db_subnet_group" "MTBZoneDBSubnetGroup" {
@@ -145,6 +193,16 @@ resource "aws_iam_policy" "CatalogAPILambdaPolicy" {
         Effect   = "Allow"
         Resource = "*"
       },
+      {
+          "Effect": "Allow",
+          "Action": [
+              "logs:CreateLogStream",
+              "logs:PutLogEvents"
+          ],
+          "Resource": [
+              "${aws_cloudwatch_log_group.CatalogAPILambdaLogGroup.arn}:*"
+          ]
+      }
     ]
   })
 }
@@ -155,8 +213,6 @@ resource "aws_iam_policy_attachment" "CatalogAPILambdaPolicyAttachment" {
   policy_arn = aws_iam_policy.CatalogAPILambdaPolicy.arn
 }
 
-
-
 resource "aws_db_instance" "MTBZoneDB" {
   allocated_storage    = 20
   engine               = "sqlserver-ex"
@@ -166,7 +222,7 @@ resource "aws_db_instance" "MTBZoneDB" {
   password             = var.db_password
   skip_final_snapshot  = true
   license_model = "license-included"
-  # publicly_accessible = true
+  publicly_accessible = true
   identifier = "mtbzone-db"
   db_subnet_group_name   = aws_db_subnet_group.MTBZoneDBSubnetGroup.name
   vpc_security_group_ids = [aws_security_group.MTBZoneDBSecurityGroup.id]
@@ -188,6 +244,7 @@ resource "aws_lambda_function" "CatalogAPILambda" {
   environment {
     variables = {
       ConnectionString = "Server=${aws_db_instance.MTBZoneDB.address};Database=MTBZone; user id=${var.db_username};password=${var.db_password};"
+      "LAMBDA_NET_SERIALIZER_DEBUG" = true
     }
   }
 }
@@ -241,6 +298,7 @@ resource "aws_apigatewayv2_integration" "CatalogAPIGWIntegration" {
 
   integration_method        = "POST"
   integration_uri           = aws_lambda_function.CatalogAPILambda.invoke_arn
+  payload_format_version    = "2.0"
 }
 
 resource "aws_lambda_permission" "CatalogAPIGWPermission" {
