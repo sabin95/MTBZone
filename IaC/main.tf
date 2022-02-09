@@ -20,7 +20,6 @@ provider "http" {
 
 provider "aws" {
   region = "eu-central-1"
-  profile = "sabin-trial"
 }
 
 variable "db_username" {
