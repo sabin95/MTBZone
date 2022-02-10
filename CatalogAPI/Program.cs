@@ -33,11 +33,9 @@ var app = builder.Build();
 //rabbitMQReceiver.Receive<OrderCreated, IHandler<OrderCreated>>(orderCreatedHandler, "Order-To-Products", "Orders");
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseHttpsRedirection();
 

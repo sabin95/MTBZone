@@ -13,6 +13,7 @@ terraform {
 
 locals{
   CatalogAPI_zipName = "../CatalogAPI/bin/Release/net6.0/CatalogAPI.zip"
+  CatalogAPIFunctionName = "CatalogAPILambda"
 }
 
 provider "http" {
@@ -32,6 +33,7 @@ variable "db_password" {
 
 data "http" "myip" {
   url = "http://ipv4.icanhazip.com"
+  # obtain my ip, used in DBSecurityGroup
 }
 
 data "aws_availability_zones" "available" {
@@ -128,6 +130,9 @@ resource "aws_security_group_rule" "MTBZoneDBSecurityGroupMyipIngressRule" {
   protocol          = "tcp"
   security_group_id = aws_security_group.MTBZoneDBSecurityGroup.id
   cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
+  # allow dev`s ip to connect directly to RDS
+  # never in production
+  # will be deleted after EF Core migrations
 }
 
 resource "aws_security_group_rule" "MTBZoneDBSecurityGroupMyipEgressRule" {
@@ -137,6 +142,9 @@ resource "aws_security_group_rule" "MTBZoneDBSecurityGroupMyipEgressRule" {
   protocol          = "tcp"
   security_group_id = aws_security_group.MTBZoneDBSecurityGroup.id
   cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
+  # allow dev`s ip to connect directly to RDS
+  # never in production
+  # will be deleted after EF Core migrations
 }
 
 resource "aws_security_group_rule" "MTBZoneLambdaSecurityGroupDBEgressRule" {
@@ -228,8 +236,11 @@ resource "aws_db_instance" "MTBZoneDB" {
 }
 
 resource "aws_lambda_function" "CatalogAPILambda" {
+  depends_on = [
+    aws_iam_policy_attachment.CatalogAPILambdaPolicyAttachment
+  ]
   filename      = local.CatalogAPI_zipName
-  function_name = "CatalogAPILambda"
+  function_name = local.CatalogAPIFunctionName
   role          = aws_iam_role.CatalogAPILambdaRole.arn
   handler       = "bootstrap"
   runtime = "provided.al2"
@@ -249,7 +260,7 @@ resource "aws_lambda_function" "CatalogAPILambda" {
 }
 
 resource "aws_cloudwatch_log_group" "CatalogAPILambdaLogGroup" {
-  name = "/aws/lambda/${aws_lambda_function.CatalogAPILambda.function_name}"
+  name = "/aws/lambda/${local.CatalogAPIFunctionName}"
 
   retention_in_days = 7
 }
@@ -300,6 +311,13 @@ resource "aws_apigatewayv2_integration" "CatalogAPIGWIntegration" {
   payload_format_version    = "2.0"
 }
 
+resource "aws_apigatewayv2_route" "CatalogAPIDefaultRoute" {
+  api_id    = aws_apigatewayv2_api.CatalogAPIGW.id
+  route_key = "$default"
+
+  target = "integrations/${aws_apigatewayv2_integration.CatalogAPIGWIntegration.id}"
+}
+
 resource "aws_lambda_permission" "CatalogAPIGWPermission" {
   statement_id  = "CatalogAPIGWPermission"
   action        = "lambda:InvokeFunction"
@@ -307,4 +325,12 @@ resource "aws_lambda_permission" "CatalogAPIGWPermission" {
   principal     = "apigateway.amazonaws.com"
 
   source_arn = "${aws_apigatewayv2_api.CatalogAPIGW.execution_arn}/*/*"
+}
+
+output "DBHost" {
+  value = aws_db_instance.MTBZoneDB.address
+}
+
+output "CatalogAPIUrl" {
+  value = aws_apigatewayv2_stage.CatalogAPIGWStage.invoke_url
 }
