@@ -9,11 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartAPI", "CartAPI\CartAPI.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrdersAPI", "OrdersAPI\OrdersAPI.csproj", "{EF857258-7369-44B4-A812-B1C703B6C06D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RabbitMQ", "RabbitMQ\RabbitMQ.csproj", "{E4FB442A-6565-4149-A099-569FFAB1640D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessagingService", "RabbitMQ\MessagingService.csproj", "{E4FB442A-6565-4149-A099-569FFAB1640D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartAPI.Events", "CartAPI.Events\CartAPI.Events.csproj", "{3E89A72A-D8D2-4AB7-91EC-09DF56BAE828}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrdersAPI.Events", "OrdersAPI.Events\OrdersAPI.Events.csproj", "{F84EFA58-2E51-4AFC-AD53-1023AAFFDE83}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrdersAPI.Events", "OrdersAPI.Events\OrdersAPI.Events.csproj", "{F84EFA58-2E51-4AFC-AD53-1023AAFFDE83}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

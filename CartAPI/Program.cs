@@ -1,10 +1,13 @@
 using CartAPI.Data;
 using CartAPI.Repository;
+using MessagingService.Sender;
 using Microsoft.EntityFrameworkCore;
-using MTBZone.RabbitMQ.Sender;
+using MTBZone.MessagingService.Sender;
 
 var builder = WebApplication.CreateBuilder(args);
-var ConnectionString = builder.Configuration["CartAPI:ConnectionString"];
+var ConnectionString = builder.Configuration["ConnectionString"];
+var cartExchange = builder.Configuration["cartExchange"];
+var environment = builder.Configuration["ASPNETCORE_ENVIRONMENT"];
 
 // Add services to the container.
 
@@ -15,19 +18,24 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CartContext>(options =>
     options.UseSqlServer(ConnectionString));
 builder.Services.AddScoped<ICartRepository, CartRepository>();
-builder.Services.AddSingleton<IRabbitMQSender, RabbitMQSender>();
+if(environment.ToUpper().Equals("DEVELOPMENT"))
+{
+    builder.Services.AddSingleton<ISender, RabbitMQSender>();
+}
+else
+{
+    builder.Services.AddSingleton<ISender, SNSSender>();
+}
 builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
-var rabbitMQ = app.Services.GetService<IRabbitMQSender>();
-rabbitMQ.Initialize("Carts");
+var sender = app.Services.GetService<ISender>();
+sender.Initialize(cartExchange);
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseHttpsRedirection();
 

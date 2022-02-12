@@ -2,9 +2,9 @@
 using RabbitMQ.Client;
 using System.Text;
 
-namespace MTBZone.RabbitMQ.Sender
+namespace MTBZone.MessagingService.Sender
 {
-    public class RabbitMQSender : IRabbitMQSender
+    public class RabbitMQSender : ISender
     {
         private string exchange = "";
         public void Initialize(string exchange)
@@ -12,7 +12,7 @@ namespace MTBZone.RabbitMQ.Sender
             this.exchange = exchange;
         }
 
-        public void Send<T>(T message)
+        public Task Send<T>(T message)
         {
             var factory = new ConnectionFactory() { HostName = "localhost", Port = 5672 };
             using var connection = factory.CreateConnection();
@@ -23,6 +23,7 @@ namespace MTBZone.RabbitMQ.Sender
                                           mandatory: true,
                                           basicProperties: null,
                                           body: Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message)));
+            return Task.CompletedTask;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using CatalogAPI.Repository;
+using MessagingService.Receiver;
 using OrdersAPI.Events;
-using RabbitMQ.Receiver;
 
 namespace CatalogAPI.EventHandlers.Orders
 {

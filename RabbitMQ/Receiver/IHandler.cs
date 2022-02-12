@@ -1,4 +1,4 @@
-﻿namespace RabbitMQ.Receiver
+﻿namespace MessagingService.Receiver
 {
     public interface IHandler<T>
     {

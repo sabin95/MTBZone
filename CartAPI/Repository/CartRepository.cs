@@ -4,17 +4,17 @@ using CartAPI.Data;
 using CartAPI.Events;
 using CartAPI.Results;
 using Microsoft.EntityFrameworkCore;
-using MTBZone.RabbitMQ.Sender;
+using MTBZone.MessagingService.Sender;
 
 namespace CartAPI.Repository
 {
     public class CartRepository : ICartRepository
     {
         private readonly CartContext _cartContext;
-        private readonly IRabbitMQSender _rabbitMQSender;
+        private readonly ISender _rabbitMQSender;
         private readonly IMapper _mapper;
 
-        public CartRepository(CartContext cartContext,IRabbitMQSender rabbitMQSender, IMapper mapper)
+        public CartRepository(CartContext cartContext,ISender rabbitMQSender, IMapper mapper)
         {
             _cartContext = cartContext;
             _rabbitMQSender = rabbitMQSender;
@@ -59,7 +59,7 @@ namespace CartAPI.Repository
             {
                 throw new ArgumentNullException(nameof(itemCommand), "Cart cannot be null!");
             }
-            var cart = await GetCartById(itemCommand.CartId);
+            var cart = await _cartContext.Carts.Include(o => o.Items).FirstOrDefaultAsync(c => c.Id == itemCommand.CartId);
             if (cart is null)
             {
                 throw new ArgumentException(nameof(cart), "No cart exists for this id!");
@@ -92,7 +92,7 @@ namespace CartAPI.Repository
 
         public async Task<CartResult> OrderCart(Guid cartId)
         {
-            var cart = await GetCartById(cartId);
+            var cart = await _cartContext.Carts.Include(o => o.Items).FirstOrDefaultAsync(c => c.Id == cartId);
             if (cart == null)
             {
                 return null;
@@ -115,7 +115,7 @@ namespace CartAPI.Repository
                     ExternalId=x.ExternalId
                 }).ToList()
             };
-            _rabbitMQSender.Send(message);
+            await _rabbitMQSender.Send(message);
             var cartResult = _mapper.Map<CartResult>(cart);
             return cartResult;
         }

@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OrdersAPI.Events\OrdersAPI.Events.csproj" />
-    <ProjectReference Include="..\RabbitMQ\RabbitMQ.csproj" />
+    <ProjectReference Include="..\RabbitMQ\MessagingService.csproj" />
   </ItemGroup>
 
 </Project>

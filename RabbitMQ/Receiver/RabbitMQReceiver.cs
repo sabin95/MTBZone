@@ -1,12 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using MessagingService.Receiver;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using RabbitMQ.Receiver;
 using System.Text;
 
-namespace MTBZone.RabbitMQ.Receiver
+namespace MTBZone.MessagingService.Receiver
 {
-    public class RabbitMQReceiver : IRabbitMQReceiver
+    public class RabbitMQReceiver : IReceiver
     {
 
         public void Receive<TMessage, THandler>(THandler handler, string queue, string exchange) where THandler : IHandler<TMessage>
@@ -38,8 +38,6 @@ namespace MTBZone.RabbitMQ.Receiver
             channel.BasicConsume(queue: queue,
                                      autoAck: true,
                                      consumer: consumer);
-
-
         }
     }
 }
