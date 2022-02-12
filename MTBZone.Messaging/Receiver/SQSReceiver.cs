@@ -1,9 +1,9 @@
 ﻿using Amazon.SQS;
 using Amazon.SQS.Model;
-using MTBZone.MessagingService.Receiver;
+using MTBZone.Messaging.Receiver;
 using Newtonsoft.Json;
 
-namespace MessagingService.Receiver
+namespace MTBZone.Messaging.Receiver
 {
     internal class AWSMessage
     {

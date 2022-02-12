@@ -1,6 +1,4 @@
-﻿using MessagingService.Receiver;
-
-namespace MTBZone.MessagingService.Receiver
+﻿namespace MTBZone.Messaging.Receiver
 {
     public interface IReceiver
     {

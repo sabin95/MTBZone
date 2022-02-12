@@ -2,7 +2,7 @@
 using RabbitMQ.Client;
 using System.Text;
 
-namespace MTBZone.MessagingService.Sender
+namespace MTBZone.Messaging.Sender
 {
     public class RabbitMQSender : ISender
     {

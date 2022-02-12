@@ -4,7 +4,7 @@ using CartAPI.Data;
 using CartAPI.Events;
 using CartAPI.Results;
 using Microsoft.EntityFrameworkCore;
-using MTBZone.MessagingService.Sender;
+using MTBZone.Messaging.Sender;
 
 namespace CartAPI.Repository
 {

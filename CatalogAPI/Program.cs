@@ -1,9 +1,8 @@
 using CatalogAPI.Data;
 using CatalogAPI.EventHandlers.Orders;
 using CatalogAPI.Repository;
-using MessagingService.Receiver;
 using Microsoft.EntityFrameworkCore;
-using MTBZone.MessagingService.Receiver;
+using MTBZone.Messaging.Receiver;
 using OrdersAPI.Events;
 
 var builder = WebApplication.CreateBuilder(args);

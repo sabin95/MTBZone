@@ -27,8 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MTBZone.Messaging\MTBZone.Messaging.csproj" />
     <ProjectReference Include="..\OrdersAPI.Events\OrdersAPI.Events.csproj" />
-    <ProjectReference Include="..\RabbitMQ\MessagingService.csproj" />
   </ItemGroup>
 
 </Project>

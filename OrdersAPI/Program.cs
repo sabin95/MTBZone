@@ -1,9 +1,7 @@
 using CartAPI.Events;
-using MessagingService.Receiver;
-using MessagingService.Sender;
 using Microsoft.EntityFrameworkCore;
-using MTBZone.MessagingService.Receiver;
-using MTBZone.MessagingService.Sender;
+using MTBZone.Messaging.Receiver;
+using MTBZone.Messaging.Sender;
 using OrdersAPI.Data;
 using OrdersAPI.EventHandlers.Carts;
 using OrdersAPI.Repository;

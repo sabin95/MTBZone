@@ -9,11 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartAPI", "CartAPI\CartAPI.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrdersAPI", "OrdersAPI\OrdersAPI.csproj", "{EF857258-7369-44B4-A812-B1C703B6C06D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MessagingService", "RabbitMQ\MessagingService.csproj", "{E4FB442A-6565-4149-A099-569FFAB1640D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartAPI.Events", "CartAPI.Events\CartAPI.Events.csproj", "{3E89A72A-D8D2-4AB7-91EC-09DF56BAE828}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrdersAPI.Events", "OrdersAPI.Events\OrdersAPI.Events.csproj", "{F84EFA58-2E51-4AFC-AD53-1023AAFFDE83}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTBZone.Messaging", "MTBZone.Messaging\MTBZone.Messaging.csproj", "{442094AE-07AD-40B6-B6A5-21DA2E7B567E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +33,6 @@ Global
 		{EF857258-7369-44B4-A812-B1C703B6C06D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF857258-7369-44B4-A812-B1C703B6C06D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF857258-7369-44B4-A812-B1C703B6C06D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E4FB442A-6565-4149-A099-569FFAB1640D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E4FB442A-6565-4149-A099-569FFAB1640D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E4FB442A-6565-4149-A099-569FFAB1640D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E4FB442A-6565-4149-A099-569FFAB1640D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3E89A72A-D8D2-4AB7-91EC-09DF56BAE828}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3E89A72A-D8D2-4AB7-91EC-09DF56BAE828}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3E89A72A-D8D2-4AB7-91EC-09DF56BAE828}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,6 +41,10 @@ Global
 		{F84EFA58-2E51-4AFC-AD53-1023AAFFDE83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F84EFA58-2E51-4AFC-AD53-1023AAFFDE83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F84EFA58-2E51-4AFC-AD53-1023AAFFDE83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{442094AE-07AD-40B6-B6A5-21DA2E7B567E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{442094AE-07AD-40B6-B6A5-21DA2E7B567E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{442094AE-07AD-40B6-B6A5-21DA2E7B567E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{442094AE-07AD-40B6-B6A5-21DA2E7B567E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

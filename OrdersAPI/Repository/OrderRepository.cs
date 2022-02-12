@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CartAPI.Events;
 using Microsoft.EntityFrameworkCore;
-using MTBZone.MessagingService.Sender;
+using MTBZone.Messaging.Sender;
 using OrdersAPI.Data;
 using OrdersAPI.Events;
 using OrdersAPI.Results;

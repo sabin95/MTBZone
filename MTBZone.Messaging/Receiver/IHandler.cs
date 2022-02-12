@@ -1,4 +1,4 @@
-﻿namespace MessagingService.Receiver
+﻿namespace MTBZone.Messaging.Receiver
 {
     public interface IHandler<T>
     {

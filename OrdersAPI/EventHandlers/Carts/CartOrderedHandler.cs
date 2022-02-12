@@ -1,5 +1,5 @@
 ﻿using CartAPI.Events;
-using MessagingService.Receiver;
+using MTBZone.Messaging.Receiver;
 using OrdersAPI.Repository;
 
 namespace OrdersAPI.EventHandlers.Carts

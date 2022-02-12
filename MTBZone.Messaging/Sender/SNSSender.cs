@@ -1,9 +1,8 @@
 ﻿using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
-using MTBZone.MessagingService.Sender;
 using Newtonsoft.Json;
 
-namespace MessagingService.Sender
+namespace MTBZone.Messaging.Sender
 {
     public class SNSSender : ISender
     {

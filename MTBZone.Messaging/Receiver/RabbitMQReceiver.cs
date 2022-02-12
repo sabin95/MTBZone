@@ -1,10 +1,10 @@
-﻿using MessagingService.Receiver;
+﻿using MTBZone.Messaging.Receiver;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 
-namespace MTBZone.MessagingService.Receiver
+namespace MTBZone.Messaging.Receiver
 {
     public class RabbitMQReceiver : IReceiver
     {

@@ -1,5 +1,5 @@
 ﻿using CatalogAPI.Repository;
-using MessagingService.Receiver;
+using MTBZone.Messaging.Receiver;
 using OrdersAPI.Events;
 
 namespace CatalogAPI.EventHandlers.Orders

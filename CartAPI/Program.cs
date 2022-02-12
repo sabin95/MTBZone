@@ -1,8 +1,7 @@
 using CartAPI.Data;
 using CartAPI.Repository;
-using MessagingService.Sender;
 using Microsoft.EntityFrameworkCore;
-using MTBZone.MessagingService.Sender;
+using MTBZone.Messaging.Sender;
 
 var builder = WebApplication.CreateBuilder(args);
 var ConnectionString = builder.Configuration["ConnectionString"];

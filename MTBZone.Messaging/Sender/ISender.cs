@@ -1,4 +1,4 @@
-﻿namespace MTBZone.MessagingService.Sender
+﻿namespace MTBZone.Messaging.Sender
 {
     public interface ISender
     {
