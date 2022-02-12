@@ -11,13 +11,13 @@ namespace CartAPI.Repository
     public class CartRepository : ICartRepository
     {
         private readonly CartContext _cartContext;
-        private readonly ISender _rabbitMQSender;
+        private readonly ISender _sender;
         private readonly IMapper _mapper;
 
-        public CartRepository(CartContext cartContext,ISender rabbitMQSender, IMapper mapper)
+        public CartRepository(CartContext cartContext,ISender sender, IMapper mapper)
         {
             _cartContext = cartContext;
-            _rabbitMQSender = rabbitMQSender;
+            _sender = sender;
             _mapper = mapper;
         }       
 
@@ -115,7 +115,7 @@ namespace CartAPI.Repository
                     ExternalId=x.ExternalId
                 }).ToList()
             };
-            await _rabbitMQSender.Send(message);
+            await _sender.Send(message);
             var cartResult = _mapper.Map<CartResult>(cart);
             return cartResult;
         }

@@ -11,13 +11,13 @@ namespace OrdersAPI.Repository
     public class OrderRepository : IOrderRepository
     {
         private readonly OrderContext _orderContext;
-        private readonly ISender _rabbitMQSender;
+        private readonly ISender _sender;
         private readonly IMapper _mapper;
 
-        public OrderRepository(OrderContext orderContext, ISender rabbitMQSender, IMapper mapper)
+        public OrderRepository(OrderContext orderContext, ISender sender, IMapper mapper)
         {
             _orderContext = orderContext;
-            _rabbitMQSender = rabbitMQSender;
+            _sender = sender;
             _mapper = mapper;
         }
 
@@ -50,7 +50,7 @@ namespace OrdersAPI.Repository
                     ExternalId = x.ExternalId
                 }).ToList()
             };
-            await _rabbitMQSender.Send(message);
+            await _sender.Send(message);
             order.Items = cartOrdered.Items.Select(x => new Item()
             {
                 Title = x.Title,

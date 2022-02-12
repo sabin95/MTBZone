@@ -38,8 +38,8 @@ builder.Services
 
 var app = builder.Build();
 var orderCreatedHandler = app.Services.GetService<IHandler<OrderCreated>>();
-var rabbitMQReceiver = app.Services.GetService<IReceiver>();
-rabbitMQReceiver.Receive<OrderCreated, IHandler<OrderCreated>>(orderCreatedHandler, ordersReceiverQueue, ordersReceiverExchange);
+var receiver = app.Services.GetService<IReceiver>();
+receiver.Receive<OrderCreated, IHandler<OrderCreated>>(orderCreatedHandler, ordersReceiverQueue, ordersReceiverExchange);
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
