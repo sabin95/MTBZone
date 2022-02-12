@@ -1,14 +1,17 @@
 using CartAPI.Events;
 using Microsoft.EntityFrameworkCore;
-using MTBZone.RabbitMQ.Receiver;
-using MTBZone.RabbitMQ.Sender;
+using MTBZone.Messaging.Receiver;
+using MTBZone.Messaging.Sender;
 using OrdersAPI.Data;
 using OrdersAPI.EventHandlers.Carts;
 using OrdersAPI.Repository;
-using RabbitMQ.Receiver;
 
 var builder = WebApplication.CreateBuilder(args);
-var ConnectionString = builder.Configuration["OrdersAPI:ConnectionString"];
+var ConnectionString = builder.Configuration["ConnectionString"];
+var environment = builder.Configuration["ASPNETCORE_ENVIRONMENT"];
+var odersExchange = builder.Configuration["odersExchange"];
+var cartsReceiverQueue = builder.Configuration["cartsReceiverQueue"];
+var cartsReceiverExchange = builder.Configuration["cartsReceiverExchange"];
 
 // Add services to the container.
 
@@ -20,24 +23,30 @@ builder.Services.AddDbContext<OrderContext>(options =>
     options.UseSqlServer(ConnectionString),
     ServiceLifetime.Singleton);
 builder.Services.AddTransient<IOrderRepository, OrderRepository>();
-builder.Services.AddSingleton<IRabbitMQReceiver, RabbitMQReceiver>();
+if(environment.ToUpper().Equals("DEVELOPMENT"))
+{
+    builder.Services.AddSingleton<IReceiver, RabbitMQReceiver>();
+    builder.Services.AddSingleton<ISender, RabbitMQSender>();
+}
+else
+{
+    builder.Services.AddSingleton<IReceiver, SQSReceiver>();
+    builder.Services.AddSingleton<ISender, SNSSender>();
+}
 builder.Services.AddSingleton<IHandler<CartOrdered>, CartOrderedHandler>();
-builder.Services.AddSingleton<IRabbitMQSender, RabbitMQSender>();
 builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 var cartOrderedHandler = app.Services.GetService<IHandler<CartOrdered>>();
-var rabbitMQReceiver = app.Services.GetService<IRabbitMQReceiver>();
-rabbitMQReceiver.Receive<CartOrdered, IHandler<CartOrdered>>(cartOrderedHandler, "Carts-To-Orders", "Carts");
-var rabbitMQSender = app.Services.GetService<IRabbitMQSender>();
-rabbitMQSender.Initialize("Orders");
+var receiver = app.Services.GetService<IReceiver>();
+receiver.Receive<CartOrdered, IHandler<CartOrdered>>(cartOrderedHandler, cartsReceiverQueue, cartsReceiverExchange);
+var sender = app.Services.GetService<ISender>();
+sender.Initialize(odersExchange);
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseHttpsRedirection();
 

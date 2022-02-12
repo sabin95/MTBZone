@@ -255,6 +255,7 @@ resource "aws_lambda_function" "CatalogAPILambda" {
     variables = {
       ConnectionString = "Server=${aws_db_instance.MTBZoneDB.address};Database=MTBZone; user id=${var.db_username};password=${var.db_password};"
       "LAMBDA_NET_SERIALIZER_DEBUG" = true
+      ordersReceiverQueue = aws_sqs_queue.CatalogAPIOrdersQueue.arn
     }
   }
 }
@@ -327,10 +328,106 @@ resource "aws_lambda_permission" "CatalogAPIGWPermission" {
   source_arn = "${aws_apigatewayv2_api.CatalogAPIGW.execution_arn}/*/*"
 }
 
+resource "aws_sns_topic" "CartAPITopic" {
+  name = "CartAPITopic"
+}
+
+resource "aws_sqs_queue" "OrdersAPICartsQueue" {
+  name = "OrdersAPICartsQueue"
+}
+
+resource "aws_sqs_queue_policy" "OrdersAPICartsQueuePolicy" {
+  queue_url = aws_sqs_queue.OrdersAPICartsQueue.id
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Id": "sqspolicy",
+  "Statement": [
+    {
+      "Sid": "First",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "sqs:SendMessage",
+      "Resource": "${aws_sqs_queue.OrdersAPICartsQueue.arn}",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "${aws_sns_topic.CartAPITopic.arn}"
+        }
+      }
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_sns_topic_subscription" "OrdersAPICartsQueueSubscription" {
+  topic_arn = aws_sns_topic.CartAPITopic.arn
+  protocol  = "sqs"
+  endpoint  = aws_sqs_queue.OrdersAPICartsQueue.arn
+}
+
+resource "aws_sns_topic" "OdersAPITopic" {
+  name = "OdersAPITopic"
+}
+
+resource "aws_sqs_queue" "CatalogAPIOrdersQueue" {
+  name = "CatalogAPIOrdersQueue"  
+}
+
+resource "aws_sqs_queue_policy" "CatalogAPIOrdersQueuePolicy" {
+  queue_url = aws_sqs_queue.CatalogAPIOrdersQueue.id
+
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Id": "sqspolicy",
+  "Statement": [
+    {
+      "Sid": "First",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "sqs:SendMessage",
+      "Resource": "${aws_sqs_queue.CatalogAPIOrdersQueue.arn}",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "${aws_sns_topic.OdersAPITopic.arn}"
+        }
+      }
+    }
+  ]
+}
+POLICY
+}
+
+resource "aws_sns_topic_subscription" "CatalogAPIOrdersQueueSubscription" {
+  topic_arn = aws_sns_topic.OdersAPITopic.arn
+  protocol  = "sqs"
+  endpoint  = aws_sqs_queue.CatalogAPIOrdersQueue.arn
+}
+
+
+
 output "DBHost" {
   value = aws_db_instance.MTBZoneDB.address
 }
 
 output "CatalogAPIUrl" {
   value = aws_apigatewayv2_stage.CatalogAPIGWStage.invoke_url
+}
+
+output "CatalogAPIOrdersQueue" {
+  value = aws_sqs_queue.CatalogAPIOrdersQueue.url
+}
+
+output "OdersAPITopic" {
+  value = aws_sns_topic.OdersAPITopic.arn
+}
+
+output "CartAPITopic" {
+  value = aws_sns_topic.CartAPITopic.arn
+}
+
+output "OrdersAPICartsQueue" {
+  value = aws_sqs_queue.OrdersAPICartsQueue.url
 }

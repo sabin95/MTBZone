@@ -1,4 +1,4 @@
-﻿namespace RabbitMQ.Receiver
+﻿namespace MTBZone.Messaging.Receiver
 {
     public interface IHandler<T>
     {

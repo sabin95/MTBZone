@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CartAPI.Events;
 using Microsoft.EntityFrameworkCore;
-using MTBZone.RabbitMQ.Sender;
+using MTBZone.Messaging.Sender;
 using OrdersAPI.Data;
 using OrdersAPI.Events;
 using OrdersAPI.Results;
@@ -11,13 +11,13 @@ namespace OrdersAPI.Repository
     public class OrderRepository : IOrderRepository
     {
         private readonly OrderContext _orderContext;
-        private readonly IRabbitMQSender _rabbitMQSender;
+        private readonly ISender _sender;
         private readonly IMapper _mapper;
 
-        public OrderRepository(OrderContext orderContext, IRabbitMQSender rabbitMQSender, IMapper mapper)
+        public OrderRepository(OrderContext orderContext, ISender sender, IMapper mapper)
         {
             _orderContext = orderContext;
-            _rabbitMQSender = rabbitMQSender;
+            _sender = sender;
             _mapper = mapper;
         }
 
@@ -50,7 +50,7 @@ namespace OrdersAPI.Repository
                     ExternalId = x.ExternalId
                 }).ToList()
             };
-            _rabbitMQSender.Send(message);
+            await _sender.Send(message);
             order.Items = cartOrdered.Items.Select(x => new Item()
             {
                 Title = x.Title,

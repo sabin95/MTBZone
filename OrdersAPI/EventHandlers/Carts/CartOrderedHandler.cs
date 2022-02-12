@@ -1,6 +1,6 @@
 ﻿using CartAPI.Events;
+using MTBZone.Messaging.Receiver;
 using OrdersAPI.Repository;
-using RabbitMQ.Receiver;
 
 namespace OrdersAPI.EventHandlers.Carts
 {
