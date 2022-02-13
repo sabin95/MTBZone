@@ -35,6 +35,8 @@ else
 }
 builder.Services.AddSingleton<IHandler<CartOrdered>, CartOrderedHandler>();
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services
+  .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
 var app = builder.Build();
 var cartOrderedHandler = app.Services.GetService<IHandler<CartOrdered>>();

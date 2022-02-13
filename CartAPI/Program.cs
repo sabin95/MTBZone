@@ -26,6 +26,8 @@ else
     builder.Services.AddSingleton<ISender, SNSSender>();
 }
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services
+  .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
 var app = builder.Build();
 var sender = app.Services.GetService<ISender>();
