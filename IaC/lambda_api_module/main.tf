@@ -1,5 +1,10 @@
+locals{
+  API_zipName = "../${api_name}/bin/Release/net6.0/${api_name}.zip"
+  APIFunctionName = "${api_name}Lambda"
+}
+
 resource "aws_iam_role" "LambdaRole" {
-  name = var.aws_iam_role_name
+  name = "${api_name}LambdaRole"
 
   assume_role_policy = <<EOF
 {
@@ -19,7 +24,7 @@ EOF
 }
 
 resource "aws_iam_policy" "LambdaPolicy" {
-  name        = var.aws_iam_policy_name
+  name        = "${api_name}LambdaPolicy"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -48,47 +53,47 @@ resource "aws_iam_policy" "LambdaPolicy" {
 }
 
 resource "aws_iam_policy_attachment" "LambdaPolicyAttachment" {
-  name       = var.aws_iam_policy_attachment_name
+  name       = "${api_name}LambdaPolicyAttachment"
   roles      = [aws_iam_role.LambdaRole.name]
   policy_arn = aws_iam_policy.LambdaPolicy.arn
 }
 
-resource "aws_cloudwatch_log_group" "LambdaLogGroup" {
-  name = var.aws_cloudwatch_log_group_name
-
-  retention_in_days = 7
-}
-
-resource "aws_lambda_function" "LambdaFunction" {
-    depends_on = [
-        aws_iam_policy_attachment.LambdaPolicyAttachment
-    ]
-
-  filename                       = var.file_name
-  function_name                  = var.function_name
-  role                           = aws_iam_role.LambdaRole.arn
-  handler                        = "bootstrap"
-  runtime                        = "provided.al2"
-  timeout                        = 60
 
 
-  
-  source_code_hash = filebase64sha256(local.file_name) 
+resource "aws_lambda_function" "APILambda" {
+  depends_on = [
+    aws_iam_policy_attachment.LambdaPolicyAttachment
+  ]
+  filename      = local.API_zipName
+  function_name = local.APIFunctionName
+  role          = aws_iam_role.LambdaRole.arn
+  handler       = "bootstrap"
+  runtime = "provided.al2"
+  timeout = 60
+
+  source_code_hash = filebase64sha256(local.API_zipName)
   vpc_config {
     subnet_ids = [aws_subnet.MTBZoneLambdaSubnet.id]
-    security_group_ids = [aws_iam_role.LambdaRole.id]
+    security_group_ids = [aws_security_group.MTBZoneLambdaSecurityGroup.id]
   }
   environment {
     variables = {
       ConnectionString = "Server=${aws_db_instance.MTBZoneDB.address};Database=MTBZone; user id=${var.db_username};password=${var.db_password};"
       "LAMBDA_NET_SERIALIZER_DEBUG" = true
-      ordersReceiverQueue = aws_sqs_queue.CatalogAPIOrdersQueue.arn //need to see what to do here
+      ordersReceiverQueue = aws_sqs_queue.CatalogAPIOrdersQueue.arn // to edit here
     }
   }
 }
 
+resource "aws_cloudwatch_log_group" "LambdaLogGroup" {
+  name = "/aws/lambda/${api_name}FunctionName"
+
+  retention_in_days = 7
+}
+
+
 resource "aws_apigatewayv2_api" "APIGW" {
-  name          = var.aws_apigatewayv2_api_name
+  name          = "${api_name}GW"
   protocol_type = "HTTP"
 }
 
@@ -123,26 +128,26 @@ resource "aws_cloudwatch_log_group" "GWLogGroup" {
   retention_in_days = 7
 }
 
-resource "aws_apigatewayv2_integration" "GWIntegration" {
+resource "aws_apigatewayv2_integration" "APIGWIntegration" {
   api_id           = aws_apigatewayv2_api.APIGW.id
   integration_type = "AWS_PROXY"  
 
   integration_method        = "POST"
-  integration_uri           = aws_lambda_function.LambdaFunction.invoke_arn
+  integration_uri           = aws_lambda_function.APILambda.invoke_arn
   payload_format_version    = "2.0"
 }
 
-resource "aws_apigatewayv2_route" "GWDefaultRoute" {
+resource "aws_apigatewayv2_route" "APIDefaultRoute" {
   api_id    = aws_apigatewayv2_api.APIGW.id
   route_key = "$default"
 
-  target = "integrations/${aws_apigatewayv2_integration.GWIntegration.id}"
+  target = "integrations/${aws_apigatewayv2_integration.APIGWIntegration.id}"
 }
 
-resource "aws_lambda_permission" "GWPermission" {
-  statement_id  = var.aws_lambda_permission_statement_name
+resource "aws_lambda_permission" "APIGWPermission" {
+  statement_id  = "${api_name}GWPermission"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.LambdaFunction.function_name
+  function_name = aws_lambda_function.APILambda.function_name
   principal     = "apigateway.amazonaws.com"
 
   source_arn = "${aws_apigatewayv2_api.APIGW.execution_arn}/*/*"
