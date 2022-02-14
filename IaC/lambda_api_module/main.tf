@@ -1,10 +1,9 @@
 locals{
-  API_zipName = "../${api_name}/bin/Release/net6.0/${api_name}.zip"
-  APIFunctionName = "${api_name}Lambda"
+  API_zipName = "../${var.api_name}/bin/Release/net6.0/${var.api_name}.zip"
 }
 
 resource "aws_iam_role" "LambdaRole" {
-  name = "${api_name}LambdaRole"
+  name = "${var.api_name}LambdaRole"
 
   assume_role_policy = <<EOF
 {
@@ -24,7 +23,7 @@ EOF
 }
 
 resource "aws_iam_policy" "LambdaPolicy" {
-  name        = "${api_name}LambdaPolicy"
+  name        = "${var.api_name}LambdaPolicy"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -53,7 +52,7 @@ resource "aws_iam_policy" "LambdaPolicy" {
 }
 
 resource "aws_iam_policy_attachment" "LambdaPolicyAttachment" {
-  name       = "${api_name}LambdaPolicyAttachment"
+  name       = "${var.api_name}LambdaPolicyAttachment"
   roles      = [aws_iam_role.LambdaRole.name]
   policy_arn = aws_iam_policy.LambdaPolicy.arn
 }
@@ -65,7 +64,7 @@ resource "aws_lambda_function" "APILambda" {
     aws_iam_policy_attachment.LambdaPolicyAttachment
   ]
   filename      = local.API_zipName
-  function_name = local.APIFunctionName
+  function_name = "${var.api_name}Lambda"
   role          = aws_iam_role.LambdaRole.arn
   handler       = "bootstrap"
   runtime = "provided.al2"
@@ -73,12 +72,12 @@ resource "aws_lambda_function" "APILambda" {
 
   source_code_hash = filebase64sha256(local.API_zipName)
   vpc_config {
-    subnet_ids = [aws_subnet.MTBZoneLambdaSubnet.id]
-    security_group_ids = [aws_security_group.MTBZoneLambdaSecurityGroup.id]
+    subnet_ids = var.subnet_ids
+    security_group_ids = var.security_group_ids
   }
   environment {
     variables = {
-      ConnectionString = "Server=${aws_db_instance.MTBZoneDB.address};Database=MTBZone; user id=${var.db_username};password=${var.db_password};"
+      ConnectionString = "Server=${var.db_server_address};Database=MTBZone; user id=${var.db_username};password=${var.db_password};"
       "LAMBDA_NET_SERIALIZER_DEBUG" = true
       ordersReceiverQueue = aws_sqs_queue.CatalogAPIOrdersQueue.arn // to edit here
     }
@@ -86,14 +85,14 @@ resource "aws_lambda_function" "APILambda" {
 }
 
 resource "aws_cloudwatch_log_group" "LambdaLogGroup" {
-  name = "/aws/lambda/${api_name}FunctionName"
+  name = "/aws/lambda/${var.api_name}FunctionName"
 
   retention_in_days = 7
 }
 
 
 resource "aws_apigatewayv2_api" "APIGW" {
-  name          = "${api_name}GW"
+  name          = "${var.api_name}GW"
   protocol_type = "HTTP"
 }
 
@@ -145,7 +144,7 @@ resource "aws_apigatewayv2_route" "APIDefaultRoute" {
 }
 
 resource "aws_lambda_permission" "APIGWPermission" {
-  statement_id  = "${api_name}GWPermission"
+  statement_id  = "${var.api_name}GWPermission"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.APILambda.function_name
   principal     = "apigateway.amazonaws.com"
