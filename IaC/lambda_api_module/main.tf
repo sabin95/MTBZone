@@ -1,5 +1,6 @@
 locals{
   API_zipName = "../${var.api_name}/bin/Release/net6.0/${var.api_name}.zip"
+  API_function_name = "${var.api_name}Lambda"
 }
 
 resource "aws_iam_role" "LambdaRole" {
@@ -64,7 +65,7 @@ resource "aws_lambda_function" "APILambda" {
     aws_iam_policy_attachment.LambdaPolicyAttachment
   ]
   filename      = local.API_zipName
-  function_name = "${var.api_name}Lambda"
+  function_name = local.API_function_name
   role          = aws_iam_role.LambdaRole.arn
   handler       = "bootstrap"
   runtime = "provided.al2"
@@ -85,7 +86,7 @@ resource "aws_lambda_function" "APILambda" {
 }
 
 resource "aws_cloudwatch_log_group" "LambdaLogGroup" {
-  name = "/aws/lambda/${var.api_name}FunctionName"
+  name = "/aws/lambda/${local.API_function_name}"
 
   retention_in_days = 7
 }
