@@ -77,11 +77,10 @@ resource "aws_lambda_function" "APILambda" {
     security_group_ids = var.security_group_ids
   }
   environment {
-    variables = {
-      ConnectionString = "Server=${var.db_server_address};Database=MTBZone; user id=${var.db_username};password=${var.db_password};"
+    variables = merge({
+      ConnectionString = "Server=${var.db_server_address};Database=MTBZone; user id=${var.db_username};password=${var.db_password};",
       "LAMBDA_NET_SERIALIZER_DEBUG" = true
-      ordersReceiverQueue = aws_sqs_queue.CatalogAPIOrdersQueue.arn // to edit here
-    }
+    },var.additional_environment_variables)
   }
 }
 

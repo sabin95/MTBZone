@@ -13,3 +13,7 @@ variable "security_group_ids"{
 variable "db_server_address"{
     
 }
+
+variable "additional_environment_variables"{
+    
+}
