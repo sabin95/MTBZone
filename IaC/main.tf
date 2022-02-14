@@ -8,6 +8,8 @@ module "CatalogAPILambda"{
                                         ordersReceiverQueue = aws_sqs_queue.CatalogAPIOrdersQueue.arn
                                         ordersReceiverExchange = aws_sns_topic.OdersAPITopic.arn
                                         }
+    db_password = var.db_password
+    db_username = var.db_username
 }
 
 module "CartAPILambda"{
@@ -19,6 +21,8 @@ module "CartAPILambda"{
     additional_environment_variables = {
                                         cartExchange = aws_sns_topic.CartAPITopic.arn
                                         }
+    db_password = var.db_password
+    db_username = var.db_username
 }
 
 
@@ -33,4 +37,6 @@ module "OrdersAPILambda"{
                                         cartsReceiverExchange = aws_sns_topic.CartAPITopic.arn
                                         odersExchange = aws_sns_topic.OdersAPITopic.arn
                                         }
+    db_password = var.db_password
+    db_username = var.db_username
 }

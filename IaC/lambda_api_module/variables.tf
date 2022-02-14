@@ -17,3 +17,11 @@ variable "db_server_address"{
 variable "additional_environment_variables"{
     
 }
+
+variable "db_username" {
+  
+}
+
+variable "db_password" {
+  
+}

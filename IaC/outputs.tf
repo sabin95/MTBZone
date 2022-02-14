@@ -3,7 +3,15 @@ output "DBHost" {
 }
 
 output "CatalogAPIUrl" {
-  value = aws_apigatewayv2_stage.CatalogAPIGWStage.invoke_url
+  value = "${module.CatalogAPILambda.APIUrl}"
+}
+
+output "CartAPIUrl" {
+  value = "${module.CartAPILambda.APIUrl}"
+}
+
+output "OrdersAPIUrl" {
+  value = "${module.OrdersAPILambda.APIUrl}"
 }
 
 output "CatalogAPIOrdersQueue" {
