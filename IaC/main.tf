@@ -7,6 +7,7 @@ module "CatalogAPILambda"{
     additional_environment_variables = {
                                         ordersReceiverQueue = aws_sqs_queue.CatalogAPIOrdersQueue.arn
                                         ordersReceiverExchange = aws_sns_topic.OdersAPITopic.arn
+                                        ASPNETCORE_ENVIRONMENT = "Production"
                                         }
     db_password = var.db_password
     db_username = var.db_username
@@ -20,6 +21,7 @@ module "CartAPILambda"{
     db_server_address = aws_db_instance.MTBZoneDB.address
     additional_environment_variables = {
                                         cartExchange = aws_sns_topic.CartAPITopic.arn
+                                        ASPNETCORE_ENVIRONMENT = "Production"
                                         }
     db_password = var.db_password
     db_username = var.db_username
@@ -36,7 +38,8 @@ module "OrdersAPILambda"{
                                         cartsReceiverQueue = aws_sqs_queue.OrdersAPICartsQueue.arn
                                         cartsReceiverExchange = aws_sns_topic.CartAPITopic.arn
                                         odersExchange = aws_sns_topic.OdersAPITopic.arn
+                                        ASPNETCORE_ENVIRONMENT = "Production"
                                         }
     db_password = var.db_password
-    db_username = var.db_username
+    db_username = var.db_username    
 }
