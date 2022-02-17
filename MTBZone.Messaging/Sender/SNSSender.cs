@@ -6,7 +6,6 @@ namespace MTBZone.Messaging.Sender
 {
     public class SNSSender : ISender
     {
-        private AmazonSimpleNotificationServiceClient snsClient = new AmazonSimpleNotificationServiceClient(Amazon.RegionEndpoint.EUCentral1);
         private string _exchange = "";
         public void Initialize(string exchange)
         {
@@ -15,6 +14,7 @@ namespace MTBZone.Messaging.Sender
 
         public async Task Send<T>(T message)
         {
+            var snsClient = new AmazonSimpleNotificationServiceClient(Amazon.RegionEndpoint.EUCentral1);
             var request = new PublishRequest
             {
                 TopicArn = _exchange,

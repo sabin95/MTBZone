@@ -1,4 +1,4 @@
-﻿namespace OrdersAPI.Utils
+﻿namespace OrdersAPI.Common.Utils
 {
     public static class Utils
     {

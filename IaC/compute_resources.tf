@@ -38,6 +38,11 @@ resource "aws_subnet" "MTBZoneLambdaSubnet" {
   }
 }
 
+resource "aws_route_table_association" "MTBZoneRouteTableToLambdaSubnet" {
+  route_table_id = aws_route_table.MTBZoneRouteTable.id
+  subnet_id      = aws_subnet.MTBZoneLambdaSubnet.id
+}
+
 resource "aws_security_group" "MTBZoneLambdaSecurityGroup" {
   name        = "MTBZoneLambdaSecurityGroup"
   vpc_id      = aws_vpc.MTBZoneVPC.id

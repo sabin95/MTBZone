@@ -1,4 +1,4 @@
-﻿namespace OrdersAPI.Results
+﻿namespace OrdersAPI.Common.Results
 {
     public class ItemResult
     {

@@ -17,14 +17,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CartContext>(options =>
     options.UseSqlServer(ConnectionString));
 builder.Services.AddScoped<ICartRepository, CartRepository>();
-if(environment.ToUpper().Equals("DEVELOPMENT"))
-{
-    builder.Services.AddSingleton<ISender, RabbitMQSender>();
-}
-else
-{
-    builder.Services.AddSingleton<ISender, SNSSender>();
-}
+
+builder.Services.AddSingleton<ISender, SNSSender>();
+
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services
   .AddAWSLambdaHosting(LambdaEventSource.HttpApi);

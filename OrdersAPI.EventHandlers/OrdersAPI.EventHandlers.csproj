@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AWSProjectType>Lambda</AWSProjectType>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="aws-lambda-tools-defaults.json" />
+    <None Remove="bootstrap" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="aws-lambda-tools-defaults.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="bootstrap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Amazon.Lambda.SQSEvents" Version="2.1.0" />
+    <PackageReference Include="Amazon.Lambda.RuntimeSupport" Version="1.6.0" />
+    <PackageReference Include="Amazon.Lambda.Core" Version="2.1.0" />
+    <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OrdersAPI.Common\OrdersAPI.Common.csproj" />
+  </ItemGroup>
+
+</Project>

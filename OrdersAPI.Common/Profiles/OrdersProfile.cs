@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using OrdersAPI.Data;
-using OrdersAPI.Results;
+using OrdersAPI.Common.Data;
+using OrdersAPI.Common.Results;
 
-namespace OrdersAPI.Profiles
+namespace OrdersAPI.Common.Profiles
 {
     public class OrdersProfile : Profile
     {

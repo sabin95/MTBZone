@@ -1,4 +1,4 @@
-variable "api_name"{
+variable "service_name"{
 
 }
 
@@ -24,4 +24,12 @@ variable "db_username" {
 
 variable "db_password" {
   
+}
+
+variable "zip_path"{
+
+}
+
+variable "extra_lambda_permissions"{
+    default = []
 }

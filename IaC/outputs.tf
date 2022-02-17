@@ -3,15 +3,15 @@ output "DBHost" {
 }
 
 output "CatalogAPIUrl" {
-  value = "${module.CatalogAPILambda.APIUrl}"
+  value = module.CatalogAPIGateway.APIUrl
 }
 
 output "CartAPIUrl" {
-  value = "${module.CartAPILambda.APIUrl}"
+  value = module.CartAPIGateway.APIUrl
 }
 
 output "OrdersAPIUrl" {
-  value = "${module.OrdersAPILambda.APIUrl}"
+  value = module.OrdersAPIGateway.APIUrl
 }
 
 output "CatalogAPIOrdersQueue" {

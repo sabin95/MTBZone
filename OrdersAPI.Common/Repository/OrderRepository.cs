@@ -2,11 +2,11 @@
 using CartAPI.Events;
 using Microsoft.EntityFrameworkCore;
 using MTBZone.Messaging.Sender;
-using OrdersAPI.Data;
+using OrdersAPI.Common.Data;
+using OrdersAPI.Common.Results;
 using OrdersAPI.Events;
-using OrdersAPI.Results;
 
-namespace OrdersAPI.Repository
+namespace OrdersAPI.Common.Repository
 {
     public class OrderRepository : IOrderRepository
     {

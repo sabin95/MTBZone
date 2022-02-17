@@ -1,7 +1,7 @@
 ﻿using CartAPI.Events;
-using OrdersAPI.Results;
+using OrdersAPI.Common.Results;
 
-namespace OrdersAPI.Repository
+namespace OrdersAPI.Common.Repository
 {
     public interface IOrderRepository
     {
