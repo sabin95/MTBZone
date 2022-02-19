@@ -19,7 +19,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<OrderContext>(options => 
-    options.UseSqlServer(ConnectionString),
+    options.UseSqlServer(ConnectionString, b => b.MigrationsAssembly("OrdersAPI.Common")),
     ServiceLifetime.Singleton);
 builder.Services.AddTransient<IOrderRepository, OrderRepository>();
 if(environment.ToUpper().Equals("DEVELOPMENT"))
@@ -38,6 +38,8 @@ builder.Services
   .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
 var app = builder.Build();
+var db = app.Services.GetService<OrderContext>();
+db.Database.Migrate();
 //var cartOrderedHandler = app.Services.GetService<IHandler<CartOrdered>>();
 //var receiver = app.Services.GetService<IReceiver>();
 //receiver.Receive<CartOrdered, IHandler<CartOrdered>>(cartOrderedHandler, cartsReceiverQueue, cartsReceiverExchange);

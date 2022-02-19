@@ -37,6 +37,8 @@ builder.Services
 
 
 var app = builder.Build();
+var db = app.Services.GetService<CatalogContext>();
+db.Database.Migrate();
 var orderCreatedHandler = app.Services.GetService<IHandler<OrderCreated>>();
 var receiver = app.Services.GetService<IReceiver>();
 receiver.Receive<OrderCreated, IHandler<OrderCreated>>(orderCreatedHandler, ordersReceiverQueue, ordersReceiverExchange);

@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using OrdersAPI.Data;
+using OrdersAPI.Common.Data;
 
 #nullable disable
 
-namespace OrdersAPI.Migrations
+namespace OrdersAPI.Common.Migrations
 {
     [DbContext(typeof(OrderContext))]
-    [Migration("20220219165744_InitialCreate")]
+    [Migration("20220219180923_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,7 +24,7 @@ namespace OrdersAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("OrdersAPI.Data.Item", b =>
+            modelBuilder.Entity("OrdersAPI.Common.Data.Item", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -53,7 +53,7 @@ namespace OrdersAPI.Migrations
                     b.ToTable("Items", "Orders");
                 });
 
-            modelBuilder.Entity("OrdersAPI.Data.Order", b =>
+            modelBuilder.Entity("OrdersAPI.Common.Data.Order", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -68,16 +68,16 @@ namespace OrdersAPI.Migrations
                     b.ToTable("Orders", "Orders");
                 });
 
-            modelBuilder.Entity("OrdersAPI.Data.Item", b =>
+            modelBuilder.Entity("OrdersAPI.Common.Data.Item", b =>
                 {
-                    b.HasOne("OrdersAPI.Data.Order", null)
+                    b.HasOne("OrdersAPI.Common.Data.Order", null)
                         .WithMany("Items")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("OrdersAPI.Data.Order", b =>
+            modelBuilder.Entity("OrdersAPI.Common.Data.Order", b =>
                 {
                     b.Navigation("Items");
                 });

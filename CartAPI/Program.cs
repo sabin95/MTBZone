@@ -15,7 +15,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CartContext>(options =>
-    options.UseSqlServer(ConnectionString));
+    options.UseSqlServer(ConnectionString),
+    ServiceLifetime.Singleton);
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 
 builder.Services.AddSingleton<ISender, SNSSender>();
@@ -25,6 +26,8 @@ builder.Services
   .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
 var app = builder.Build();
+var db = app.Services.GetService<CartContext>();
+db.Database.Migrate();
 var sender = app.Services.GetService<ISender>();
 sender.Initialize(cartExchange);
 
