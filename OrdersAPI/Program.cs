@@ -1,6 +1,4 @@
-using CartAPI.Events;
 using Microsoft.EntityFrameworkCore;
-using MTBZone.Messaging.Receiver;
 using MTBZone.Messaging.Sender;
 using OrdersAPI.Common.Data;
 using OrdersAPI.Common.Repository;
@@ -18,14 +16,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<OrderContext>(options => 
+builder.Services.AddDbContext<OrderContext>(options =>
     options.UseSqlServer(ConnectionString),
-    ServiceLifetime.Singleton);
-builder.Services.AddTransient<IOrderRepository, OrderRepository>();
-if(environment.ToUpper().Equals("DEVELOPMENT"))
+    ServiceLifetime.Scoped);
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+if (environment.ToUpper().Equals("DEVELOPMENT"))
 {
     //builder.Services.AddSingleton<IReceiver, RabbitMQReceiver>();
-    builder.Services.AddSingleton<ISender, RabbitMQSender>();
+    builder.Services.AddScoped<ISender, RabbitMQSender>();
 }
 else
 {

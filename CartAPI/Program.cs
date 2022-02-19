@@ -15,28 +15,23 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CartContext>(options =>
-    options.UseSqlServer(ConnectionString));
+    options.UseSqlServer(ConnectionString),
+    ServiceLifetime.Scoped
+);
 builder.Services.AddScoped<ICartRepository, CartRepository>();
-
-builder.Services.AddSingleton<ISender, SNSSender>();
-
+// builder.Services.AddScoped<ISender, SNSSender>();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services
   .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
 var app = builder.Build();
-var sender = app.Services.GetService<ISender>();
-sender.Initialize(cartExchange);
+// var sender = app.Services.GetService<ISender>();
+// sender.Initialize(cartExchange);
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI();
-
-
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

@@ -11,21 +11,23 @@ namespace CartAPI.Repository
     public class CartRepository : ICartRepository
     {
         private readonly CartContext _cartContext;
-        private readonly ISender _sender;
+        // private readonly ISender _sender;
         private readonly IMapper _mapper;
 
-        public CartRepository(CartContext cartContext,ISender sender, IMapper mapper)
+        public CartRepository(CartContext cartContext,
+        // ISender sender,
+        IMapper mapper)
         {
             _cartContext = cartContext;
-            _sender = sender;
+            // _sender = sender;
             _mapper = mapper;
-        }       
+        }
 
         public async Task<CartResult> CreateCart()
         {
             var cart = new Cart()
             {
-                State= Utils.Utils.CartState.Active.ToString()
+                State = Utils.Utils.CartState.Active.ToString()
             };
             _cartContext.Carts.Add(cart);
             await _cartContext.SaveChangesAsync();
@@ -98,24 +100,24 @@ namespace CartAPI.Repository
                 return null;
             }
             cart.State = Utils.Utils.CartState.Ordered.ToString();
-            if(cart.Items.Count==0)
+            if (cart.Items.Count == 0)
             {
                 throw new ArgumentException(nameof(cart.Items.Count), "Cannot make an order if you have no items in the cart!");
             }
             await _cartContext.SaveChangesAsync();
             var message = new CartOrdered()
             {
-                Id=cart.Id,
-                Items = cart.Items.Select(x=>new CartOrderedItem()
-                    {
+                Id = cart.Id,
+                Items = cart.Items.Select(x => new CartOrderedItem()
+                {
                     Id = x.Id,
                     Price = x.Price,
-                    Quantity=x.Quantity,
-                    Title=x.Title,
-                    ExternalId=x.ExternalId
+                    Quantity = x.Quantity,
+                    Title = x.Title,
+                    ExternalId = x.ExternalId
                 }).ToList()
             };
-            await _sender.Send(message);
+            // await _sender.Send(message);
             var cartResult = _mapper.Map<CartResult>(cart);
             return cartResult;
         }
