@@ -1,4 +1,4 @@
-﻿using CartAPI.Events;
+﻿using CartsAPI.Events;
 using MTBZone.Messaging.Receiver;
 using OrdersAPI.Common.Repository;
 

@@ -18,39 +18,22 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<OrderContext>(options =>
     options.UseSqlServer(ConnectionString),
-    ServiceLifetime.Scoped);
+    ServiceLifetime.Singleton
+);
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-if (environment.ToUpper().Equals("DEVELOPMENT"))
-{
-    //builder.Services.AddSingleton<IReceiver, RabbitMQReceiver>();
-    builder.Services.AddScoped<ISender, RabbitMQSender>();
-}
-else
-{
-    //builder.Services.AddSingleton<IReceiver, SQSReceiver>();
-    builder.Services.AddSingleton<ISender, SNSSender>();
-}
-//builder.Services.AddSingleton<IHandler<CartOrdered>, CartOrderedHandler>();
+builder.Services.AddScoped<ISender, SNSSender>();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services
   .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
 var app = builder.Build();
-//var cartOrderedHandler = app.Services.GetService<IHandler<CartOrdered>>();
-//var receiver = app.Services.GetService<IReceiver>();
-//receiver.Receive<CartOrdered, IHandler<CartOrdered>>(cartOrderedHandler, cartsReceiverQueue, cartsReceiverExchange);
 var sender = app.Services.GetService<ISender>();
-sender.Initialize(odersExchange);
+sender!.Initialize(odersExchange);
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI();
-
-
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

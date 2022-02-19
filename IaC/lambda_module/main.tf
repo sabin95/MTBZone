@@ -60,7 +60,7 @@ resource "aws_iam_policy_attachment" "LambdaPolicyAttachment" {
 }
 
 module "LambdaBuilder" {
-  source   = "../lambda_builder_module"
+  source   = "./lambda_builder_module"
   src_path = var.src_path
 }
 
@@ -74,6 +74,7 @@ resource "aws_lambda_function" "Lambda" {
   handler       = "bootstrap"
   runtime       = "provided.al2"
   timeout       = 30
+  memory_size   = 256
 
   source_code_hash = module.LambdaBuilder.zip_hash
   vpc_config {

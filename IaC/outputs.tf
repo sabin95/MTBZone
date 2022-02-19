@@ -6,8 +6,8 @@ output "CatalogAPIUrl" {
   value = module.CatalogAPIGateway.APIUrl
 }
 
-output "CartAPIUrl" {
-  value = module.CartAPIGateway.APIUrl
+output "CartsAPIUrl" {
+  value = module.CartsAPIGateway.APIUrl
 }
 
 output "OrdersAPIUrl" {
@@ -22,8 +22,8 @@ output "OdersAPITopic" {
   value = aws_sns_topic.OdersAPITopic.arn
 }
 
-output "CartAPITopic" {
-  value = aws_sns_topic.CartAPITopic.arn
+output "CartsAPITopic" {
+  value = aws_sns_topic.CartsAPITopic.arn
 }
 
 output "OrdersAPICartsQueue" {

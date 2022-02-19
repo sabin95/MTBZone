@@ -32,7 +32,7 @@ resource "aws_route" "MTBZoneRouteTableIGWRoute" {
 resource "aws_subnet" "MTBZoneLambdaSubnet" {
   count             = 3
   vpc_id            = aws_vpc.MTBZoneVPC.id
-  cidr_block        = "10.0.${count.index + 6}.0/24"
+  cidr_block        = "10.0.${count.index + 3}.0/24"
   availability_zone = data.aws_availability_zones.available.names[count.index]
   tags = {
     Name = "MTBZoneLambdaSubnet"

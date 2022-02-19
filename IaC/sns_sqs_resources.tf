@@ -1,5 +1,5 @@
-resource "aws_sns_topic" "CartAPITopic" {
-  name = "CartAPITopic"
+resource "aws_sns_topic" "CartsAPITopic" {
+  name = "CartsAPITopic"
 }
 
 resource "aws_sqs_queue" "OrdersAPICartsQueue" {
@@ -23,7 +23,7 @@ resource "aws_sqs_queue_policy" "OrdersAPICartsQueuePolicy" {
       "Resource": "${aws_sqs_queue.OrdersAPICartsQueue.arn}",
       "Condition": {
         "ArnEquals": {
-          "aws:SourceArn": "${aws_sns_topic.CartAPITopic.arn}"
+          "aws:SourceArn": "${aws_sns_topic.CartsAPITopic.arn}"
         }
       }
     }
@@ -33,7 +33,7 @@ POLICY
 }
 
 resource "aws_sns_topic_subscription" "OrdersAPICartsQueueSubscription" {
-  topic_arn = aws_sns_topic.CartAPITopic.arn
+  topic_arn = aws_sns_topic.CartsAPITopic.arn
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.OrdersAPICartsQueue.arn
 }
@@ -46,7 +46,7 @@ module "OrdersAPIEventHandlersLambda" {
   db_server_address  = aws_db_instance.MTBZoneDB.address
   additional_environment_variables = {
     cartsReceiverQueue     = aws_sqs_queue.OrdersAPICartsQueue.arn
-    cartsReceiverExchange  = aws_sns_topic.CartAPITopic.arn
+    cartsReceiverExchange  = aws_sns_topic.CartsAPITopic.arn
     odersExchange          = aws_sns_topic.OdersAPITopic.arn
     ASPNETCORE_ENVIRONMENT = "Production"
   }

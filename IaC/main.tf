@@ -21,26 +21,26 @@ module "CatalogAPIGateway" {
   lambda_name = module.CatalogAPILambda.lambda_name
 }
 
-module "CartAPILambda" {
+module "CartsAPILambda" {
   source             = "./lambda_module"
-  service_name       = "CartAPI"
+  service_name       = "CartsAPI"
   subnet_ids         = aws_subnet.MTBZoneLambdaSubnet[*].id
   security_group_ids = [aws_security_group.MTBZoneLambdaSecurityGroup.id]
   db_server_address  = aws_db_instance.MTBZoneDB.address
   additional_environment_variables = {
-    cartExchange           = aws_sns_topic.CartAPITopic.arn
+    cartExchange           = aws_sns_topic.CartsAPITopic.arn
     ASPNETCORE_ENVIRONMENT = "Production"
   }
   db_password = var.db_password
   db_username = var.db_username
-  src_path    = "../CartAPI"
+  src_path    = "../CartsAPI"
 }
 
-module "CartAPIGateway" {
+module "CartsAPIGateway" {
   source      = "./lambda_api_gateway_module"
-  api_name    = "CartAPI"
-  lambda_arn  = module.CartAPILambda.lambda_arn
-  lambda_name = module.CartAPILambda.lambda_name
+  api_name    = "CartsAPI"
+  lambda_arn  = module.CartsAPILambda.lambda_arn
+  lambda_name = module.CartsAPILambda.lambda_name
 }
 
 
@@ -52,7 +52,7 @@ module "OrdersAPILambda" {
   db_server_address  = aws_db_instance.MTBZoneDB.address
   additional_environment_variables = {
     cartsReceiverQueue     = aws_sqs_queue.OrdersAPICartsQueue.arn
-    cartsReceiverExchange  = aws_sns_topic.CartAPITopic.arn
+    cartsReceiverExchange  = aws_sns_topic.CartsAPITopic.arn
     odersExchange          = aws_sns_topic.OdersAPITopic.arn
     ASPNETCORE_ENVIRONMENT = "Production"
   }
