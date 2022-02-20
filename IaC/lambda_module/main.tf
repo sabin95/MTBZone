@@ -1,7 +1,5 @@
 locals {
-  function_name     = "${var.service_name}Lambda"
-  src_folder_name   = basename(var.src_path)
-  function_zip_path = "${var.src_path}/bin/Release/net6.0/${local.src_folder_name}.zip"
+  function_name = "${var.service_name}Lambda"
 }
 
 resource "aws_iam_role" "LambdaRole" {
