@@ -17,7 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<OrderContext>(options =>
-    options.UseSqlServer(ConnectionString),
+    options.UseSqlServer(ConnectionString, b => b.MigrationsAssembly("OrdersAPI.Common")),
     ServiceLifetime.Singleton
 );
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
@@ -27,6 +27,8 @@ builder.Services
   .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
 var app = builder.Build();
+var db = app.Services.GetService<OrderContext>();
+db!.Database.Migrate();
 var sender = app.Services.GetService<ISender>();
 sender!.Initialize(odersExchange);
 

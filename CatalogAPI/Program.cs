@@ -25,6 +25,8 @@ builder.Services
   .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
 var app = builder.Build();
+var db = app.Services.GetService<CatalogContext>();
+db.Database.Migrate();
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
