@@ -6,7 +6,7 @@ using OrdersAPI.Common.Repository;
 var builder = WebApplication.CreateBuilder(args);
 var ConnectionString = builder.Configuration["ConnectionString"];
 var environment = builder.Configuration["ASPNETCORE_ENVIRONMENT"];
-var odersExchange = builder.Configuration["odersExchange"];
+var ordersExchange = builder.Configuration["ordersExchange"];
 var cartsReceiverQueue = builder.Configuration["cartsReceiverQueue"];
 var cartsReceiverExchange = builder.Configuration["cartsReceiverExchange"];
 
@@ -30,7 +30,7 @@ var app = builder.Build();
 var db = app.Services.GetService<OrderContext>();
 db!.Database.Migrate();
 var sender = app.Services.GetService<ISender>();
-sender!.Initialize(odersExchange);
+sender!.Initialize(ordersExchange);
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();

@@ -47,7 +47,7 @@ module "OrdersAPIEventHandlersLambda" {
   additional_environment_variables = {
     cartsReceiverQueue     = aws_sqs_queue.OrdersAPICartsQueue.arn
     cartsReceiverExchange  = aws_sns_topic.CartsAPITopic.arn
-    odersExchange          = aws_sns_topic.OdersAPITopic.arn
+    ordersExchange         = aws_sns_topic.OrdersAPITopic.arn
     ASPNETCORE_ENVIRONMENT = "Production"
   }
   db_password = var.db_password
@@ -82,8 +82,8 @@ resource "aws_lambda_event_source_mapping" "OrdersAPIEventHandlersLambdaEventSou
   function_name    = module.OrdersAPIEventHandlersLambda.lambda_name
 }
 
-resource "aws_sns_topic" "OdersAPITopic" {
-  name = "OdersAPITopic"
+resource "aws_sns_topic" "OrdersAPITopic" {
+  name = "OrdersAPITopic"
 }
 
 resource "aws_sqs_queue" "CatalogAPIOrdersQueue" {
@@ -107,7 +107,7 @@ resource "aws_sqs_queue_policy" "CatalogAPIOrdersQueuePolicy" {
       "Resource": "${aws_sqs_queue.CatalogAPIOrdersQueue.arn}",
       "Condition": {
         "ArnEquals": {
-          "aws:SourceArn": "${aws_sns_topic.OdersAPITopic.arn}"
+          "aws:SourceArn": "${aws_sns_topic.OrdersAPITopic.arn}"
         }
       }
     }
@@ -117,7 +117,7 @@ POLICY
 }
 
 resource "aws_sns_topic_subscription" "CatalogAPIOrdersQueueSubscription" {
-  topic_arn = aws_sns_topic.OdersAPITopic.arn
+  topic_arn = aws_sns_topic.OrdersAPITopic.arn
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.CatalogAPIOrdersQueue.arn
 }

@@ -18,8 +18,8 @@ output "CatalogAPIOrdersQueue" {
   value = aws_sqs_queue.CatalogAPIOrdersQueue.url
 }
 
-output "OdersAPITopic" {
-  value = aws_sns_topic.OdersAPITopic.arn
+output "OrdersAPITopic" {
+  value = aws_sns_topic.OrdersAPITopic.arn
 }
 
 output "CartsAPITopic" {

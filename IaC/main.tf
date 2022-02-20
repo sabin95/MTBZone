@@ -6,7 +6,7 @@ module "CatalogAPILambda" {
   db_server_address  = aws_db_instance.MTBZoneDB.address
   additional_environment_variables = {
     ordersReceiverQueue    = aws_sqs_queue.CatalogAPIOrdersQueue.arn
-    ordersReceiverExchange = aws_sns_topic.OdersAPITopic.arn
+    ordersReceiverExchange = aws_sns_topic.OrdersAPITopic.arn
     ASPNETCORE_ENVIRONMENT = "Production"
   }
   db_password = var.db_password
@@ -28,9 +28,20 @@ module "CartsAPILambda" {
   security_group_ids = [aws_security_group.MTBZoneLambdaSecurityGroup.id]
   db_server_address  = aws_db_instance.MTBZoneDB.address
   additional_environment_variables = {
-    cartExchange           = aws_sns_topic.CartsAPITopic.arn
+    cartsExchange          = aws_sns_topic.CartsAPITopic.arn
     ASPNETCORE_ENVIRONMENT = "Production"
   }
+  extra_lambda_permissions = [
+    {
+      "Effect" : "Allow",
+      "Action" : [
+        "sns:Publish"
+      ],
+      "Resource" : [
+        aws_sns_topic.CartsAPITopic.arn
+      ]
+    }
+  ]
   db_password = var.db_password
   db_username = var.db_username
   src_path    = "../CartsAPI"
@@ -53,9 +64,20 @@ module "OrdersAPILambda" {
   additional_environment_variables = {
     cartsReceiverQueue     = aws_sqs_queue.OrdersAPICartsQueue.arn
     cartsReceiverExchange  = aws_sns_topic.CartsAPITopic.arn
-    odersExchange          = aws_sns_topic.OdersAPITopic.arn
+    ordersExchange         = aws_sns_topic.OrdersAPITopic.arn
     ASPNETCORE_ENVIRONMENT = "Production"
   }
+  extra_lambda_permissions = [
+    {
+      "Effect" : "Allow",
+      "Action" : [
+        "sns:Publish"
+      ],
+      "Resource" : [
+        aws_sns_topic.OrdersAPITopic.arn
+      ]
+    }
+  ]
   db_password = var.db_password
   db_username = var.db_username
   src_path    = "../OrdersAPI"
