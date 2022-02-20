@@ -1,4 +1,4 @@
-﻿using CartAPI.Events;
+﻿using CartsAPI.Events;
 using OrdersAPI.Common.Results;
 
 namespace OrdersAPI.Common.Repository

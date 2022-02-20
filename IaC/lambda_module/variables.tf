@@ -1,35 +1,35 @@
-variable "service_name"{
+variable "service_name" {
 
 }
 
-variable "subnet_ids"{
+variable "subnet_ids" {
 
 }
 
-variable "security_group_ids"{
+variable "security_group_ids" {
 
 }
 
-variable "db_server_address"{
-    
+variable "db_server_address" {
+
 }
 
-variable "additional_environment_variables"{
-    
+variable "additional_environment_variables" {
+
 }
 
 variable "db_username" {
-  
+
 }
 
 variable "db_password" {
-  
-}
-
-variable "zip_path"{
 
 }
 
-variable "extra_lambda_permissions"{
-    default = []
+variable "src_path" {
+
+}
+
+variable "extra_lambda_permissions" {
+  default = []
 }

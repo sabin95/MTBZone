@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CartAPI.Events;
+using CartsAPI.Events;
 using Microsoft.EntityFrameworkCore;
 using MTBZone.Messaging.Sender;
 using OrdersAPI.Common.Data;

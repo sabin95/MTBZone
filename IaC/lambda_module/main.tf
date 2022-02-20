@@ -1,4 +1,4 @@
-locals{
+locals {
   function_name = "${var.service_name}Lambda"
 }
 
@@ -23,7 +23,7 @@ EOF
 }
 
 resource "aws_iam_policy" "LambdaPolicy" {
-  name        = "${var.service_name}LambdaPolicy"
+  name = "${var.service_name}LambdaPolicy"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -38,16 +38,16 @@ resource "aws_iam_policy" "LambdaPolicy" {
         Resource = "*"
       },
       {
-          "Effect": "Allow",
-          "Action": [
-              "logs:CreateLogStream",
-              "logs:PutLogEvents"
-          ],
-          "Resource": [
-              "${aws_cloudwatch_log_group.LambdaLogGroup.arn}:*"
-          ]
+        "Effect" : "Allow",
+        "Action" : [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        "Resource" : [
+          "${aws_cloudwatch_log_group.LambdaLogGroup.arn}:*"
+        ]
       }
-    ],var.extra_lambda_permissions)
+    ], var.extra_lambda_permissions)
   })
 }
 
@@ -57,27 +57,33 @@ resource "aws_iam_policy_attachment" "LambdaPolicyAttachment" {
   policy_arn = aws_iam_policy.LambdaPolicy.arn
 }
 
+module "LambdaBuilder" {
+  source   = "./lambda_builder_module"
+  src_path = var.src_path
+}
+
 resource "aws_lambda_function" "Lambda" {
   depends_on = [
-    aws_iam_policy_attachment.LambdaPolicyAttachment
+    aws_iam_policy_attachment.LambdaPolicyAttachment,
   ]
-  filename      = var.zip_path
   function_name = local.function_name
+  filename      = module.LambdaBuilder.zip_path
   role          = aws_iam_role.LambdaRole.arn
   handler       = "bootstrap"
-  runtime = "provided.al2"
-  timeout = 30
+  runtime       = "provided.al2"
+  timeout       = 30
+  memory_size   = 256
 
-  source_code_hash = filebase64sha256(var.zip_path)
+  source_code_hash = module.LambdaBuilder.zip_hash
   vpc_config {
-    subnet_ids = var.subnet_ids
+    subnet_ids         = var.subnet_ids
     security_group_ids = var.security_group_ids
   }
   environment {
     variables = merge({
-      ConnectionString = "Server=${var.db_server_address};Database=MTBZone; user id=${var.db_username};password=${var.db_password};",
+      ConnectionString              = "Server=${var.db_server_address};Database=MTBZone; user id=${var.db_username};password=${var.db_password};",
       "LAMBDA_NET_SERIALIZER_DEBUG" = true
-    },var.additional_environment_variables)
+    }, var.additional_environment_variables)
   }
 }
 

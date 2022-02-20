@@ -1,12 +1,12 @@
-using CatalogAPI.Data;
-using CatalogAPI.Repository;
+using CartsAPI.Data;
+using CartsAPI.Repository;
 using Microsoft.EntityFrameworkCore;
+using MTBZone.Messaging.Sender;
 
 var builder = WebApplication.CreateBuilder(args);
 var ConnectionString = builder.Configuration["ConnectionString"];
+var cartsExchange = builder.Configuration["cartsExchange"];
 var environment = builder.Configuration["ASPNETCORE_ENVIRONMENT"];
-var ordersReceiverQueue = builder.Configuration["ordersReceiverQueue"];
-var ordersReceiverExchange = builder.Configuration["ordersReceiverExchange"];
 
 // Add services to the container.
 
@@ -14,19 +14,22 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<CatalogContext>(options =>
+builder.Services.AddDbContext<CartsContext>(options =>
     options.UseSqlServer(ConnectionString),
-    ServiceLifetime.Singleton
-);
-builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
-builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
+    ServiceLifetime.Singleton);
+builder.Services.AddScoped<ICartsRepository, CartsRepository>();
+
+builder.Services.AddSingleton<ISender, SNSSender>();
+
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services
   .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
 var app = builder.Build();
-var db = app.Services.GetService<CatalogContext>();
+var db = app.Services.GetService<CartsContext>();
 db.Database.Migrate();
+var sender = app.Services.GetService<ISender>();
+sender.Initialize(cartsExchange);
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();

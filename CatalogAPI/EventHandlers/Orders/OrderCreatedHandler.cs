@@ -6,9 +6,9 @@ namespace CatalogAPI.EventHandlers.Orders
 {
     public class OrderCreatedHandler : IHandler<OrderCreated>
     {
-        private readonly IProductRepository _productRepository;
+        private readonly IProductsRepository _productRepository;
 
-        public OrderCreatedHandler(IProductRepository productRepository)
+        public OrderCreatedHandler(IProductsRepository productRepository)
         {
             _productRepository = productRepository;
         }

@@ -363,6 +363,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 IaC/.terraform.lock.hcl
-CartAPI/appsettings.AWS.json
+CartsAPI/appsettings.AWS.json
 CatalogAPI/appsettings.AWS.json
 OrdersAPI/appsettings.AWS.json
