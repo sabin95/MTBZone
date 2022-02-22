@@ -18,11 +18,11 @@ resource "null_resource" "BuildLambdaScript" {
   }
 }
 
-data "archive_file" "LambdaArchive" {
-  depends_on = [
-    null_resource.BuildLambdaScript
-  ]
-  type        = "zip"
-  source_dir  = local.function_publish_path
-  output_path = local.function_zip_path
-}
+# data "archive_file" "LambdaArchive" {
+#   depends_on = [
+#     null_resource.BuildLambdaScript
+#   ]
+#   type        = "zip"
+#   source_dir  = local.function_publish_path
+#   output_path = local.function_zip_path
+# }

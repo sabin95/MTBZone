@@ -66,18 +66,7 @@ module "OrdersAPILambda" {
     cartsReceiverExchange  = aws_sns_topic.CartsAPITopic.arn
     ordersExchange         = aws_sns_topic.OrdersAPITopic.arn
     ASPNETCORE_ENVIRONMENT = "Production"
-  }
-  extra_lambda_permissions = [
-    {
-      "Effect" : "Allow",
-      "Action" : [
-        "sns:Publish"
-      ],
-      "Resource" : [
-        aws_sns_topic.OrdersAPITopic.arn
-      ]
-    }
-  ]
+  }  
   db_password = var.db_password
   db_username = var.db_username
   src_path    = "../OrdersAPI"

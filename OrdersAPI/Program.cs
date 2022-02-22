@@ -22,7 +22,7 @@ builder.Services.AddDbContext<OrderContext>(options =>
 );
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<ISender, SNSSender>();
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services
   .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 

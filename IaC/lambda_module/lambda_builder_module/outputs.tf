@@ -3,5 +3,5 @@ output "zip_path" {
 }
 
 output "zip_hash" {
-  value = data.archive_file.LambdaArchive.output_base64sha256
+  value = filebase64sha256(local.function_zip_path)
 }

@@ -21,7 +21,7 @@ builder.Services.AddScoped<ICartsRepository, CartsRepository>();
 
 builder.Services.AddSingleton<ISender, SNSSender>();
 
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services
   .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 

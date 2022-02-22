@@ -18,7 +18,7 @@ namespace MTBZone.Messaging.Sender
             var request = new PublishRequest
             {
                 TopicArn = _exchange,
-                Message = JsonConvert.SerializeObject(message)
+                Message = JsonConvert.SerializeObject(message)                
             };
 
             await snsClient.PublishAsync(request);

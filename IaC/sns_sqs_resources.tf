@@ -64,6 +64,15 @@ module "OrdersAPIEventHandlersLambda" {
       "Resource" : [
         aws_sqs_queue.OrdersAPICartsQueue.arn
       ]
+    },
+    {
+      "Effect" : "Allow",
+      "Action" : [
+        "sns:Publish"
+      ],
+      "Resource" : [
+        aws_sns_topic.OrdersAPITopic.arn
+      ]
     }
   ]
 }

@@ -366,3 +366,4 @@ IaC/.terraform.lock.hcl
 CartsAPI/appsettings.AWS.json
 CatalogAPI/appsettings.AWS.json
 OrdersAPI/appsettings.AWS.json
+OrdersAPI.EventHandlers/appsettings.AWS.json
