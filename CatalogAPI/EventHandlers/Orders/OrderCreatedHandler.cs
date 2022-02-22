@@ -4,7 +4,7 @@ using OrdersAPI.Events;
 
 namespace CatalogAPI.EventHandlers.Orders
 {
-    public class OrderCreatedHandler : IHandler<OrderCreated>
+    public class OrderCreatedHandler : IHandler<OrderCreatedEvent>
     {
         private readonly IProductsRepository _productRepository;
 
@@ -12,7 +12,7 @@ namespace CatalogAPI.EventHandlers.Orders
         {
             _productRepository = productRepository;
         }
-        public async Task Handle(OrderCreated message)
+        public async Task Handle(OrderCreatedEvent message)
         {
             await _productRepository.DecreaseStockPerProduct(message.Items);
         }

@@ -3,11 +3,11 @@ using MTBZone.Messaging;
 
 namespace CartsAPI.Events
 {
-    public class CartOrdered : Message
+    public class CartOrderedEvent : Message
     {
         public Guid Id { get; set; }
         public List<CartOrderedItem> Items { get; set; }
-        public override string Type => typeof(CartOrdered).Name;
+        public override string Type => typeof(CartOrderedEvent).Name;
     }
     public class CartOrderedItem
     {

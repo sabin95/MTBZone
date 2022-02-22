@@ -29,7 +29,7 @@ namespace OrdersAPI.Common.Repository
         }
 
 
-        public async Task CreateOrder(CartOrdered cartOrdered)
+        public async Task CreateOrder(CartOrderedEvent cartOrdered)
         {
             var order = new Order()
             {

@@ -4,7 +4,7 @@ using OrdersAPI.Common.Repository;
 
 namespace OrdersAPI.EventHandlers.Carts
 {
-    public class CartOrderedHandler : IHandler<CartOrdered>
+    public class CartOrderedHandler : IHandler<CartOrderedEvent>
     {
         private readonly IOrderRepository _orderRepository;
 
@@ -12,7 +12,7 @@ namespace OrdersAPI.EventHandlers.Carts
         {
             _orderRepository = orderRepository;
         }
-        public async Task Handle(CartOrdered message)
+        public async Task Handle(CartOrderedEvent message)
         {
             await _orderRepository.CreateOrder(message);
         }

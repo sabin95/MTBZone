@@ -14,9 +14,9 @@ namespace OrdersAPI.EventHandlers
     }
     public class EventRouter
     {
-        private readonly IHandler<CartOrdered> _cartOrderedHandler;
+        private readonly IHandler<CartOrderedEvent> _cartOrderedHandler;
 
-        public EventRouter(IHandler<CartOrdered> cartOrderedHandler)
+        public EventRouter(IHandler<CartOrderedEvent> cartOrderedHandler)
         {
             _cartOrderedHandler = cartOrderedHandler;
         }
@@ -28,10 +28,10 @@ namespace OrdersAPI.EventHandlers
                 var messageObject = JsonConvert.DeserializeObject<AWSMessage>(messageBody);
                 var messageData = JsonConvert.DeserializeObject<Message>(messageObject.Message);
                 Console.WriteLine($"messageData.Type is { messageData.Type}");
-                Console.WriteLine($"typeof(CartOrdered).Name is { typeof(CartOrdered).Name}");
-                if (messageData.Type == typeof(CartOrdered).Name)
+                Console.WriteLine($"typeof(CartOrdered).Name is { typeof(CartOrderedEvent).Name}");
+                if (messageData.Type == typeof(CartOrderedEvent).Name)
                 {
-                    var cartOrderedMessage = JsonConvert.DeserializeObject<CartOrdered>(messageObject.Message);
+                    var cartOrderedMessage = JsonConvert.DeserializeObject<CartOrderedEvent>(messageObject.Message);
                     await _cartOrderedHandler.Handle(cartOrderedMessage);
                 }
 

@@ -1,6 +1,6 @@
 ﻿namespace OrdersAPI.Events
 {
-    public class OrderCreated
+    public class OrderCreatedEvent
     {
         public Guid Id { get; set; }
         public string State { get; set; }

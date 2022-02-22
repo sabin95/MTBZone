@@ -25,7 +25,7 @@ namespace OrdersAPI.EventHandlers
             var ConnectionString = config["ConnectionString"];
             var ordersExchange = config["ordersExchange"];
             IServiceCollection services = new ServiceCollection();
-            services.AddSingleton<IHandler<CartOrdered>, CartOrderedHandler>();
+            services.AddSingleton<IHandler<CartOrderedEvent>, CartOrderedHandler>();
             services.AddDbContext<OrderContext>(options =>
                 options.UseSqlServer(ConnectionString),
                 ServiceLifetime.Singleton);

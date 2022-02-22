@@ -107,7 +107,7 @@ namespace CartsAPI.Repository
                 throw new ArgumentException(nameof(cart.Items.Count), "Cannot make an order if you have no items in the cart!");
             }
             await _cartsContext.SaveChangesAsync();
-            var message = new CartOrdered()
+            var message = new CartOrderedEvent()
             {
                 Id = cart.Id,
                 Items = cart.Items.Select(x => new CartOrderedItem()
