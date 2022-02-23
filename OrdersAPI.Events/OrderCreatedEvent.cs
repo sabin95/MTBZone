@@ -1,10 +1,13 @@
-﻿namespace OrdersAPI.Events
+﻿using MTBZone.Messaging;
+
+namespace OrdersAPI.Events
 {
-    public class OrderCreatedEvent
+    public class OrderCreatedEvent : Event
     {
         public Guid Id { get; set; }
         public string State { get; set; }
         public List<OrderCreatedItem> Items { get; set; }
+        public override string Type => typeof(OrderCreatedEvent).Name;
     }
 
     public class OrderCreatedItem

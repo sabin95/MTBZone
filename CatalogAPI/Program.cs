@@ -1,5 +1,5 @@
-using CatalogAPI.Data;
-using CatalogAPI.Repository;
+using CatalogAPI.Common.Data;
+using CatalogAPI.Common.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CatalogContext>(options =>
-    options.UseSqlServer(ConnectionString),
+    options.UseSqlServer(ConnectionString, b => b.MigrationsAssembly("CatalogAPI.Common")),
     ServiceLifetime.Singleton
 );
 builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();

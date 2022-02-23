@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace CatalogAPI.Data
+namespace CatalogAPI.Common.Data
 {
     public class CatalogContext : DbContext
     {

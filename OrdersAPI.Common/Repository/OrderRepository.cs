@@ -37,8 +37,8 @@ namespace OrdersAPI.Common.Repository
                 
             };
             _orderContext.Orders.Add(order);
-            await _orderContext.SaveChangesAsync();
-            var message = new OrderCreated()
+            //await _orderContext.SaveChangesAsync();
+            var message = new OrderCreatedEvent()
             {
                 Id = cartOrdered.Id,
                 Items = cartOrdered.Items.Select(x => new OrderCreatedItem()
@@ -59,6 +59,10 @@ namespace OrdersAPI.Common.Repository
                 OrderId = order.Id,
                 ExternalId=x.ExternalId
             }).ToList();
+            foreach (var item in order.Items)
+            {
+                _orderContext.OrderItems.Add(item);
+            }
             await _orderContext.SaveChangesAsync();
         }
     }

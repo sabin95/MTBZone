@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using CatalogAPI.Commands;
-using CatalogAPI.Data;
-using CatalogAPI.Results;
+using CatalogAPI.Common.Commands;
+using CatalogAPI.Common.Data;
+using CatalogAPI.Common.Results;
 using Microsoft.EntityFrameworkCore;
 
-namespace CatalogAPI.Repository
+namespace CatalogAPI.Common.Repository
 {
     public class CategoriesRepository : ICategoriesRepository
     {

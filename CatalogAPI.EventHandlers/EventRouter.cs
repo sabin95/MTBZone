@@ -1,11 +1,11 @@
 ﻿using Amazon.Lambda.Core;
 using Amazon.Lambda.SQSEvents;
-using CartsAPI.Events;
 using MTBZone.Messaging;
 using MTBZone.Messaging.Receiver;
 using Newtonsoft.Json;
+using OrdersAPI.Events;
 
-namespace OrdersAPI.EventHandlers
+namespace CatalogAPI.EventHandlers
 {
     internal class AWSMessage
     {
@@ -13,11 +13,11 @@ namespace OrdersAPI.EventHandlers
     }
     public class EventRouter
     {
-        private readonly IHandler<CartOrderedEvent> _cartOrderedHandler;
+        private readonly IHandler<OrderCreatedEvent> _orderCartHandler;
 
-        public EventRouter(IHandler<CartOrderedEvent> cartOrderedHandler)
+        public EventRouter(IHandler<OrderCreatedEvent> orderCartHandler)
         {
-            _cartOrderedHandler = cartOrderedHandler;
+            _orderCartHandler = orderCartHandler;
         }
         public async Task Route(SQSEvent sqsEvent, ILambdaContext context)
         {
@@ -27,11 +27,11 @@ namespace OrdersAPI.EventHandlers
                 var messageObject = JsonConvert.DeserializeObject<AWSMessage>(messageBody);
                 var messageData = JsonConvert.DeserializeObject<Event>(messageObject.Message);
                 Console.WriteLine($"messageData.Type is { messageData.Type}");
-                Console.WriteLine($"typeof(CartOrderedEvent).Name is { typeof(CartOrderedEvent).Name}");
-                if (messageData.Type == typeof(CartOrderedEvent).Name)
+                Console.WriteLine($"typeof(OrderCreatedEvent).Name is { typeof(OrderCreatedEvent).Name}");
+                if (messageData.Type == typeof(OrderCreatedEvent).Name)
                 {
-                    var cartOrderedMessage = JsonConvert.DeserializeObject<CartOrderedEvent>(messageObject.Message);
-                    await _cartOrderedHandler.Handle(cartOrderedMessage);
+                    var orderCartMessage = JsonConvert.DeserializeObject<OrderCreatedEvent>(messageObject.Message);
+                    await _orderCartHandler.Handle(orderCartMessage);
                 }
 
             }

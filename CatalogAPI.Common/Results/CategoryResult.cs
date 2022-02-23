@@ -1,4 +1,4 @@
-﻿namespace CatalogAPI.Results
+﻿namespace CatalogAPI.Common.Results
 {
     public class CategoryResult
     {

@@ -1,6 +1,5 @@
-﻿using CatalogAPI.Commands;
-using CatalogAPI.Repository;
-using CatalogAPI.Results;
+﻿using CatalogAPI.Common.Commands;
+using CatalogAPI.Common.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CatalogAPI.Controllers

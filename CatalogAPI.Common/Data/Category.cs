@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CatalogAPI.Data
+namespace CatalogAPI.Common.Data
 {
     [Table("Categories", Schema = "Catalog")]
     public class Category

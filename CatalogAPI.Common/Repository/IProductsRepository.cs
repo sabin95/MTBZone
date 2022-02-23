@@ -1,8 +1,8 @@
-﻿using CatalogAPI.Commands;
-using CatalogAPI.Results;
+﻿using CatalogAPI.Common.Commands;
+using CatalogAPI.Common.Results;
 using OrdersAPI.Events;
 
-namespace CatalogAPI.Repository
+namespace CatalogAPI.Common.Repository
 {
     public interface IProductsRepository
     {
