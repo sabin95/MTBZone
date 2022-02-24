@@ -69,3 +69,21 @@ steps:
     PathtoPublish: '$(System.DefaultWorkingDirectory)'
     ArtifactName: 'artifact'
     publishLocation: 'Container'
+
+- task: TerraformInstaller@0
+  inputs:
+    terraformVersion: 'latest'
+
+- task: TerraformCLI@0
+  inputs:
+    command: 'init'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+    backendType: 'selfConfigured'
+    allowTelemetryCollection: false
+
+- task: TerraformCLI@0
+  inputs:
+    command: 'apply'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+    commandOptions: '--auto -approve'
+    allowTelemetryCollection: false
