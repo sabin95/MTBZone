@@ -13,7 +13,8 @@ resource "null_resource" "BuildLambdaScript" {
   }
 
   provisioner "local-exec" {
-    command     = "dotnet clean && dotnet build -c Release && dotnet lambda package"
+    command = "echo test"
+    //command     = "dotnet clean && dotnet build -c Release && dotnet lambda package"
     working_dir = var.src_path
   }
 }
