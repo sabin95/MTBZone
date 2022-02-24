@@ -1,7 +1,7 @@
-﻿using CatalogAPI.Commands;
-using CatalogAPI.Results;
+﻿using CatalogAPI.Common.Commands;
+using CatalogAPI.Common.Results;
 
-namespace CatalogAPI.Repository
+namespace CatalogAPI.Common.Repository
 {
     public interface ICategoriesRepository
     {

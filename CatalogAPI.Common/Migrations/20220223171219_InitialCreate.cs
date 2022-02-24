@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace CatalogAPI.Migrations
+namespace CatalogAPI.Common.Migrations
 {
     public partial class InitialCreate : Migration
     {

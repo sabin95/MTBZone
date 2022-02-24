@@ -1,4 +1,4 @@
-﻿namespace CatalogAPI.Commands
+﻿namespace CatalogAPI.Common.Commands
 {
     public class CategoryCommand
     {

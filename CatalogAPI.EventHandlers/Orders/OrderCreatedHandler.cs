@@ -1,4 +1,4 @@
-﻿using CatalogAPI.Repository;
+﻿using CatalogAPI.Common.Repository;
 using MTBZone.Messaging.Receiver;
 using OrdersAPI.Events;
 

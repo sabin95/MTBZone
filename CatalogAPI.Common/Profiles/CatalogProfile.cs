@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using CatalogAPI.Data;
-using CatalogAPI.Results;
+using CatalogAPI.Common.Data;
+using CatalogAPI.Common.Results;
 
-namespace CatalogAPI.Profiles
+namespace CatalogAPI.Common.Profiles
 {
     public class CatalogProfile : Profile
     {

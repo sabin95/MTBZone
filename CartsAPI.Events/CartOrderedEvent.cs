@@ -3,7 +3,7 @@ using MTBZone.Messaging;
 
 namespace CartsAPI.Events
 {
-    public class CartOrderedEvent : Message
+    public class CartOrderedEvent : Event
     {
         public Guid Id { get; set; }
         public List<CartOrderedItem> Items { get; set; }

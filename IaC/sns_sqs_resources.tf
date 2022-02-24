@@ -77,7 +77,7 @@ module "OrdersAPIEventHandlersLambda" {
   ]
 }
 
-resource "aws_lambda_permission" "APIGWPermission" {
+resource "aws_lambda_permission" "OrdersAPIGWPermission" {
   statement_id  = "OrdersAPISQSPermission"
   action        = "lambda:InvokeFunction"
   function_name = module.OrdersAPIEventHandlersLambda.lambda_name
@@ -129,4 +129,47 @@ resource "aws_sns_topic_subscription" "CatalogAPIOrdersQueueSubscription" {
   topic_arn = aws_sns_topic.OrdersAPITopic.arn
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.CatalogAPIOrdersQueue.arn
+}
+
+module "CatalogAPIEventHandlersLambda" {
+  source             = "./lambda_module"
+  service_name       = "CatalogAPIEventHandlers"
+  subnet_ids         = aws_subnet.MTBZoneLambdaSubnet[*].id
+  security_group_ids = [aws_security_group.MTBZoneLambdaSecurityGroup.id]
+  db_server_address  = aws_db_instance.MTBZoneDB.address
+  additional_environment_variables = {
+    ordersReceiverQueue    = aws_sqs_queue.CatalogAPIOrdersQueue.arn
+    ordersReceiverExchange = aws_sns_topic.OrdersAPITopic.arn
+    ASPNETCORE_ENVIRONMENT = "Production"
+  }
+  db_password = var.db_password
+  db_username = var.db_username
+  src_path    = "../CatalogAPI.EventHandlers"
+  extra_lambda_permissions = [
+    {
+      "Effect" : "Allow",
+      "Action" : [
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes"
+      ],
+      "Resource" : [
+        aws_sqs_queue.CatalogAPIOrdersQueue.arn
+      ]
+    }
+  ]
+}
+
+resource "aws_lambda_permission" "CatalogAPISQSPermission" {
+  statement_id  = "CatalogAPISQSPermission"
+  action        = "lambda:InvokeFunction"
+  function_name = module.CatalogAPIEventHandlersLambda.lambda_name
+  principal     = "sqs.amazonaws.com"
+
+  source_arn = aws_sqs_queue.CatalogAPIOrdersQueue.arn
+}
+
+resource "aws_lambda_event_source_mapping" "CatalogAPIEventHandlersLambdaEventSource" {
+  event_source_arn = aws_sqs_queue.CatalogAPIOrdersQueue.arn
+  function_name    = module.CatalogAPIEventHandlersLambda.lambda_name
 }

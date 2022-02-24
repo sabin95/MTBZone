@@ -37,8 +37,20 @@ namespace OrdersAPI.Common.Repository
                 
             };
             _orderContext.Orders.Add(order);
+            order.Items = cartOrdered.Items.Select(x => new Item()
+            {
+                Title = x.Title,
+                Quantity = x.Quantity,
+                Price = x.Price,
+                OrderId = order.Id,
+                ExternalId = x.ExternalId
+            }).ToList();
+            foreach (var item in order.Items)
+            {
+                _orderContext.OrderItems.Add(item);
+            }
             await _orderContext.SaveChangesAsync();
-            var message = new OrderCreated()
+            var message = new OrderCreatedEvent()
             {
                 Id = cartOrdered.Id,
                 Items = cartOrdered.Items.Select(x => new OrderCreatedItem()
@@ -51,15 +63,7 @@ namespace OrdersAPI.Common.Repository
                 }).ToList()
             };
             await _sender.Send(message);
-            order.Items = cartOrdered.Items.Select(x => new Item()
-            {
-                Title = x.Title,
-                Quantity = x.Quantity,
-                Price = x.Price,
-                OrderId = order.Id,
-                ExternalId=x.ExternalId
-            }).ToList();
-            await _orderContext.SaveChangesAsync();
+            
         }
     }
 }
