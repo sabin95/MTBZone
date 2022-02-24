@@ -5,15 +5,23 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatalogAPI", "CatalogAPI\CatalogAPI.csproj", "{489D5062-26FF-4590-8C98-EBC12C30F9FE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartAPI", "CartAPI\CartAPI.csproj", "{6FEF4F26-7648-42F7-9C06-137D2449C65B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartsAPI", "CartsAPI\CartsAPI.csproj", "{6FEF4F26-7648-42F7-9C06-137D2449C65B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrdersAPI", "OrdersAPI\OrdersAPI.csproj", "{EF857258-7369-44B4-A812-B1C703B6C06D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartAPI.Events", "CartAPI.Events\CartAPI.Events.csproj", "{3E89A72A-D8D2-4AB7-91EC-09DF56BAE828}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartsAPI.Events", "CartsAPI.Events\CartsAPI.Events.csproj", "{3E89A72A-D8D2-4AB7-91EC-09DF56BAE828}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrdersAPI.Events", "OrdersAPI.Events\OrdersAPI.Events.csproj", "{F84EFA58-2E51-4AFC-AD53-1023AAFFDE83}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTBZone.Messaging", "MTBZone.Messaging\MTBZone.Messaging.csproj", "{442094AE-07AD-40B6-B6A5-21DA2E7B567E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrdersAPI.Common", "OrdersAPI.Common\OrdersAPI.Common.csproj", "{C62A86EF-F19B-4E93-AB79-46FE8F7A8EC6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrdersAPI.EventHandlers", "OrdersAPI.EventHandlers\OrdersAPI.EventHandlers.csproj", "{4DC52050-C23D-4616-97D8-0984BB59B280}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogAPI.Common", "CatalogAPI.Common\CatalogAPI.Common.csproj", "{FD61A474-E819-4EF0-9CDD-92F9446A5402}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogAPI.EventHandlers", "CatalogAPI.EventHandlers\CatalogAPI.EventHandlers.csproj", "{7B3AC61A-10C0-47F5-A305-F6DA527972AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +53,22 @@ Global
 		{442094AE-07AD-40B6-B6A5-21DA2E7B567E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{442094AE-07AD-40B6-B6A5-21DA2E7B567E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{442094AE-07AD-40B6-B6A5-21DA2E7B567E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C62A86EF-F19B-4E93-AB79-46FE8F7A8EC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C62A86EF-F19B-4E93-AB79-46FE8F7A8EC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C62A86EF-F19B-4E93-AB79-46FE8F7A8EC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C62A86EF-F19B-4E93-AB79-46FE8F7A8EC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DC52050-C23D-4616-97D8-0984BB59B280}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DC52050-C23D-4616-97D8-0984BB59B280}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DC52050-C23D-4616-97D8-0984BB59B280}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DC52050-C23D-4616-97D8-0984BB59B280}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD61A474-E819-4EF0-9CDD-92F9446A5402}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD61A474-E819-4EF0-9CDD-92F9446A5402}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD61A474-E819-4EF0-9CDD-92F9446A5402}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD61A474-E819-4EF0-9CDD-92F9446A5402}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B3AC61A-10C0-47F5-A305-F6DA527972AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B3AC61A-10C0-47F5-A305-F6DA527972AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B3AC61A-10C0-47F5-A305-F6DA527972AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B3AC61A-10C0-47F5-A305-F6DA527972AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,2 @@
+variable "src_path" {
+}

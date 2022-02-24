@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OrdersAPI.Repository;
+using OrdersAPI.Common.Repository;
 
 namespace OrdersAPI.Controllers
 {

@@ -1,9 +1,6 @@
-using CatalogAPI.Data;
-using CatalogAPI.EventHandlers.Orders;
-using CatalogAPI.Repository;
+using CatalogAPI.Common.Data;
+using CatalogAPI.Common.Repository;
 using Microsoft.EntityFrameworkCore;
-using MTBZone.Messaging.Receiver;
-using OrdersAPI.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 var ConnectionString = builder.Configuration["ConnectionString"];
@@ -18,38 +15,23 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CatalogContext>(options =>
-    options.UseSqlServer(ConnectionString),
-    ServiceLifetime.Singleton);
-builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
-builder.Services.AddTransient<IProductRepository, ProductRepository>();
-if (environment.ToUpper().Equals("DEVELOPMENT"))
-{
-    builder.Services.AddSingleton<IReceiver, RabbitMQReceiver>();
-}
-else
-{
-    builder.Services.AddSingleton<IReceiver, SQSReceiver>();
-}
-builder.Services.AddSingleton<IHandler<OrderCreated>, OrderCreatedHandler>();
-builder.Services.AddAutoMapper(typeof(Program));
+    options.UseSqlServer(ConnectionString, b => b.MigrationsAssembly("CatalogAPI.Common")),
+    ServiceLifetime.Singleton
+);
+builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
+builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services
   .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
-
 var app = builder.Build();
-var orderCreatedHandler = app.Services.GetService<IHandler<OrderCreated>>();
-var receiver = app.Services.GetService<IReceiver>();
-receiver.Receive<OrderCreated, IHandler<OrderCreated>>(orderCreatedHandler, ordersReceiverQueue, ordersReceiverExchange);
+var db = app.Services.GetService<CatalogContext>();
+db.Database.Migrate();
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI();
-
-
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
