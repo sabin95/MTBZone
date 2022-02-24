@@ -91,5 +91,5 @@ steps:
   inputs:
     command: 'apply'
     workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
-    commandOptions: '--auto -approve'
+    commandOptions: '-auto-approve'
     allowTelemetryCollection: false
