@@ -70,6 +70,20 @@ steps:
 #     ArtifactName: 'artifact'
 #     publishLocation: 'Container'
 
+- task: replacetokens@5
+  inputs:
+    rootDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+    targetFiles: 'terraform.tfvars'
+    encoding: 'auto'
+    tokenPattern: 'default'
+    writeBOM: true
+    actionOnMissing: 'fail'
+    keepToken: false
+    actionOnNoFiles: 'fail'
+    enableTransforms: false
+    useLegacyPattern: false
+    enableTelemetry: true
+
 - task: TerraformInstaller@0
   inputs:
     terraformVersion: 'latest'
