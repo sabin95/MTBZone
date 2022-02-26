@@ -79,6 +79,12 @@ stages:
   jobs:
     - job: Release
       steps:
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'IaC'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
       - task: replacetokens@5
         inputs:
           rootDirectory: '$(System.DefaultWorkingDirectory)/IaC'
