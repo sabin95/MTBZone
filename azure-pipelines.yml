@@ -16,94 +16,132 @@ pr:
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- task: UseDotNet@2
-  displayName: 'Install dotnet core 6.x'
-  inputs:    
-    packageType: 'sdk'
-    version: '6.0.x'
+stages:
+- stage: Build
+  jobs:
+    - job: Build
+      steps:
+      - task: UseDotNet@2
+        displayName: 'Install dotnet core 6.x'
+        inputs:    
+          packageType: 'sdk'
+          version: '6.0.x'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'custom'
-    custom: 'tool'
-    arguments: 'install -g Amazon.Lambda.Tools'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'custom'
+          custom: 'tool'
+          arguments: 'install -g Amazon.Lambda.Tools'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'custom'
-    custom: 'lambda'
-    arguments: 'package'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/CartsAPI'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'custom'
+          custom: 'lambda'
+          arguments: 'package'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/CartsAPI'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'custom'
-    custom: 'lambda'
-    arguments: 'package'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/CatalogAPI'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'custom'
+          custom: 'lambda'
+          arguments: 'package'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/CatalogAPI'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'custom'
-    custom: 'lambda'
-    arguments: 'package'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/CatalogAPI.EventHandlers'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'custom'
+          custom: 'lambda'
+          arguments: 'package'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/CatalogAPI.EventHandlers'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'custom'
-    custom: 'lambda'
-    arguments: 'package'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/OrdersAPI'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'custom'
+          custom: 'lambda'
+          arguments: 'package'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/OrdersAPI'
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'custom'
-    custom: 'lambda'
-    arguments: 'package'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/OrdersAPI.EventHandlers'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'custom'
+          custom: 'lambda'
+          arguments: 'package'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/OrdersAPI.EventHandlers'
 
-# - task: PublishBuildArtifacts@1
-#   inputs:
-#     PathtoPublish: '$(System.DefaultWorkingDirectory)'
-#     ArtifactName: 'artifact'
-#     publishLocation: 'Container'
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(System.DefaultWorkingDirectory)/IaC'
+          ArtifactName: 'IaC'
+          publishLocation: 'Container'
+      
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(System.DefaultWorkingDirectory)CartsAPI/bin/Release/net6.0/CartsAPI.zip'
+          ArtifactName: 'CartsAPI/bin/Release/net6.0/CartsAPI.zip'
+          publishLocation: 'Container'
+      
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(System.DefaultWorkingDirectory)CatalogAPI/bin/Release/net6.0/CatalogAPI.zip'
+          ArtifactName: 'CatalogAPI/bin/Release/net6.0/CatalogAPI.zip'
+          publishLocation: 'Container'
+      
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(System.DefaultWorkingDirectory)CatalogAPI.EventHandlers/bin/Release/net6.0/CatalogAPI.EventHandlers.zip'
+          ArtifactName: 'CatalogAPI.EventHandlers/bin/Release/net6.0/CatalogAPI.EventHandlers.zip'
+          publishLocation: 'Container'
+      
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(System.DefaultWorkingDirectory)OrdersAPI/bin/Release/net6.0/OrdersAPI.zip'
+          ArtifactName: 'OrdersAPI/bin/Release/net6.0/OrdersAPI.zip'
+          publishLocation: 'Container'
+      
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(System.DefaultWorkingDirectory)OrdersAPI.EventHandlers/bin/Release/net6.0/OrdersAPI.EventHandlers.zip'
+          ArtifactName: 'OrdersAPI.EventHandlers/bin/Release/net6.0/OrdersAPI.EventHandlers.zip'
+          publishLocation: 'Container'
 
-- task: replacetokens@5
-  inputs:
-    rootDirectory: '$(System.DefaultWorkingDirectory)/IaC'
-    targetFiles: 'terraform.tfvars'
-    encoding: 'auto'
-    tokenPattern: 'default'
-    writeBOM: true
-    actionOnMissing: 'fail'
-    keepToken: false
-    actionOnNoFiles: 'fail'
-    enableTransforms: false
-    useLegacyPattern: false
-    enableTelemetry: true
+- stage: Release
+  jobs:
+    - job: Release
+      steps:
+      - task: replacetokens@5
+        inputs:
+          rootDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          targetFiles: 'terraform.tfvars'
+          encoding: 'auto'
+          tokenPattern: 'default'
+          writeBOM: true
+          actionOnMissing: 'fail'
+          keepToken: false
+          actionOnNoFiles: 'fail'
+          enableTransforms: false
+          useLegacyPattern: false
+          enableTelemetry: true
 
-- task: TerraformInstaller@0
-  inputs:
-    terraformVersion: 'latest'
+      - task: TerraformInstaller@0
+        inputs:
+          terraformVersion: 'latest'
 
-- task: TerraformCLI@0
-  env:
-    AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
-    AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
-  inputs:
-    command: 'init'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
-    backendType: 'selfConfigured'
-    allowTelemetryCollection: false
+      - task: TerraformCLI@0
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        inputs:
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          backendType: 'selfConfigured'
+          allowTelemetryCollection: false
 
-- task: TerraformCLI@0
-  env:
-    AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
-    AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
-  inputs:
-    command: 'apply'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
-    commandOptions: '-auto-approve'
-    allowTelemetryCollection: false
+      - task: TerraformCLI@0
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        inputs:
+          command: 'apply'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          commandOptions: '-auto-approve'
+          allowTelemetryCollection: false
