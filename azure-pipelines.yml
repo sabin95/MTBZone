@@ -37,35 +37,35 @@ stages:
         inputs:
           command: 'custom'
           custom: 'lambda'
-          arguments: 'package'
+          arguments: 'package -o ../IaC/CartsAPI.zip'
           workingDirectory: '$(System.DefaultWorkingDirectory)/CartsAPI'
 
       - task: DotNetCoreCLI@2
         inputs:
           command: 'custom'
           custom: 'lambda'
-          arguments: 'package'
+          arguments: 'package -o ../IaC/CatalogAPI.zip'
           workingDirectory: '$(System.DefaultWorkingDirectory)/CatalogAPI'
 
       - task: DotNetCoreCLI@2
         inputs:
           command: 'custom'
           custom: 'lambda'
-          arguments: 'package'
+          arguments: 'package -o ../IaC/CatalogAPI.EventHandlers.zip'
           workingDirectory: '$(System.DefaultWorkingDirectory)/CatalogAPI.EventHandlers'
 
       - task: DotNetCoreCLI@2
         inputs:
           command: 'custom'
           custom: 'lambda'
-          arguments: 'package'
+          arguments: 'package -o ../IaC/OrdersAPI.zip'
           workingDirectory: '$(System.DefaultWorkingDirectory)/OrdersAPI'
 
       - task: DotNetCoreCLI@2
         inputs:
           command: 'custom'
           custom: 'lambda'
-          arguments: 'package'
+          arguments: 'package -o ../IaC/OrdersAPI.EventHandlers.zip'
           workingDirectory: '$(System.DefaultWorkingDirectory)/OrdersAPI.EventHandlers'
 
       - task: PublishBuildArtifacts@1
@@ -73,36 +73,7 @@ stages:
           PathtoPublish: '$(System.DefaultWorkingDirectory)/IaC'
           ArtifactName: 'IaC'
           publishLocation: 'Container'
-      
-      - task: PublishBuildArtifacts@1
-        inputs:
-          PathtoPublish: '$(System.DefaultWorkingDirectory)CartsAPI/bin/Release/net6.0/CartsAPI.zip'
-          ArtifactName: 'CartsAPI/bin/Release/net6.0/CartsAPI.zip'
-          publishLocation: 'Container'
-      
-      - task: PublishBuildArtifacts@1
-        inputs:
-          PathtoPublish: '$(System.DefaultWorkingDirectory)CatalogAPI/bin/Release/net6.0/CatalogAPI.zip'
-          ArtifactName: 'CatalogAPI/bin/Release/net6.0/CatalogAPI.zip'
-          publishLocation: 'Container'
-      
-      - task: PublishBuildArtifacts@1
-        inputs:
-          PathtoPublish: '$(System.DefaultWorkingDirectory)CatalogAPI.EventHandlers/bin/Release/net6.0/CatalogAPI.EventHandlers.zip'
-          ArtifactName: 'CatalogAPI.EventHandlers/bin/Release/net6.0/CatalogAPI.EventHandlers.zip'
-          publishLocation: 'Container'
-      
-      - task: PublishBuildArtifacts@1
-        inputs:
-          PathtoPublish: '$(System.DefaultWorkingDirectory)OrdersAPI/bin/Release/net6.0/OrdersAPI.zip'
-          ArtifactName: 'OrdersAPI/bin/Release/net6.0/OrdersAPI.zip'
-          publishLocation: 'Container'
-      
-      - task: PublishBuildArtifacts@1
-        inputs:
-          PathtoPublish: '$(System.DefaultWorkingDirectory)OrdersAPI.EventHandlers/bin/Release/net6.0/OrdersAPI.EventHandlers.zip'
-          ArtifactName: 'OrdersAPI.EventHandlers/bin/Release/net6.0/OrdersAPI.EventHandlers.zip'
-          publishLocation: 'Container'
+
 
 - stage: Release
   jobs:
