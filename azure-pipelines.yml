@@ -188,3 +188,120 @@ stages:
           workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
           commandOptions: '-auto-approve'
           allowTelemetryCollection: false
+
+
+- stage: Destroy
+  jobs:
+    - job: Continue
+      pool: server
+      steps:
+      - task: ManualValidation@0
+        inputs:
+          notifyUsers: 'sabin_balan@yahoo.com'
+    - job: Plan
+      dependsOn: Continue
+      steps:
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'IaC'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+      - task: replacetokens@5
+        inputs:
+          rootDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          targetFiles: 'terraform.tfvars'
+          encoding: 'auto'
+          tokenPattern: 'default'
+          writeBOM: true
+          actionOnMissing: 'fail'
+          keepToken: false
+          actionOnNoFiles: 'fail'
+          enableTransforms: false
+          useLegacyPattern: false
+          enableTelemetry: true
+
+      - task: TerraformInstaller@0
+        displayName: 'Install Terraform'
+        inputs:
+          terraformVersion: 'latest'
+
+      - task: TerraformCLI@0
+        displayName: 'Terraform Init'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        inputs:
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          backendType: 'selfConfigured'
+          allowTelemetryCollection: false
+
+      - task: TerraformCLI@0
+        displayName: 'Terraform Plan'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        inputs:
+          command: 'plan'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          commandOptions: '-destroy'
+          allowTelemetryCollection: false
+
+    - job: Approve
+      dependsOn: Plan
+      pool: server
+      steps:
+      - task: ManualValidation@0
+        inputs:
+          notifyUsers: 'sabin_balan@yahoo.com'
+
+    - job: Destroy
+      dependsOn: Approve
+      steps:
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'IaC'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+      - task: replacetokens@5
+        inputs:
+          rootDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          targetFiles: 'terraform.tfvars'
+          encoding: 'auto'
+          tokenPattern: 'default'
+          writeBOM: true
+          actionOnMissing: 'fail'
+          keepToken: false
+          actionOnNoFiles: 'fail'
+          enableTransforms: false
+          useLegacyPattern: false
+          enableTelemetry: true
+
+      - task: TerraformInstaller@0
+        displayName: 'Install Terraform'
+        inputs:
+          terraformVersion: 'latest'
+
+      - task: TerraformCLI@0
+        displayName: 'Terraform Init'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        inputs:
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          backendType: 'selfConfigured'
+          allowTelemetryCollection: false
+
+      - task: TerraformCLI@0
+        displayName: 'Terraform Apply'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        inputs:
+          command: 'destroy'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          commandOptions: '-auto-approve'
+          allowTelemetryCollection: false
