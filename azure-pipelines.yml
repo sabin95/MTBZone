@@ -132,11 +132,13 @@ stages:
           allowTelemetryCollection: false
 
     - job: Approve
+      dependsOn: Plan
       pool: server
       steps:
       - task: ManualIntervention@8
 
     - job: Apply
+      dependsOn: Approve
       steps:
       - task: DownloadBuildArtifacts@1
         inputs:
