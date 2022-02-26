@@ -31,11 +31,6 @@ resource "aws_security_group" "MTBZoneDBSecurityGroup" {
   }
 }
 
-data "http" "myip" {
-  url = "http://ipv4.icanhazip.com"
-  # obtain my ip, used in DBSecurityGroup
-}
-
 data "aws_availability_zones" "available" {
   state = "available"
 }
@@ -54,30 +49,6 @@ resource "aws_route_table_association" "MTBZoneRouteTableToDBSubnet" {
   count = length(aws_subnet.MTBZoneDBSubnet)
   route_table_id = aws_route_table.MTBZoneRouteTable.id
   subnet_id      = aws_subnet.MTBZoneDBSubnet[count.index].id
-}
-
-resource "aws_security_group_rule" "MTBZoneDBSecurityGroupMyipIngressRule" {
-  type              = "ingress"
-  from_port         = 1433
-  to_port           = 1433
-  protocol          = "tcp"
-  security_group_id = aws_security_group.MTBZoneDBSecurityGroup.id
-  cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
-  # allow dev`s ip to connect directly to RDS
-  # never in production
-  # will be deleted after EF Core migrations
-}
-
-resource "aws_security_group_rule" "MTBZoneDBSecurityGroupMyipEgressRule" {
-  type              = "egress"
-  from_port         = 1433
-  to_port           = 1433
-  protocol          = "tcp"
-  security_group_id = aws_security_group.MTBZoneDBSecurityGroup.id
-  cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
-  # allow dev`s ip to connect directly to RDS
-  # never in production
-  # will be deleted after EF Core migrations
 }
 
 resource "aws_security_group_rule" "MTBZoneDBSecurityGroupLambdaIngressRule" {
