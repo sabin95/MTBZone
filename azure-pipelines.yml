@@ -135,7 +135,9 @@ stages:
       dependsOn: Plan
       pool: server
       steps:
-      - task: ManualIntervention@8
+      - task: ManualValidation@0
+        inputs:
+          notifyUsers: 'sabin_balan@yahoo.com'
 
     - job: Apply
       dependsOn: Approve
