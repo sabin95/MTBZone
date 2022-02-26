@@ -17,6 +17,11 @@ terraform {
       version = "2.2.0"
     }
   }
+  backend "s3" {
+    bucket = "mtbzone-terraform-bucket"
+    key    = "state.tfstate"
+    region = "eu-central-1"
+  }
 }
 
 provider "null" {

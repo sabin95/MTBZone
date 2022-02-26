@@ -1,2 +1,0 @@
-variable "src_path" {
-}

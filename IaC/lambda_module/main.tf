@@ -1,5 +1,7 @@
 locals {
   function_name = "${var.service_name}Lambda"
+  src_folder_name       = basename(var.src_path)
+  function_zip_path     = "${local.src_folder_name}.zip"
 }
 
 resource "aws_iam_role" "LambdaRole" {
@@ -57,24 +59,19 @@ resource "aws_iam_policy_attachment" "LambdaPolicyAttachment" {
   policy_arn = aws_iam_policy.LambdaPolicy.arn
 }
 
-module "LambdaBuilder" {
-  source   = "./lambda_builder_module"
-  src_path = var.src_path
-}
-
 resource "aws_lambda_function" "Lambda" {
   depends_on = [
     aws_iam_policy_attachment.LambdaPolicyAttachment,
   ]
   function_name = local.function_name
-  filename      = module.LambdaBuilder.zip_path
+  filename      = local.function_zip_path
   role          = aws_iam_role.LambdaRole.arn
   handler       = "bootstrap"
   runtime       = "provided.al2"
   timeout       = 30
   memory_size   = 256
 
-  source_code_hash = module.LambdaBuilder.zip_hash
+  source_code_hash = filebase64sha256(local.function_zip_path)
   vpc_config {
     subnet_ids         = var.subnet_ids
     security_group_ids = var.security_group_ids
