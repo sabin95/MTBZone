@@ -83,7 +83,59 @@ stages:
 
 - stage: Release
   jobs:
-    - job: Release
+    - job: Plan
+      steps:
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'IaC'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+      - task: replacetokens@5
+        inputs:
+          rootDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          targetFiles: 'terraform.tfvars'
+          encoding: 'auto'
+          tokenPattern: 'default'
+          writeBOM: true
+          actionOnMissing: 'fail'
+          keepToken: false
+          actionOnNoFiles: 'fail'
+          enableTransforms: false
+          useLegacyPattern: false
+          enableTelemetry: true
+
+      - task: TerraformInstaller@0
+        displayName: 'Install Terraform'
+        inputs:
+          terraformVersion: 'latest'
+
+      - task: TerraformCLI@0
+        displayName: 'Terraform Init'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        inputs:
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          backendType: 'selfConfigured'
+          allowTelemetryCollection: false
+
+      - task: TerraformCLI@0
+        displayName: 'Terraform Plan'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        inputs:
+          command: 'plan'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          allowTelemetryCollection: false
+
+    - job: Approve
+      steps:
+      - task: ManualIntervention@8
+
+    - job: Apply
       steps:
       - task: DownloadBuildArtifacts@1
         inputs:
