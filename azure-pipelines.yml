@@ -28,12 +28,14 @@ stages:
           version: '6.0.x'
 
       - task: DotNetCoreCLI@2
+        displayName: 'Install Amazon.Lambda.Tools'
         inputs:
           command: 'custom'
           custom: 'tool'
           arguments: 'install -g Amazon.Lambda.Tools'
 
       - task: DotNetCoreCLI@2
+        displayName: 'Package CartsAPI'
         inputs:
           command: 'custom'
           custom: 'lambda'
@@ -41,6 +43,7 @@ stages:
           workingDirectory: '$(System.DefaultWorkingDirectory)/CartsAPI'
 
       - task: DotNetCoreCLI@2
+        displayName: 'Package CatalogAPI'
         inputs:
           command: 'custom'
           custom: 'lambda'
@@ -48,6 +51,7 @@ stages:
           workingDirectory: '$(System.DefaultWorkingDirectory)/CatalogAPI'
 
       - task: DotNetCoreCLI@2
+        displayName: 'Package CatalogAPI.EventHandlers'
         inputs:
           command: 'custom'
           custom: 'lambda'
@@ -55,6 +59,7 @@ stages:
           workingDirectory: '$(System.DefaultWorkingDirectory)/CatalogAPI.EventHandlers'
 
       - task: DotNetCoreCLI@2
+        displayName: 'Package OrdersAPI'
         inputs:
           command: 'custom'
           custom: 'lambda'
@@ -62,6 +67,7 @@ stages:
           workingDirectory: '$(System.DefaultWorkingDirectory)/OrdersAPI'
 
       - task: DotNetCoreCLI@2
+        displayName: 'Package OrdersAPI.EventHandlers'
         inputs:
           command: 'custom'
           custom: 'lambda'
@@ -100,10 +106,12 @@ stages:
           enableTelemetry: true
 
       - task: TerraformInstaller@0
+        displayName: 'Install Terraform'
         inputs:
           terraformVersion: 'latest'
 
       - task: TerraformCLI@0
+        displayName: 'Terraform Init'
         env:
           AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
           AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
@@ -114,6 +122,7 @@ stages:
           allowTelemetryCollection: false
 
       - task: TerraformCLI@0
+        displayName: 'Terraform Apply'
         env:
           AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
           AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
