@@ -132,6 +132,7 @@ stages:
           allowTelemetryCollection: false
 
     - job: Approve
+      pool: server
       steps:
       - task: ManualIntervention@8
 
