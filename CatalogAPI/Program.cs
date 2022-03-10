@@ -1,13 +1,12 @@
-using CatalogAPI.Data;
-using CatalogAPI.EventHandlers.Orders;
-using CatalogAPI.Repository;
+using CatalogAPI.Common.Data;
+using CatalogAPI.Common.Repository;
 using Microsoft.EntityFrameworkCore;
-using MTBZone.RabbitMQ.Receiver;
-using OrdersAPI.Events;
-using RabbitMQ.Receiver;
 
 var builder = WebApplication.CreateBuilder(args);
-var ConnectionString = builder.Configuration["CatalogAPI:ConnectionString"];
+var ConnectionString = builder.Configuration["ConnectionString"];
+var environment = builder.Configuration["ASPNETCORE_ENVIRONMENT"];
+var ordersReceiverQueue = builder.Configuration["ordersReceiverQueue"];
+var ordersReceiverExchange = builder.Configuration["ordersReceiverExchange"];
 
 // Add services to the container.
 
@@ -15,31 +14,24 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<CatalogContext>(options => 
-    options.UseSqlServer(ConnectionString),
-    ServiceLifetime.Singleton);
-builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
-builder.Services.AddTransient<IProductRepository, ProductRepository>();
-builder.Services.AddSingleton<IRabbitMQReceiver, RabbitMQReceiver>();
-builder.Services.AddSingleton<IHandler<OrderCreated>, OrderCreatedHandler>();
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddDbContext<CatalogContext>(options =>
+    options.UseSqlServer(ConnectionString, b => b.MigrationsAssembly("CatalogAPI.Common")),
+    ServiceLifetime.Singleton
+);
+builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
+builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services
+  .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
 var app = builder.Build();
-var orderCreatedHandler = app.Services.GetService<IHandler<OrderCreated>>();
-var rabbitMQReceiver = app.Services.GetService<IRabbitMQReceiver>();
-rabbitMQReceiver.Receive<OrderCreated, IHandler<OrderCreated>>(orderCreatedHandler, "Order-To-Products", "Orders");
+var db = app.Services.GetService<CatalogContext>();
+db.Database.Migrate();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

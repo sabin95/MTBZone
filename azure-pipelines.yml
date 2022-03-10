@@ -16,24 +16,294 @@ pr:
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  buildConfiguration: 'Release'
+stages:
+- stage: Build
+  jobs:
+    - job: Build
+      steps:
+      - task: UseDotNet@2
+        displayName: 'Install dotnet core 6.x'
+        inputs:    
+          packageType: 'sdk'
+          version: '6.0.x'
 
-steps:
-- task: UseDotNet@2
-  displayName: 'Install dotnet core 6.x'
-  inputs:    
-    packageType: 'sdk'
-    version: '6.0.x'
+      - task: DotNetCoreCLI@2
+        displayName: 'Install Amazon.Lambda.Tools'
+        inputs:
+          command: 'custom'
+          custom: 'tool'
+          arguments: 'install -g Amazon.Lambda.Tools'
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet build $(buildConfiguration)'
-  inputs:    
-    command: 'build'
-    arguments: '-o $(Build.ArtifactStagingDirectory)'
+      - task: DotNetCoreCLI@2
+        displayName: 'Package CartsAPI'
+        inputs:
+          command: 'custom'
+          custom: 'lambda'
+          arguments: 'package -o ../IaC/CartsAPI.zip'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/CartsAPI'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'artifact'
-    publishLocation: 'Container'
+      - task: DotNetCoreCLI@2
+        displayName: 'Package CatalogAPI'
+        inputs:
+          command: 'custom'
+          custom: 'lambda'
+          arguments: 'package -o ../IaC/CatalogAPI.zip'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/CatalogAPI'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Package CatalogAPI.EventHandlers'
+        inputs:
+          command: 'custom'
+          custom: 'lambda'
+          arguments: 'package -o ../IaC/CatalogAPI.EventHandlers.zip'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/CatalogAPI.EventHandlers'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Package OrdersAPI'
+        inputs:
+          command: 'custom'
+          custom: 'lambda'
+          arguments: 'package -o ../IaC/OrdersAPI.zip'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/OrdersAPI'
+
+      - task: DotNetCoreCLI@2
+        displayName: 'Package OrdersAPI.EventHandlers'
+        inputs:
+          command: 'custom'
+          custom: 'lambda'
+          arguments: 'package -o ../IaC/OrdersAPI.EventHandlers.zip'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/OrdersAPI.EventHandlers'
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(System.DefaultWorkingDirectory)/IaC'
+          ArtifactName: 'IaC'
+          publishLocation: 'Container'
+
+
+- stage: Release
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  jobs:
+    - job: Plan
+      steps:
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'IaC'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+      - task: replacetokens@5
+        inputs:
+          rootDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          targetFiles: 'terraform.tfvars'
+          encoding: 'auto'
+          tokenPattern: 'default'
+          writeBOM: true
+          actionOnMissing: 'fail'
+          keepToken: false
+          actionOnNoFiles: 'fail'
+          enableTransforms: false
+          useLegacyPattern: false
+          enableTelemetry: true
+
+      - task: TerraformInstaller@0
+        displayName: 'Install Terraform'
+        inputs:
+          terraformVersion: 'latest'
+
+      - task: TerraformCLI@0
+        displayName: 'Terraform Init'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        inputs:
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          backendType: 'selfConfigured'
+          allowTelemetryCollection: false
+
+      - task: TerraformCLI@0
+        displayName: 'Terraform Plan'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        inputs:
+          command: 'plan'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          allowTelemetryCollection: false
+
+    - job: Approve
+      dependsOn: Plan
+      pool: server
+      steps:
+      - task: ManualValidation@0
+        inputs:
+          notifyUsers: 'sabinionut95@gmail.com'
+
+    - job: Apply
+      dependsOn: Approve
+      steps:
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'IaC'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+      - task: replacetokens@5
+        inputs:
+          rootDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          targetFiles: 'terraform.tfvars'
+          encoding: 'auto'
+          tokenPattern: 'default'
+          writeBOM: true
+          actionOnMissing: 'fail'
+          keepToken: false
+          actionOnNoFiles: 'fail'
+          enableTransforms: false
+          useLegacyPattern: false
+          enableTelemetry: true
+
+      - task: TerraformInstaller@0
+        displayName: 'Install Terraform'
+        inputs:
+          terraformVersion: 'latest'
+
+      - task: TerraformCLI@0
+        displayName: 'Terraform Init'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        inputs:
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          backendType: 'selfConfigured'
+          allowTelemetryCollection: false
+
+      - task: TerraformCLI@0
+        displayName: 'Terraform Apply'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        inputs:
+          command: 'apply'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          commandOptions: '-auto-approve'
+          allowTelemetryCollection: false
+
+
+- stage: Destroy
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  jobs:
+    - job: Continue
+      pool: server
+      steps:
+      - task: ManualValidation@0
+        inputs:
+          notifyUsers: 'sabinionut95@gmail.com'
+    - job: Plan
+      dependsOn: Continue
+      steps:
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'IaC'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+      - task: replacetokens@5
+        inputs:
+          rootDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          targetFiles: 'terraform.tfvars'
+          encoding: 'auto'
+          tokenPattern: 'default'
+          writeBOM: true
+          actionOnMissing: 'fail'
+          keepToken: false
+          actionOnNoFiles: 'fail'
+          enableTransforms: false
+          useLegacyPattern: false
+          enableTelemetry: true
+
+      - task: TerraformInstaller@0
+        displayName: 'Install Terraform'
+        inputs:
+          terraformVersion: 'latest'
+
+      - task: TerraformCLI@0
+        displayName: 'Terraform Init'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        inputs:
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          backendType: 'selfConfigured'
+          allowTelemetryCollection: false
+
+      - task: TerraformCLI@0
+        displayName: 'Terraform Plan'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        inputs:
+          command: 'plan'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          commandOptions: '-destroy'
+          allowTelemetryCollection: false
+
+    - job: Approve
+      dependsOn: Plan
+      pool: server
+      steps:
+      - task: ManualValidation@0
+        inputs:
+          notifyUsers: 'sabinionut95@gmail.com'
+
+    - job: Destroy
+      dependsOn: Approve
+      steps:
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'IaC'
+          downloadPath: '$(System.DefaultWorkingDirectory)'
+      - task: replacetokens@5
+        inputs:
+          rootDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          targetFiles: 'terraform.tfvars'
+          encoding: 'auto'
+          tokenPattern: 'default'
+          writeBOM: true
+          actionOnMissing: 'fail'
+          keepToken: false
+          actionOnNoFiles: 'fail'
+          enableTransforms: false
+          useLegacyPattern: false
+          enableTelemetry: true
+
+      - task: TerraformInstaller@0
+        displayName: 'Install Terraform'
+        inputs:
+          terraformVersion: 'latest'
+
+      - task: TerraformCLI@0
+        displayName: 'Terraform Init'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        inputs:
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          backendType: 'selfConfigured'
+          allowTelemetryCollection: false
+
+      - task: TerraformCLI@0
+        displayName: 'Terraform Apply'
+        env:
+          AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+          AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+        inputs:
+          command: 'destroy'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/IaC'
+          commandOptions: '-auto-approve'
+          allowTelemetryCollection: false

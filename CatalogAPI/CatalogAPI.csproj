@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>f078c7c2-31c7-4f2a-a2ea-606a86da3d99</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Amazon.Lambda.AspNetCoreServer.Hosting" Version="1.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.1" />
@@ -20,8 +20,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="bootstrap">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CatalogAPI.Common\CatalogAPI.Common.csproj" />
+    <ProjectReference Include="..\MTBZone.Messaging\MTBZone.Messaging.csproj" />
     <ProjectReference Include="..\OrdersAPI.Events\OrdersAPI.Events.csproj" />
-    <ProjectReference Include="..\RabbitMQ\RabbitMQ.csproj" />
   </ItemGroup>
 
 </Project>
