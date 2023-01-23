@@ -32,9 +32,22 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  
+
+  <ItemGroup>
+    <None Remove="appsettings.AWS.json" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OrdersAPI.Common\OrdersAPI.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.AWS.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
