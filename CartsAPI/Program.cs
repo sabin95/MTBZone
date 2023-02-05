@@ -19,7 +19,7 @@ builder.Services.AddDbContext<CartsContext>(options =>
     ServiceLifetime.Singleton);
 builder.Services.AddScoped<ICartsRepository, CartsRepository>();
 
-builder.Services.AddSingleton<ISender, SNSSender>();
+builder.Services.AddSingleton<ISender, RabbitMQSender>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services

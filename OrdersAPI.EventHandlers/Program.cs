@@ -31,7 +31,7 @@ namespace OrdersAPI.EventHandlers
                 ServiceLifetime.Singleton);
             services.AddSingleton<EventRouter>();
             services.AddSingleton<IOrderRepository, OrderRepository>();
-            services.AddSingleton<ISender, SNSSender>();
+            services.AddSingleton<ISender, RabbitMQSender>();
             services.AddAutoMapper(typeof(Program));
 
             var provider = services.BuildServiceProvider();   

@@ -21,7 +21,7 @@ builder.Services.AddDbContext<OrderContext>(options =>
     ServiceLifetime.Singleton
 );
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<ISender, SNSSender>();
+builder.Services.AddSingleton<ISender, RabbitMQSender>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services
   .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
