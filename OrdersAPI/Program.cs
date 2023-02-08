@@ -5,6 +5,7 @@ using MTBZone.Messaging.Sender;
 using OrdersAPI.Common.Data;
 using OrdersAPI.Common.Repository;
 using OrdersAPI.EventHandlers.Carts;
+using OrdersAPI.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 var ConnectionString = builder.Configuration["ConnectionString"];
@@ -43,8 +44,11 @@ var app = builder.Build();
 var db = app.Services.GetService<OrderContext>();
 db!.Database.Migrate();
 var cartOrderedHandler = app.Services.GetService<IHandler<CartOrderedEvent>>();
-var receiver = app.Services.GetService<IReceiver>();
-receiver.Receive<CartOrderedEvent, IHandler<CartOrderedEvent>>(cartOrderedHandler, cartsReceiverQueue, cartsReceiverExchange);
+if (environment.ToUpper().Equals("DEVELOPMENT"))
+{
+    var receiver = app.Services.GetService<IReceiver>();
+    receiver.Receive<CartOrderedEvent, IHandler<CartOrderedEvent>>(cartOrderedHandler, cartsReceiverQueue, cartsReceiverExchange);
+}
 var sender = app.Services.GetService<ISender>();
 sender!.Initialize(ordersExchange);
 

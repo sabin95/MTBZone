@@ -3,6 +3,7 @@ using CatalogAPI.Common.Repository;
 using CatalogAPI.EventHandlers.Orders;
 using Microsoft.EntityFrameworkCore;
 using MTBZone.Messaging.Receiver;
+using MTBZone.Messaging.Sender;
 using OrdersAPI.Events;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,8 +42,11 @@ builder.Services
 
 var app = builder.Build();
 var orderCreatedHandler = app.Services.GetService<IHandler<OrderCreatedEvent>>();
-var receiver = app.Services.GetService<IReceiver>();
-receiver.Receive<OrderCreatedEvent, IHandler<OrderCreatedEvent>>(orderCreatedHandler, ordersReceiverQueue, ordersReceiverExchange);
+if (environment.ToUpper().Equals("DEVELOPMENT"))
+{
+    var receiver = app.Services.GetService<IReceiver>();
+    receiver.Receive<OrderCreatedEvent, IHandler<OrderCreatedEvent>>(orderCreatedHandler, ordersReceiverQueue, ordersReceiverExchange);
+}
 var db = app.Services.GetService<CatalogContext>();
 db.Database.Migrate();
 
