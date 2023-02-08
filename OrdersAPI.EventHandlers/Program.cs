@@ -30,15 +30,7 @@ namespace OrdersAPI.EventHandlers
                 options.UseSqlServer(ConnectionString),
                 ServiceLifetime.Singleton);
             services.AddSingleton<EventRouter>();
-            services.AddSingleton<IOrderRepository, OrderRepository>();
-            if (environment.ToUpper().Equals("DEVELOPMENT"))
-            {
-                services.AddSingleton<ISender, RabbitMQSender>();
-            }
-            else
-            {
-                services.AddSingleton<ISender, SNSSender>();
-            }
+            services.AddSingleton<IOrderRepository, OrderRepository>();services.AddSingleton<ISender, RabbitMQSender>();
             services.AddAutoMapper(typeof(Program));
 
             var provider = services.BuildServiceProvider();   

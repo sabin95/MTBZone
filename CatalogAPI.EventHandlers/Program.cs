@@ -6,7 +6,6 @@ using MTBZone.Messaging.Receiver;
 using OrdersAPI.Events;
 using Microsoft.EntityFrameworkCore;
 using CatalogAPI.Common.Repository;
-using MTBZone.Messaging.Sender;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using Amazon.Lambda.RuntimeSupport;
 
