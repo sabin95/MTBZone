@@ -1,5 +1,4 @@
-﻿using MTBZone.Messaging.Receiver;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
