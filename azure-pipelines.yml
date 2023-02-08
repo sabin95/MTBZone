@@ -37,40 +37,35 @@ stages:
       - task: DotNetCoreCLI@2
         displayName: 'Package CartsAPI'
         inputs:
-          command: 'custom'
-          custom: 'lambda'
+          command: 'build'
           arguments: 'package -o ../IaC/CartsAPI.zip'
           workingDirectory: '$(System.DefaultWorkingDirectory)/CartsAPI'
 
       - task: DotNetCoreCLI@2
         displayName: 'Package CatalogAPI'
         inputs:
-          command: 'custom'
-          custom: 'lambda'
+          command: 'build'
           arguments: 'package -o ../IaC/CatalogAPI.zip'
           workingDirectory: '$(System.DefaultWorkingDirectory)/CatalogAPI'
 
       - task: DotNetCoreCLI@2
         displayName: 'Package CatalogAPI.EventHandlers'
         inputs:
-          command: 'custom'
-          custom: 'lambda'
+          command: 'build'
           arguments: 'package -o ../IaC/CatalogAPI.EventHandlers.zip'
           workingDirectory: '$(System.DefaultWorkingDirectory)/CatalogAPI.EventHandlers'
 
       - task: DotNetCoreCLI@2
         displayName: 'Package OrdersAPI'
         inputs:
-          command: 'custom'
-          custom: 'lambda'
+          command: 'build'
           arguments: 'package -o ../IaC/OrdersAPI.zip'
           workingDirectory: '$(System.DefaultWorkingDirectory)/OrdersAPI'
 
       - task: DotNetCoreCLI@2
         displayName: 'Package OrdersAPI.EventHandlers'
         inputs:
-          command: 'custom'
-          custom: 'lambda'
+          command: 'build'
           arguments: 'package -o ../IaC/OrdersAPI.EventHandlers.zip'
           workingDirectory: '$(System.DefaultWorkingDirectory)/OrdersAPI.EventHandlers'
 
