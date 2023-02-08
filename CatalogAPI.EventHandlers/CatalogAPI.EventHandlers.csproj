@@ -7,6 +7,7 @@
     <LangVersion>latest</LangVersion>
     <AWSProjectType>Lambda</AWSProjectType>
     <Nullable>enable</Nullable>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
   </PropertyGroup>
 
 
