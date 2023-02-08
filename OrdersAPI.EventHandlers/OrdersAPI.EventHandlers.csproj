@@ -7,7 +7,6 @@
     <LangVersion>latest</LangVersion>
     <AWSProjectType>Lambda</AWSProjectType>
     <Nullable>enable</Nullable>
-    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,31 +35,8 @@
   
 
   <ItemGroup>
-    <None Remove="appsettings.AWS.json" />
-    <None Remove="appsettings.Development.json" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\CartsAPI.Events\CartsAPI.Events.csproj" />
     <ProjectReference Include="..\OrdersAPI.Common\OrdersAPI.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="appsettings.AWS.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="appsettings.Development.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <None Update="bootstrap">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

@@ -7,7 +7,6 @@
     <LangVersion>latest</LangVersion>
     <AWSProjectType>Lambda</AWSProjectType>
     <Nullable>enable</Nullable>
-    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
   </PropertyGroup>
 
 
@@ -28,10 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="appsettings.AWS.json" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Amazon.Lambda.SQSEvents" Version="2.1.0" />
     <PackageReference Include="Amazon.Lambda.RuntimeSupport" Version="1.8.3" />
     <PackageReference Include="Amazon.Lambda.Core" Version="2.1.0" />
@@ -48,14 +43,6 @@
     <ProjectReference Include="..\CatalogAPI.Common\CatalogAPI.Common.csproj" />
     <ProjectReference Include="..\MTBZone.Messaging\MTBZone.Messaging.csproj" />
     <ProjectReference Include="..\OrdersAPI.Events\OrdersAPI.Events.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="appsettings.AWS.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>
