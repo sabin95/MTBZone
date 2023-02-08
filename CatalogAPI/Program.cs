@@ -1,6 +1,9 @@
 using CatalogAPI.Common.Data;
 using CatalogAPI.Common.Repository;
+using CatalogAPI.EventHandlers.Orders;
 using Microsoft.EntityFrameworkCore;
+using MTBZone.Messaging.Receiver;
+using OrdersAPI.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 var ConnectionString = builder.Configuration["ConnectionString"];
@@ -18,13 +21,28 @@ builder.Services.AddDbContext<CatalogContext>(options =>
     options.UseSqlServer(ConnectionString, b => b.MigrationsAssembly("CatalogAPI.Common")),
     ServiceLifetime.Singleton
 );
-builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
-builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
+builder.Services.AddTransient<ICategoriesRepository, CategoriesRepository>();
+builder.Services.AddTransient<IProductsRepository, ProductsRepository>();
+
+if (environment.ToUpper().Equals("DEVELOPMENT"))
+{
+    builder.Services.AddSingleton<IReceiver, RabbitMQReceiver>();
+}
+else
+{
+    builder.Services.AddSingleton<IReceiver, SQSReceiver>();
+}
+
+builder.Services.AddSingleton<IHandler<OrderCreatedEvent>, OrderCreatedHandler>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services
   .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
+
 var app = builder.Build();
+var orderCreatedHandler = app.Services.GetService<IHandler<OrderCreatedEvent>>();
+var receiver = app.Services.GetService<IReceiver>();
+receiver.Receive<OrderCreatedEvent, IHandler<OrderCreatedEvent>>(orderCreatedHandler, ordersReceiverQueue, ordersReceiverExchange);
 var db = app.Services.GetService<CatalogContext>();
 db.Database.Migrate();
 

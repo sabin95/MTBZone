@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CatalogAPI.Common\CatalogAPI.Common.csproj" />
+    <ProjectReference Include="..\CatalogAPI.EventHandlers\CatalogAPI.EventHandlers.csproj" />
     <ProjectReference Include="..\MTBZone.Messaging\MTBZone.Messaging.csproj" />
     <ProjectReference Include="..\OrdersAPI.Events\OrdersAPI.Events.csproj" />
   </ItemGroup>

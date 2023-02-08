@@ -1,7 +1,10 @@
+using CartsAPI.Events;
 using Microsoft.EntityFrameworkCore;
+using MTBZone.Messaging.Receiver;
 using MTBZone.Messaging.Sender;
 using OrdersAPI.Common.Data;
 using OrdersAPI.Common.Repository;
+using OrdersAPI.EventHandlers.Carts;
 
 var builder = WebApplication.CreateBuilder(args);
 var ConnectionString = builder.Configuration["ConnectionString"];
@@ -20,15 +23,28 @@ builder.Services.AddDbContext<OrderContext>(options =>
     options.UseSqlServer(ConnectionString, b => b.MigrationsAssembly("OrdersAPI.Common")),
     ServiceLifetime.Singleton
 );
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddSingleton<ISender, RabbitMQSender>();
+builder.Services.AddTransient<IOrderRepository, OrderRepository>();
+if (environment.ToUpper().Equals("DEVELOPMENT"))
+{
+    builder.Services.AddSingleton<IReceiver, RabbitMQReceiver>();
+    builder.Services.AddSingleton<ISender, RabbitMQSender>();
+}
+else
+{
+    builder.Services.AddSingleton<IReceiver, SQSReceiver>();
+    builder.Services.AddSingleton<ISender, SNSSender>();
+}
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services
   .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
+builder.Services.AddSingleton<IHandler<CartOrderedEvent>, CartOrderedHandler>();
 
 var app = builder.Build();
 var db = app.Services.GetService<OrderContext>();
 db!.Database.Migrate();
+var cartOrderedHandler = app.Services.GetService<IHandler<CartOrderedEvent>>();
+var receiver = app.Services.GetService<IReceiver>();
+receiver.Receive<CartOrderedEvent, IHandler<CartOrderedEvent>>(cartOrderedHandler, cartsReceiverQueue, cartsReceiverExchange);
 var sender = app.Services.GetService<ISender>();
 sender!.Initialize(ordersExchange);
 
