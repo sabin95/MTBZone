@@ -7,16 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Amazon.Lambda.AspNetCoreServer.Hosting" Version="1.0.0" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.1">
+    <PackageReference Include="Amazon.Lambda.AspNetCoreServer.Hosting" Version="1.5.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CatalogAPI.Common\CatalogAPI.Common.csproj" />
+    <ProjectReference Include="..\CatalogAPI.EventHandlers\CatalogAPI.EventHandlers.csproj" />
     <ProjectReference Include="..\MTBZone.Messaging\MTBZone.Messaging.csproj" />
     <ProjectReference Include="..\OrdersAPI.Events\OrdersAPI.Events.csproj" />
   </ItemGroup>

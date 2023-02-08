@@ -1,6 +1,7 @@
 using CartsAPI.Data;
 using CartsAPI.Repository;
 using Microsoft.EntityFrameworkCore;
+using MTBZone.Messaging.Receiver;
 using MTBZone.Messaging.Sender;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +20,14 @@ builder.Services.AddDbContext<CartsContext>(options =>
     ServiceLifetime.Singleton);
 builder.Services.AddScoped<ICartsRepository, CartsRepository>();
 
-builder.Services.AddSingleton<ISender, SNSSender>();
+if (environment.ToUpper().Equals("DEVELOPMENT"))
+{
+    builder.Services.AddSingleton<ISender, RabbitMQSender>();
+}
+else
+{
+    builder.Services.AddSingleton<ISender, SNSSender>();
+}
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services
