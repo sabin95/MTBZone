@@ -38,35 +38,35 @@ stages:
         displayName: 'Package CartsAPI'
         inputs:
           command: 'build'
-          arguments: 'package -o ../IaC/CartsAPI.zip'
+          projects: '*.csproj'
           workingDirectory: '$(System.DefaultWorkingDirectory)/CartsAPI'
 
       - task: DotNetCoreCLI@2
         displayName: 'Package CatalogAPI'
         inputs:
           command: 'build'
-          arguments: 'package -o ../IaC/CatalogAPI.zip'
+          projects: '*.csproj'
           workingDirectory: '$(System.DefaultWorkingDirectory)/CatalogAPI'
 
       - task: DotNetCoreCLI@2
         displayName: 'Package CatalogAPI.EventHandlers'
         inputs:
           command: 'build'
-          arguments: 'package -o ../IaC/CatalogAPI.EventHandlers.zip'
+          projects: '*.csproj'
           workingDirectory: '$(System.DefaultWorkingDirectory)/CatalogAPI.EventHandlers'
 
       - task: DotNetCoreCLI@2
         displayName: 'Package OrdersAPI'
         inputs:
           command: 'build'
-          arguments: 'package -o ../IaC/OrdersAPI.zip'
+          projects: '*.csproj'
           workingDirectory: '$(System.DefaultWorkingDirectory)/OrdersAPI'
 
       - task: DotNetCoreCLI@2
         displayName: 'Package OrdersAPI.EventHandlers'
         inputs:
           command: 'build'
-          arguments: 'package -o ../IaC/OrdersAPI.EventHandlers.zip'
+          projects: '*.csproj'
           workingDirectory: '$(System.DefaultWorkingDirectory)/OrdersAPI.EventHandlers'
 
       - task: PublishBuildArtifacts@1
