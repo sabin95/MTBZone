@@ -38,35 +38,30 @@ stages:
         displayName: 'Package CartsAPI'
         inputs:
           command: 'build'
-          projects: '*.csproj'
           workingDirectory: '$(System.DefaultWorkingDirectory)/CartsAPI'
 
       - task: DotNetCoreCLI@2
         displayName: 'Package CatalogAPI'
         inputs:
           command: 'build'
-          projects: '*.csproj'
           workingDirectory: '$(System.DefaultWorkingDirectory)/CatalogAPI'
 
       - task: DotNetCoreCLI@2
         displayName: 'Package CatalogAPI.EventHandlers'
         inputs:
           command: 'build'
-          projects: '*.csproj'
           workingDirectory: '$(System.DefaultWorkingDirectory)/CatalogAPI.EventHandlers'
 
       - task: DotNetCoreCLI@2
         displayName: 'Package OrdersAPI'
         inputs:
           command: 'build'
-          projects: '*.csproj'
           workingDirectory: '$(System.DefaultWorkingDirectory)/OrdersAPI'
 
       - task: DotNetCoreCLI@2
         displayName: 'Package OrdersAPI.EventHandlers'
         inputs:
           command: 'build'
-          projects: '*.csproj'
           workingDirectory: '$(System.DefaultWorkingDirectory)/OrdersAPI.EventHandlers'
 
       - task: PublishBuildArtifacts@1
