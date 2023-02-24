@@ -78,13 +78,15 @@ stages:
       - task: Npm@1
         displayName: "Install Angular cli"
         inputs:
-          command: "custom"
-          customCommand: "install -g @angular/cli"
+          command: 'custom'
+          workingDir: '$(System.DefaultWorkingDirectory)/frontend'
+          customCommand: 'install -g @angular/cli'
 
       - task: Npm@1
         displayName: "Install npm packages"
         inputs:
-          command: "install"
+          command: 'install'
+          workingDir: '$(System.DefaultWorkingDirectory)/frontend'
           verbose: true
       
       - task: CmdLine@2
