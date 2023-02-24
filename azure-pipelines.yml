@@ -77,8 +77,9 @@ stages:
 
       - script: |
           npm install
-          npm run start
-        displayName: 'Run Angular project'
+          ng build
+        displayName: 'Build Angular project'
+
 
 
 
