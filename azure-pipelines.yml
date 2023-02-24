@@ -91,6 +91,7 @@ stages:
         displayName: "Build Angular app"
         inputs:
           script: 'ng build --prod'
+          workingDirectory: '''$(System.DefaultWorkingDirectory)/frontend'
 
 
 
