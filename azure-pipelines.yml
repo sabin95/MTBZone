@@ -90,7 +90,7 @@ stages:
       - task: CmdLine@2
         displayName: "Build Angular app"
         inputs:
-          script: 'ng build --prod'
+          script: 'ng build'
           workingDirectory: '$(System.DefaultWorkingDirectory)/frontend'
 
 
