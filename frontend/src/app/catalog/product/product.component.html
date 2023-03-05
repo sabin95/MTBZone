@@ -1,0 +1,11 @@
+<div class="product">
+    <h2>{{ title }}</h2>
+    <p>{{ description }}</p>
+    <div class="price-stock">
+      <p class="price">{{ price | currency }}</p>
+      <p class="stock" [ngClass]="{ outOfStock: stock === 0 }">
+        {{ stock === 0 ? 'Out of stock' : stock + ' in stock' }}
+      </p>
+    </div>
+  </div>
+  
