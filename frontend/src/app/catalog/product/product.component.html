@@ -1,11 +1,14 @@
-<div class="product">
-    <h2>{{ title }}</h2>
-    <p>{{ description }}</p>
-    <div class="price-stock">
-      <p class="price">{{ price | currency }}</p>
-      <p class="stock" [ngClass]="{ outOfStock: stock === 0 }">
-        {{ stock === 0 ? 'Out of stock' : stock + ' in stock' }}
-      </p>
-    </div>
-  </div>
-  
+<!-- <button (click)="addProduct()">Add new product</button>
+
+<button (click)="getProductById()">Get this specific product</button>
+
+<button (click)="getAllProducts()">Add new product</button>
+
+<div>Number of products: {{ count$ | async }}</div>
+
+<button (click)="updateProductById()">Update this product</button>
+
+<button (click)="deleteById()">Delete this product</button>
+
+<button (click)="increaseStockPerProduct()">Increase the stock of this product</button>
+   -->
