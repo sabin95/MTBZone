@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 var ConnectionString = builder.Configuration["ConnectionString"];
 var cartsExchange = builder.Configuration["cartsExchange"];
 var environment = builder.Configuration["ASPNETCORE_ENVIRONMENT"];
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // Add services to the container.
 
@@ -33,7 +34,19 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services
   .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin();
+                          builder.AllowAnyMethod();
+                          builder.AllowAnyHeader();
+                      });
+});
+
 var app = builder.Build();
+app.UseCors(MyAllowSpecificOrigins);
 var db = app.Services.GetService<CartsContext>();
 db.Database.Migrate();
 var sender = app.Services.GetService<ISender>();

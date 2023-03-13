@@ -11,6 +11,7 @@ var ConnectionString = builder.Configuration["ConnectionString"];
 var environment = builder.Configuration["ASPNETCORE_ENVIRONMENT"];
 var ordersReceiverQueue = builder.Configuration["ordersReceiverQueue"];
 var ordersReceiverExchange = builder.Configuration["ordersReceiverExchange"];
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // Add services to the container.
 
@@ -38,9 +39,19 @@ builder.Services.AddSingleton<IHandler<OrderCreatedEvent>, OrderCreatedHandler>(
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services
   .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin();
+                          builder.AllowAnyMethod();
+                          builder.AllowAnyHeader();
+                      });
+});
 
 var app = builder.Build();
+app.UseCors(MyAllowSpecificOrigins);
 var orderCreatedHandler = app.Services.GetService<IHandler<OrderCreatedEvent>>();
 if (environment.ToUpper().Equals("DEVELOPMENT"))
 {
