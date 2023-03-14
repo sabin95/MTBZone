@@ -1,6 +1,30 @@
-<!-- <button (click)="addProduct()">Add new product</button>
+<form [formGroup]="productForm" (ngSubmit)="onAddProduct()">
+  <div class="form-group">
+    <label for="product-title">Title:</label>
+    <input type="text" id="product-title" formControlName="Title" class="form-control" required>
+  </div>
+  <div class="form-group">
+    <label for="product-price">Price:</label>
+    <input type="number" id="product-price" formControlName="Price" class="form-control" required>
+  </div>
+  <div class="form-group">
+    <label for="product-description">Description:</label>
+    <input id="product-description" formControlName="Description" class="form-control" rows="3" required>
+  </div>
+  <div class="form-group">
+    <label for="product-categoryId">Category Id:</label>
+    <input type="text" id="product-categoryId" formControlName="CategoryId" class="form-control" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Add Product</button>
+</form>
 
-<button (click)="getProductById()">Get this specific product</button>
+
+
+ 
+ 
+ 
+
+<!-- <button (click)="getProductById()">Get this specific product</button>
 
 <button (click)="getAllProducts()">Add new product</button>
 
@@ -10,5 +34,5 @@
 
 <button (click)="deleteById()">Delete this product</button>
 
-<button (click)="increaseStockPerProduct()">Increase the stock of this product</button>
-   -->
+<button (click)="increaseStockPerProduct()">Increase the stock of this product</button> -->
+  

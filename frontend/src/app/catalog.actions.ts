@@ -6,6 +6,15 @@ export const addProduct = createAction(
     '[Catalog] Add Product',
     props<{ product: Product;}>()
   );
+export const addProductSuccess = createAction(
+    '[Catalog] Add Product Success',
+    props<{ product: Product }>()
+  );
+export const addProductFailure = createAction(
+    '[Catalog] Add Product Failure',
+    props<{ error: any }>()
+  );
+      
 export const getProductById = createAction(
     '[Catalog] Get Product By Id',
     props<{ id: string;}>()
