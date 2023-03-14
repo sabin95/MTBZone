@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { addProduct, getProductById, getAllProducts, updateProductById, deleteById, increaseStockPerProduct } from './catalog.actions';
+import { addProduct, getProductById, getAllProducts, updateProductById, deleteById, increaseStockPerProduct, addProductFailure, addProductSuccess } from './catalog.actions';
 import { Category } from './models/category.model';
 import { Product } from './models/product.model';
 
@@ -23,4 +23,19 @@ export const catalogReducer = createReducer(
     ...state,
     AllProduct: state.AllProducts
   })),
+);
+
+export const addProductReducer = createReducer(
+  initialState,
+  on(addProductSuccess, (state, { product }) => ({
+    ...state,
+    products: [...state.AllProducts, product],
+    loading: false,
+    error: null
+  })),
+  on(addProductFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error
+  }))
 );
