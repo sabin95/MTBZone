@@ -15,7 +15,7 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpPost("Add")]
-        public async Task<IActionResult> AddProduct(ProductCommand productCommand)
+        public async Task<IActionResult> AddProduct([FromBody] ProductCommand productCommand)
         {
             try
             {
