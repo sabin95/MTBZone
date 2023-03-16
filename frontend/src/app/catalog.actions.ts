@@ -3,22 +3,32 @@ import { Category } from './models/category.model';
 import { Product } from './models/product.model';
 
 export const addProduct = createAction(
-    '[Catalog] Add Product',
-    props<{ product: Product;}>()
-  );
+  '[Catalog] Add Product',
+  props<{ product: Product;}>()
+);
 export const addProductSuccess = createAction(
-    '[Catalog] Add Product Success',
-    props<{ product: Product }>()
-  );
+  '[Catalog] Add Product Success',
+  props<{ product: Product }>()
+);
 export const addProductFailure = createAction(
-    '[Catalog] Add Product Failure',
-    props<{ error: any }>()
-  );
+  '[Catalog] Add Product Failure',
+  props<{ error: any }>()
+);
       
 export const getProductById = createAction(
-    '[Catalog] Get Product By Id',
-    props<{ id: string;}>()
-  );
+  '[Catalog] Get Product By Id',
+  props<{ id: string;}>()
+);
+export const getProductByIdSuccess = createAction(
+  '[Catalog] Get Product By Id Success',
+  props<{ product: any }>()
+);
+
+export const getProductByIdFailure = createAction(
+  '[Catalog] Get Product By Id Failure',
+  props<{ error: any }>()
+);
+    
 export const getAllProducts = createAction(
     '[Catalog] Get All Products'
     );
