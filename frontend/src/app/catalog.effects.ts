@@ -1,27 +1,39 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { HttpClient } from '@angular/common/http';
 import { switchMap, map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { addProduct, addProductFailure, addProductSuccess } from './catalog.actions';
-import { Product } from './models/product.model';
+import { addProduct, addProductFailure, addProductSuccess, getProductById, getProductByIdFailure, getProductByIdSuccess } from './catalog.actions';
+import { CatalogService } from './catalog.service';
 
 @Injectable()
 export class CatalogEffects {
   constructor(
     private catalogActions$: Actions,
-    private http: HttpClient
+    private catalogService: CatalogService
   ) {}
 
+  
   addProductEffect$ = createEffect(() =>
-  this.catalogActions$.pipe(
-    ofType(addProduct),
-    switchMap((action) =>
-      this.http.post<Product>('https://localhost:7124/api/Products/Add', action.product).pipe(
-        map((response) => addProductSuccess({ product: response })),
-        catchError((error) => of(addProductFailure({ error })))
+    this.catalogActions$.pipe(
+      ofType(addProduct),
+      switchMap((action) =>
+        this.catalogService.addProduct(action.product).pipe(
+          map((response) => addProductSuccess({ product: response })),
+          catchError((error) => of(addProductFailure({ error })))
+        )
       )
     )
-  )
-);
+  );
+
+  getProductByIdEffect$ = createEffect(() =>
+    this.catalogActions$.pipe(
+      ofType(getProductById),
+      switchMap((action) =>
+        this.catalogService.getProductById(action.id).pipe(
+          map((response) => getProductByIdSuccess({ product: response })),
+          catchError((error) => of(getProductByIdFailure({ error })))
+        )
+      )
+    )
+  );
 }
