@@ -19,6 +19,19 @@
 </form>
 
 
+<button (click)="getAllProducts()">Show all products:</button>
+<ul>
+  <li *ngFor="let product of products$ | async">
+    <div class="product">
+      <div class="title">{{ product.title }}</div>
+      <div class="price">Price: {{ product.price }}</div>
+      <div class="description">Description: {{ product.description }}</div>
+      <div class="category">Category ID: {{ product.categoryId }}</div>
+    </div>
+  </li>
+</ul>
+
+
 
  
  
@@ -26,7 +39,7 @@
 
 <!-- <button (click)="getProductById()">Get this specific product</button>
 
-<button (click)="getAllProducts()">Add new product</button>
+
 
 <div>Number of products: {{ count$ | async }}</div>
 

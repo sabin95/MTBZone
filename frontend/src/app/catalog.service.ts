@@ -12,12 +12,17 @@ export class CatalogService {
   constructor(private http: HttpClient) { }
 
   addProduct(product: Product): Observable<any> {
-    const url = `${this.apiUrl}/Products/Add`;
+    const url = `${this.apiUrl}Products/Add`;
     return this.http.post(url, product);
   }
 
   getProductById(id: string): Observable<any> {
     const url = `${this.apiUrl}Products/GetProductById?id=${id}`;
+    return this.http.get(url);
+  }
+
+  getAllProducts(): Observable<any> {
+    const url = `${this.apiUrl}Products`;
     return this.http.get(url);
   }
 }
