@@ -1,8 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { addProduct, deleteById, getAllProducts, getProductById, increaseStockPerProduct, updateProductById } from 'src/app/catalog.actions';
+import { selectAllProducts } from 'src/app/catalog.selectors';
 import { Product } from 'src/app/models/product.model';
 
 @Component({
@@ -10,15 +11,14 @@ import { Product } from 'src/app/models/product.model';
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.less']
 })
-export class ProductComponent {
-  count$: Observable<number>;  
+export class ProductComponent implements OnInit {
   productForm: FormGroup;
+  products$: Observable<Product[]>;
 
   constructor(
-    private store: Store<{ count: number }>,
+    private store: Store<{ products: Product[] }>,
     private formBuilder: FormBuilder
   ) {
-    this.count$ = store.select('count');
 
     this.productForm = this.formBuilder.group({
       Title: ['', Validators.required],
@@ -27,10 +27,11 @@ export class ProductComponent {
       CategoryId: ['', Validators.required]
     });
   }
-
+  ngOnInit(): void {
+    this.products$ = this.store.select(selectAllProducts);
+  }
 
   onAddProduct() {
-    debugger;
     const product: Product = this.productForm.value as Product;
     this.store.dispatch(addProduct({ product }));
     this.productForm.reset();

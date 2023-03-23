@@ -21,17 +21,25 @@ export const getProductById = createAction(
 );
 export const getProductByIdSuccess = createAction(
   '[Catalog] Get Product By Id Success',
-  props<{ product: any }>()
+  props<{ product: Product }>()
 );
-
 export const getProductByIdFailure = createAction(
   '[Catalog] Get Product By Id Failure',
   props<{ error: any }>()
 );
     
 export const getAllProducts = createAction(
-    '[Catalog] Get All Products'
-    );
+  '[Catalog] Get All Products'
+);
+export const getAllProductsSuccess = createAction(
+  '[Catalog] Get All Products Success',
+  props<{ products: Product[] }>()
+);
+export const getAllProductsFailure = createAction(
+  '[Catalog] Get All Products Failure',
+  props<{ error: any }>()
+);
+
 export const updateProductById = createAction(
     '[Catalog] Update Product',
     props<{ id: string, product: Product;}>()

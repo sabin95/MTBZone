@@ -21,7 +21,7 @@ import { ProductComponent } from './catalog/product/product.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    StoreModule.forRoot({ catalog: catalogReducer }),
+    StoreModule.forRoot({ catalogState: catalogReducer }),
     EffectsModule.forRoot([CatalogEffects]),
     HttpClientModule,
     ReactiveFormsModule
