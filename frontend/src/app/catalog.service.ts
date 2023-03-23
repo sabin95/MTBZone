@@ -27,7 +27,7 @@ export class CatalogService {
   }
 
   updateProduct(id:string, product: Product): Observable<any> {
-    const url = `${this.apiUrl}Products/UpdateProductById?id=${id}`;
+    const url = `${this.apiUrl}Products/${id}`;
     return this.http.put(url, product);
   }
 }

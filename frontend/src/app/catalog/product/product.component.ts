@@ -15,7 +15,7 @@ import { ProductResponse } from 'src/app/models/productResponse.model';
 export class ProductComponent implements OnInit {
   productForm: FormGroup;
   products$: Observable<ProductResponse[]>;
-  actualProduct$: Observable<ProductResponse|undefined>;
+  actualProduct$: Observable<ProductResponse|null>;
   productId: string;
   showProducts = false;
 
@@ -45,7 +45,7 @@ export class ProductComponent implements OnInit {
 
   getProductById(productId:string) {
     this.store.dispatch(getProductById({productId}));
-    this.actualProduct$ = this.store.select(selectProductById(this.productId));
+    this.actualProduct$ = this.store.select(selectProductById);
   }
 
   getAllProducts() {

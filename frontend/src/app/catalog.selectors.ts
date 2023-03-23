@@ -8,9 +8,7 @@ export const selectAllProducts = createSelector(
   (state: CatalogState) => state.AllProducts
 );
 
-export const selectProductById = (id: string) =>createSelector(
-  selectAllProducts,
-  products => {
-    const result = products.find(p => p.id === id);
-    return result;
-}); 
+export const selectProductById = createSelector(
+  selectCatalogState,
+  (state: CatalogState) => state.ActualProduct
+); 
