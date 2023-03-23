@@ -24,7 +24,8 @@ import { ProductComponent } from './catalog/product/product.component';
     StoreModule.forRoot({ catalogState: catalogReducer }),
     EffectsModule.forRoot([CatalogEffects]),
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

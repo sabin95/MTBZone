@@ -2,12 +2,13 @@ import { createReducer, on } from '@ngrx/store';
 import { addProduct, getProductById, getAllProducts, updateProductById, deleteById, increaseStockPerProduct, addProductFailure, addProductSuccess, getAllProductsSuccess } from './catalog.actions';
 import { Category } from './models/category.model';
 import { Product } from './models/product.model';
+import { ProductResponse } from './models/productResponse.model';
 
 export interface CatalogState{
     AvailableCategories: Category[];
-    AllProducts: Product[];
-    AvailableProducts: Product[];
-    OutOfStockProducts: Product[];
+    AllProducts: ProductResponse[];
+    AvailableProducts: ProductResponse[];
+    OutOfStockProducts: ProductResponse[];
 }
 
 export const initialState: CatalogState = {
