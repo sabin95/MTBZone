@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { switchMap, map, catchError, mergeMap, tap } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
-import { addProduct, addProductFailure, addProductSuccess, getAllProducts, getAllProductsFailure, getAllProductsSuccess, getProductById, getProductByIdFailure, getProductByIdSuccess, updateProductById, updateProductByIdFailure, updateProductByIdSucess } from './catalog.actions';
+import { switchMap, map, catchError, mergeMap, } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { addProduct, addProductFailure, addProductSuccess, deleteProductById, deleteProductByIdFailure, deleteProductByIdSucess, getAllProducts, getAllProductsFailure, getAllProductsSuccess, getProductById, getProductByIdFailure, getProductByIdSuccess, updateProductById, updateProductByIdFailure, updateProductByIdSucess } from './catalog.actions';
 import { CatalogService } from './catalog.service';
 
 @Injectable()
@@ -60,5 +60,17 @@ export class CatalogEffects {
       )
     )
   );
+
+  deleteProductEffect$ = createEffect(() =>
+    this.catalogActions$.pipe(
+      ofType(deleteProductById),
+      switchMap((action) =>
+        this.catalogService.deleteProductById(action.id).pipe(
+          map(() => deleteProductByIdSucess()),
+          catchError((error) => of(deleteProductByIdFailure({error})))
+        )
+      )
+    )
+  )
   
 }

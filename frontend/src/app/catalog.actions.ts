@@ -51,13 +51,23 @@ export const updateProductByIdSucess = createAction(
 );
 export const updateProductByIdFailure = createAction(
   '[Catalog] Update Product Failure',
-  props<{ error: any}>()
+  props<{ error: any }>()
 );  
 
-export const deleteById = createAction(
-    '[Catalog] Delete Product',
-    props<{ id: string;}>()
-  );
+export const deleteProductById = createAction(
+  '[Catalog] Delete Product',
+  props<{ id: string;}>()
+);
+export const deleteProductByIdSucess = createAction(
+  '[Catalog] Delete Product Success'
+);
+export const deleteProductByIdFailure = createAction(
+  '[Catalog] Delete Product Success',
+  props<{ error: any }>()
+);
+
+
+
 export const increaseStockPerProduct = createAction(
     '[Catalog] Increase stock per Product',
     props<{ id: string, quantity: number;}>()

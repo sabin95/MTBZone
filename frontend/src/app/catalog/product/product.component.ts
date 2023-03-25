@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { addProduct, deleteById, getAllProducts, getProductById, increaseStockPerProduct, updateProductById } from 'src/app/catalog.actions';
+import { addProduct, deleteProductById, getAllProducts, getProductById, increaseStockPerProduct, updateProductById } from 'src/app/catalog.actions';
 import { selectAllProducts, selectProductById } from 'src/app/catalog.selectors';
 import { Product } from 'src/app/models/product.model';
 import { ProductResponse } from 'src/app/models/productResponse.model';
@@ -69,8 +69,8 @@ export class ProductComponent implements OnInit {
   }
   
 
-  deleteById(id:string) {
-    this.store.dispatch(deleteById({id}));
+  deleteProductById(id:string) {
+    this.store.dispatch(deleteProductById({id}));
   }
 
   increaseStockPerProduct(id:string, quantity:number) {
