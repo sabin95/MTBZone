@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { getAllProducts, getAllProductsSuccess, getProductByIdSuccess, updateProductByIdSucess } from './catalog.actions';
+import { getAllProducts, getAllProductsSuccess, getProductByIdSuccess, increaseStockPerProductSucess, updateProductByIdSucess } from './catalog.actions';
 import { Category } from './models/category.model';
 import { ProductResponse } from './models/productResponse.model';
 
@@ -42,6 +42,12 @@ export const catalogReducer = createReducer(
     };
   }),
   on(updateProductByIdSucess, (state, { product }) => {
+    return {
+      ...state,
+      ActualProduct: product,
+    };
+  }),
+  on(increaseStockPerProductSucess,(state, {product}) => {
     return {
       ...state,
       ActualProduct: product,
