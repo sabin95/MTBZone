@@ -34,19 +34,46 @@
 </ul>
 </div>
 
-
 <div>
   <input type="text" [(ngModel)]="productId" class="my-field">
   <button class="my-button" (click)="getProductById(productId)">Get Product</button>
 </div>
-<div *ngIf="actualProduct$ | async as actualProduct">
-  <h2>Title: {{ actualProduct.title }}</h2>
-  <p>Price: {{ actualProduct.price }}</p>
+
+<div *ngIf="(actualProduct$ | async) as actualProduct">
   <p>Id: {{ actualProduct.id }}</p>
-  <p>Description {{ actualProduct.description }}</p>
   <p>Stock: {{ actualProduct.stock }}</p>
-  <p>Category ID: {{ actualProduct.categoryId }}</p>
+
+  <form #editForm="ngForm" (ngSubmit)="updateProductById()">
+    <div>
+      <label for="title">Title</label>
+      <input type="text" id="title" name="title" [(ngModel)]="editProduct.title" class="my-field" required>
+    </div>
+    <div>
+      <label for="price">Price</label>
+      <input type="number" id="price" name="price" [(ngModel)]="editProduct.price" class="my-field" required>
+    </div>
+    <div>
+      <label for="description">Description</label>
+      <textarea id="description" name="description" [(ngModel)]="editProduct.description" class="my-field" required></textarea>
+    </div>
+    <div>
+      <label for="categoryId">Category ID</label>
+      <input type="text" id="categoryId" name="categoryId" [(ngModel)]="editProduct.categoryId" class="my-field" required>
+    </div>
+    <button type="submit" class="my-button" [disabled]="!editForm.valid">Update Product</button>
+  </form>
+
+  <div *ngIf="actualProduct">
+    <h2>Title: {{ actualProduct.title }}</h2>
+    <p>Price: {{ actualProduct.price }}</p>
+    <p>Id: {{ actualProduct.id }}</p>
+    <p>Description {{ actualProduct.description }}</p>
+    <p>Stock: {{ actualProduct.stock }}</p>
+    <p>Category ID: {{ actualProduct.categoryId }}</p>
+  </div>
 </div>
+  
+
 
  
  

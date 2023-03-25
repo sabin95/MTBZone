@@ -15,9 +15,10 @@ import { ProductResponse } from 'src/app/models/productResponse.model';
 export class ProductComponent implements OnInit {
   productForm: FormGroup;
   products$: Observable<ProductResponse[]>;
-  actualProduct$: Observable<ProductResponse|null>;
+  actualProduct$: Observable<ProductResponse>;
   productId: string;
   showProducts = false;
+  editProduct: ProductResponse;
 
   constructor(
     private store: Store<{ products: ProductResponse[] }>,
@@ -46,16 +47,27 @@ export class ProductComponent implements OnInit {
   getProductById(productId:string) {
     this.store.dispatch(getProductById({productId}));
     this.actualProduct$ = this.store.select(selectProductById);
+    this.actualProduct$.subscribe((product) => {
+      this.editProduct = { ...product };
+    });
   }
 
   getAllProducts() {
     this.showProducts = !this.showProducts;
     this.store.dispatch(getAllProducts());
   }
+  
 
-  updateProductById(id:string, updatedProduct: Product) {
-    this.store.dispatch(updateProductById({id, product: updatedProduct}));
+  updateProductById() {
+    const updatedProduct: Product = {
+      title: this.editProduct.title,
+      price: this.editProduct.price,
+      description: this.editProduct.description,
+      categoryId: this.editProduct.categoryId
+    };
+    this.store.dispatch(updateProductById({ id: this.editProduct.id, product: updatedProduct }));
   }
+  
 
   deleteById(id:string) {
     this.store.dispatch(deleteById({id}));

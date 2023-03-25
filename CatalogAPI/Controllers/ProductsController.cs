@@ -61,7 +61,7 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpPut("{productId}")]
-        public async Task<IActionResult> UpdateProductById(Guid productId, ProductCommand productCommand)
+        public async Task<IActionResult> UpdateProductById(Guid productId, [FromBody] ProductCommand productCommand)
         {
             try
             {
