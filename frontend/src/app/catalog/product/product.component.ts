@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { addProduct, deleteById, getAllProducts, getProductById, increaseStockPerProduct, updateProductById } from 'src/app/catalog.actions';
-import { selectAllProducts } from 'src/app/catalog.selectors';
+import { selectAllProducts, selectProductById } from 'src/app/catalog.selectors';
 import { Product } from 'src/app/models/product.model';
+import { ProductResponse } from 'src/app/models/productResponse.model';
 
 @Component({
   selector: 'app-product',
@@ -13,18 +14,23 @@ import { Product } from 'src/app/models/product.model';
 })
 export class ProductComponent implements OnInit {
   productForm: FormGroup;
-  products$: Observable<Product[]>;
+  products$: Observable<ProductResponse[]>;
+  actualProduct$: Observable<ProductResponse>;
+  productId: string;
+  showProducts = false;
+  editProduct: ProductResponse;
 
   constructor(
-    private store: Store<{ products: Product[] }>,
+    private store: Store<{ products: ProductResponse[] }>,
     private formBuilder: FormBuilder
   ) {
 
     this.productForm = this.formBuilder.group({
+      Id: ['', Validators.required],
       Title: ['', Validators.required],
       Price: [0, Validators.required],
       Description: ['', Validators.required],
-      CategoryId: ['', Validators.required]
+      CategoryId: ['', Validators.required],
     });
   }
   ngOnInit(): void {
@@ -38,17 +44,30 @@ export class ProductComponent implements OnInit {
   }
   
 
-  getProductById(id:string) {
-    this.store.dispatch(getProductById({id}));
+  getProductById(productId:string) {
+    this.store.dispatch(getProductById({productId}));
+    this.actualProduct$ = this.store.select(selectProductById);
+    this.actualProduct$.subscribe((product) => {
+      this.editProduct = { ...product };
+    });
   }
 
   getAllProducts() {
+    this.showProducts = !this.showProducts;
     this.store.dispatch(getAllProducts());
   }
+  
 
-  updateProductById(id:string, updatedProduct: Product) {
-    this.store.dispatch(updateProductById({id, product: updatedProduct}));
+  updateProductById() {
+    const updatedProduct: Product = {
+      title: this.editProduct.title,
+      price: this.editProduct.price,
+      description: this.editProduct.description,
+      categoryId: this.editProduct.categoryId
+    };
+    this.store.dispatch(updateProductById({ id: this.editProduct.id, product: updatedProduct }));
   }
+  
 
   deleteById(id:string) {
     this.store.dispatch(deleteById({id}));

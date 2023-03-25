@@ -1,6 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { Category } from './models/category.model';
 import { Product } from './models/product.model';
+import { ProductResponse } from './models/productResponse.model';
 
 export const addProduct = createAction(
   '[Catalog] Add Product',
@@ -8,7 +9,7 @@ export const addProduct = createAction(
 );
 export const addProductSuccess = createAction(
   '[Catalog] Add Product Success',
-  props<{ product: Product }>()
+  props<{ product: ProductResponse }>()
 );
 export const addProductFailure = createAction(
   '[Catalog] Add Product Failure',
@@ -17,11 +18,11 @@ export const addProductFailure = createAction(
       
 export const getProductById = createAction(
   '[Catalog] Get Product By Id',
-  props<{ id: string;}>()
+  props<{ productId: string;}>()
 );
 export const getProductByIdSuccess = createAction(
   '[Catalog] Get Product By Id Success',
-  props<{ product: Product }>()
+  props<{ product: ProductResponse }>()
 );
 export const getProductByIdFailure = createAction(
   '[Catalog] Get Product By Id Failure',
@@ -33,7 +34,7 @@ export const getAllProducts = createAction(
 );
 export const getAllProductsSuccess = createAction(
   '[Catalog] Get All Products Success',
-  props<{ products: Product[] }>()
+  props<{ products: ProductResponse[] }>()
 );
 export const getAllProductsFailure = createAction(
   '[Catalog] Get All Products Failure',
@@ -41,9 +42,18 @@ export const getAllProductsFailure = createAction(
 );
 
 export const updateProductById = createAction(
-    '[Catalog] Update Product',
-    props<{ id: string, product: Product;}>()
-  );
+  '[Catalog] Update Product',
+  props<{ id: string, product: Product;}>()
+);
+export const updateProductByIdSucess = createAction(
+  '[Catalog] Update Product Success',
+  props<{ product: ProductResponse;}>()
+);
+export const updateProductByIdFailure = createAction(
+  '[Catalog] Update Product Failure',
+  props<{ error: any}>()
+);  
+
 export const deleteById = createAction(
     '[Catalog] Delete Product',
     props<{ id: string;}>()

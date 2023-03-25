@@ -7,3 +7,8 @@ export const selectAllProducts = createSelector(
   selectCatalogState,
   (state: CatalogState) => state.AllProducts
 );
+
+export const selectProductById = createSelector(
+  selectCatalogState,
+  (state: CatalogState) => state.ActualProduct
+); 

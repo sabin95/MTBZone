@@ -1,47 +1,84 @@
 <form [formGroup]="productForm" (ngSubmit)="onAddProduct()">
   <div class="form-group">
     <label for="product-title">Title:</label>
-    <input type="text" id="product-title" formControlName="Title" class="form-control" required>
+    <input type="text" id="product-title" formControlName="Title" class="form-control my-field" required>
   </div>
   <div class="form-group">
     <label for="product-price">Price:</label>
-    <input type="number" id="product-price" formControlName="Price" class="form-control" required>
+    <input type="number" id="product-price" formControlName="Price" class="form-control my-field" required>
   </div>
   <div class="form-group">
     <label for="product-description">Description:</label>
-    <input id="product-description" formControlName="Description" class="form-control" rows="3" required>
+    <textarea id="product-description" formControlName="Description" class="form-control my-field" rows="3" required></textarea>
   </div>
   <div class="form-group">
     <label for="product-categoryId">Category Id:</label>
-    <input type="text" id="product-categoryId" formControlName="CategoryId" class="form-control" required>
+    <input type="text" id="product-categoryId" formControlName="CategoryId" class="form-control my-field" required>
   </div>
-  <button type="submit" class="btn btn-primary">Add Product</button>
+  <button type="submit" class="btn btn-primary my-button">Add Product</button>
 </form>
 
-
-<button (click)="getAllProducts()">Show all products:</button>
-<ul>
+<div>
+<button class="my-button" (click)="getAllProducts()">Show all products:</button>
+<ul *ngIf="showProducts">
   <li *ngFor="let product of products$ | async">
     <div class="product">
-      <div class="title">{{ product.title }}</div>
-      <div class="price">Price: {{ product.price }}</div>
+      <div class="title">Title: {{ product.title }}</div>
+      <div class="price">Price: {{ product.price }}</div>      
+      <div class="description">Id: {{ product.id }}</div>      
       <div class="description">Description: {{ product.description }}</div>
+      <div class="description">Stock: {{ product.stock }}</div>
       <div class="category">Category ID: {{ product.categoryId }}</div>
     </div>
   </li>
 </ul>
+</div>
 
+<div>
+  <input type="text" [(ngModel)]="productId" class="my-field">
+  <button class="my-button" (click)="getProductById(productId)">Get Product</button>
+</div>
+
+<div *ngIf="(actualProduct$ | async) as actualProduct">
+  <p>Id: {{ actualProduct.id }}</p>
+  <p>Stock: {{ actualProduct.stock }}</p>
+
+  <form #editForm="ngForm" (ngSubmit)="updateProductById()">
+    <div>
+      <label for="title">Title</label>
+      <input type="text" id="title" name="title" [(ngModel)]="editProduct.title" class="my-field" required>
+    </div>
+    <div>
+      <label for="price">Price</label>
+      <input type="number" id="price" name="price" [(ngModel)]="editProduct.price" class="my-field" required>
+    </div>
+    <div>
+      <label for="description">Description</label>
+      <textarea id="description" name="description" [(ngModel)]="editProduct.description" class="my-field" required></textarea>
+    </div>
+    <div>
+      <label for="categoryId">Category ID</label>
+      <input type="text" id="categoryId" name="categoryId" [(ngModel)]="editProduct.categoryId" class="my-field" required>
+    </div>
+    <button type="submit" class="my-button" [disabled]="!editForm.valid">Update Product</button>
+  </form>
+
+  <div *ngIf="actualProduct">
+    <h2>Title: {{ actualProduct.title }}</h2>
+    <p>Price: {{ actualProduct.price }}</p>
+    <p>Id: {{ actualProduct.id }}</p>
+    <p>Description {{ actualProduct.description }}</p>
+    <p>Stock: {{ actualProduct.stock }}</p>
+    <p>Category ID: {{ actualProduct.categoryId }}</p>
+  </div>
+</div>
+  
 
 
  
  
- 
 
-<!-- <button (click)="getProductById()">Get this specific product</button>
-
-
-
-<div>Number of products: {{ count$ | async }}</div>
+<!--
 
 <button (click)="updateProductById()">Update this product</button>
 

@@ -17,12 +17,17 @@ export class CatalogService {
   }
 
   getProductById(id: string): Observable<any> {
-    const url = `${this.apiUrl}Products/GetProductById?id=${id}`;
+    const url = `${this.apiUrl}Products/${id}`;
     return this.http.get(url);
   }
 
   getAllProducts(): Observable<any> {
     const url = `${this.apiUrl}Products`;
     return this.http.get(url);
+  }
+
+  updateProduct(id:string, product: Product): Observable<any> {
+    const url = `${this.apiUrl}Products/${id}`;
+    return this.http.put(url, product);
   }
 }

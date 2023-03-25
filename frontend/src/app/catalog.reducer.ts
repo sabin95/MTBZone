@@ -1,18 +1,25 @@
 import { createReducer, on } from '@ngrx/store';
-import { addProduct, getProductById, getAllProducts, updateProductById, deleteById, increaseStockPerProduct, addProductFailure, addProductSuccess, getAllProductsSuccess } from './catalog.actions';
+import { getAllProducts, getAllProductsSuccess, getProductByIdSuccess, updateProductByIdSucess } from './catalog.actions';
 import { Category } from './models/category.model';
-import { Product } from './models/product.model';
+import { ProductResponse } from './models/productResponse.model';
 
 export interface CatalogState{
     AvailableCategories: Category[];
-    AllProducts: Product[];
-    AvailableProducts: Product[];
-    OutOfStockProducts: Product[];
+    AllProducts: ProductResponse[];
+    ActualProduct: ProductResponse;
+    AvailableProducts: ProductResponse[];
+    OutOfStockProducts: ProductResponse[];
 }
 
 export const initialState: CatalogState = {
     AvailableCategories: [],
     AllProducts: [],
+    ActualProduct: {id: '',
+                    title:'',
+                    price: 0,
+                    description: '',
+                    categoryId: '',
+                    stock: 0},
     AvailableProducts: [],
     OutOfStockProducts: []
 }
@@ -27,5 +34,17 @@ export const catalogReducer = createReducer(
       ...state,
       AllProducts: products,
     };
-  })
+  }),
+  on(getProductByIdSuccess, (state, { product }) => {
+    return {
+      ...state,
+      ActualProduct: product,
+    };
+  }),
+  on(updateProductByIdSucess, (state, { product }) => {
+    return {
+      ...state,
+      ActualProduct: product,
+    };
+  }),
 );
