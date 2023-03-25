@@ -71,6 +71,7 @@
     <p>Stock: {{ actualProduct.stock }}</p>
     <p>Category ID: {{ actualProduct.categoryId }}</p>
   </div>
+  <button class="my-button" (click)="deleteProductById(productId)">Delete this product</button>
 </div>
   
 
@@ -79,10 +80,6 @@
  
 
 <!--
-
-<button (click)="updateProductById()">Update this product</button>
-
-<button (click)="deleteById()">Delete this product</button>
 
 <button (click)="increaseStockPerProduct()">Increase the stock of this product</button> -->
   
