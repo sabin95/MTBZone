@@ -71,15 +71,15 @@
     <p>Stock: {{ actualProduct.stock }}</p>
     <p>Category ID: {{ actualProduct.categoryId }}</p>
   </div>
+
   <button class="my-button" (click)="deleteProductById(productId)">Delete this product</button>
+
+  <form #editForm="ngForm" (ngSubmit)="increaseStockPerProduct(productId)">
+    <div>
+      <label for="quantity">Increase the stock of this product by</label>
+      <input type="number" id="quantity" name="quantity" [(ngModel)]="stockQuantityIncrease" class="my-field" required>
+    </div>
+    <button type="submit" class="my-button" [disabled]="!editForm.valid">Increase stock</button>
+  </form>
 </div>
-  
-
-
- 
- 
-
-<!--
-
-<button (click)="increaseStockPerProduct()">Increase the stock of this product</button> -->
   

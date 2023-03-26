@@ -89,7 +89,7 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpPut("{productId}/IncreaseStock")]
-        public async Task<IActionResult> IncreaseStockPerProduct(Guid productId, long quantity)
+        public async Task<IActionResult> IncreaseStockPerProduct(Guid productId, [FromBody] long quantity)
         {
             try
             {

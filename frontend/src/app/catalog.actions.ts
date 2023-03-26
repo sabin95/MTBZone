@@ -9,11 +9,11 @@ export const addProduct = createAction(
 );
 export const addProductSuccess = createAction(
   '[Catalog] Add Product Success',
-  props<{ product: ProductResponse }>()
+  props<{ product: ProductResponse;}>()
 );
 export const addProductFailure = createAction(
   '[Catalog] Add Product Failure',
-  props<{ error: any }>()
+  props<{ error: any;}>()
 );
       
 export const getProductById = createAction(
@@ -22,11 +22,11 @@ export const getProductById = createAction(
 );
 export const getProductByIdSuccess = createAction(
   '[Catalog] Get Product By Id Success',
-  props<{ product: ProductResponse }>()
+  props<{ product: ProductResponse;}>()
 );
 export const getProductByIdFailure = createAction(
   '[Catalog] Get Product By Id Failure',
-  props<{ error: any }>()
+  props<{ error: any;}>()
 );
     
 export const getAllProducts = createAction(
@@ -34,11 +34,11 @@ export const getAllProducts = createAction(
 );
 export const getAllProductsSuccess = createAction(
   '[Catalog] Get All Products Success',
-  props<{ products: ProductResponse[] }>()
+  props<{ products: ProductResponse[];}>()
 );
 export const getAllProductsFailure = createAction(
   '[Catalog] Get All Products Failure',
-  props<{ error: any }>()
+  props<{ error: any;}>()
 );
 
 export const updateProductById = createAction(
@@ -51,7 +51,7 @@ export const updateProductByIdSucess = createAction(
 );
 export const updateProductByIdFailure = createAction(
   '[Catalog] Update Product Failure',
-  props<{ error: any }>()
+  props<{ error: any;}>()
 );  
 
 export const deleteProductById = createAction(
@@ -62,16 +62,24 @@ export const deleteProductByIdSucess = createAction(
   '[Catalog] Delete Product Success'
 );
 export const deleteProductByIdFailure = createAction(
-  '[Catalog] Delete Product Success',
-  props<{ error: any }>()
+  '[Catalog] Delete Product Failure',
+  props<{ error: any;}>()
 );
 
-
-
 export const increaseStockPerProduct = createAction(
-    '[Catalog] Increase stock per Product',
-    props<{ id: string, quantity: number;}>()
-  );
+  '[Catalog] Increase stock per Product',
+  props<{ id: string, quantity: number;}>()
+);
+export const increaseStockPerProductSucess = createAction(
+  '[Catalog] Increase stock per Product Success',
+  props<{ product: ProductResponse;}>()
+);
+export const increaseStockPerProductFailure = createAction(
+  '[Catalog] Increase stock per Product Failure',
+  props<{ error: any;}>()
+);
+  
+  
 
 export const addCategory = createAction(
     '[Catalog] Add Category',

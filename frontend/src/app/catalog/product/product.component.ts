@@ -19,6 +19,7 @@ export class ProductComponent implements OnInit {
   productId: string;
   showProducts = false;
   editProduct: ProductResponse;
+  stockQuantityIncrease: number;
 
   constructor(
     private store: Store<{ products: ProductResponse[] }>,
@@ -73,7 +74,7 @@ export class ProductComponent implements OnInit {
     this.store.dispatch(deleteProductById({id}));
   }
 
-  increaseStockPerProduct(id:string, quantity:number) {
-    this.store.dispatch(increaseStockPerProduct({id, quantity}));
+  increaseStockPerProduct(id:string) {
+    this.store.dispatch(increaseStockPerProduct({id:id, quantity:this.stockQuantityIncrease}));
   }
 }

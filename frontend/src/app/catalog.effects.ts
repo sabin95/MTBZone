@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, map, catchError, mergeMap, } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { addProduct, addProductFailure, addProductSuccess, deleteProductById, deleteProductByIdFailure, deleteProductByIdSucess, getAllProducts, getAllProductsFailure, getAllProductsSuccess, getProductById, getProductByIdFailure, getProductByIdSuccess, updateProductById, updateProductByIdFailure, updateProductByIdSucess } from './catalog.actions';
+import { addProduct, addProductFailure, addProductSuccess, deleteProductById, deleteProductByIdFailure, deleteProductByIdSucess, getAllProducts, getAllProductsFailure, getAllProductsSuccess, getProductById, getProductByIdFailure, getProductByIdSuccess, increaseStockPerProduct, increaseStockPerProductFailure, increaseStockPerProductSucess, updateProductById, updateProductByIdFailure, updateProductByIdSucess } from './catalog.actions';
 import { CatalogService } from './catalog.service';
 
 @Injectable()
@@ -72,5 +72,17 @@ export class CatalogEffects {
       )
     )
   )
+
+  increaseStockPerProductEffect$ = createEffect(() =>
+    this.catalogActions$.pipe(
+      ofType(increaseStockPerProduct),
+      switchMap((action) =>
+        this.catalogService.increaseStockPerProduct(action.id, action.quantity).pipe(
+          map((response) => increaseStockPerProductSucess({ product: response })),
+          catchError((error) => of(increaseStockPerProductFailure({ error })))
+        )
+      )
+    )
+  );
   
 }

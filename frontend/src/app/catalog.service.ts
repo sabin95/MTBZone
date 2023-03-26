@@ -36,4 +36,9 @@ export class CatalogService {
     const url = `${this.apiUrl}Products/${id}`;
     return this.http.delete(url);
   }
+
+  increaseStockPerProduct(id: string, quantity: number): Observable<any> {
+    const url = `${this.apiUrl}Products/${id}/IncreaseStock`;
+    return this.http.put(url, quantity);
+  }
 }
