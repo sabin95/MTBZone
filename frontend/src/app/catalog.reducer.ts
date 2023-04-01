@@ -1,10 +1,12 @@
 import { createReducer, on } from '@ngrx/store';
-import { getAllProducts, getAllProductsSuccess, getProductByIdSuccess, increaseStockPerProductSucess, updateProductByIdSucess } from './catalog.actions';
-import { Category } from './models/category.model';
+import { getAllCategories, getAllCategoriesSuccess, getAllProducts, getAllProductsSuccess, getCategoryById, getCategoryByIdSuccess, getProductByIdSuccess, increaseStockPerProductSucess, updateCategoryByIdSuccess, updateProductByIdSucess } from './catalog.actions';
+import { CategoryResponse } from './models/categoryResponse.model';
 import { ProductResponse } from './models/productResponse.model';
 
 export interface CatalogState{
-    AvailableCategories: Category[];
+    AllCategories: CategoryResponse[];
+    AvailableCategories: CategoryResponse[];
+    ActualCategory: CategoryResponse;
     AllProducts: ProductResponse[];
     ActualProduct: ProductResponse;
     AvailableProducts: ProductResponse[];
@@ -12,7 +14,10 @@ export interface CatalogState{
 }
 
 export const initialState: CatalogState = {
+    AllCategories: [],
     AvailableCategories: [],
+    ActualCategory: {id: '',
+                     name: ''},
     AllProducts: [],
     ActualProduct: {id: '',
                     title:'',
@@ -51,6 +56,27 @@ export const catalogReducer = createReducer(
     return {
       ...state,
       ActualProduct: product,
+    };
+  }),
+  on(getAllCategories, state => ({
+    ...state
+  })),  
+  on(getAllCategoriesSuccess, (state, { categories }) => {
+    return {
+      ...state,
+      AllCategories: categories,
+    };
+  }),
+  on(getCategoryByIdSuccess, (state, { category }) => {
+    return {
+      ...state,
+      ActualCategory: category,
+    };
+  }),
+  on(updateCategoryByIdSuccess, (state, { category }) => {
+    return {
+      ...state,
+      ActualCategory: category,
     };
   }),
 );

@@ -12,3 +12,13 @@ export const selectProductById = createSelector(
   selectCatalogState,
   (state: CatalogState) => state.ActualProduct
 ); 
+
+export const selectAllCategories = createSelector(
+  selectCatalogState,
+  (state: CatalogState) => state.AllCategories
+);
+
+export const selectCategoryById = createSelector(
+  selectCatalogState,
+  (state: CatalogState) => state.ActualCategory
+); 

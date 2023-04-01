@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { Category } from './models/category.model';
+import { CategoryResponse } from './models/categoryResponse.model';
 import { Product } from './models/product.model';
 import { ProductResponse } from './models/productResponse.model';
 
@@ -82,17 +83,64 @@ export const increaseStockPerProductFailure = createAction(
   
 
 export const addCategory = createAction(
-    '[Catalog] Add Category',
-    props<{category: Category}>());
+  '[Catalog] Add Category',
+  props<{category: Category}>()
+);
+export const addCategorySuccess = createAction(
+  '[Catalog] Add Category Success',
+  props<{category: CategoryResponse}>()
+);
+export const addCategoryFailure = createAction(
+  '[Catalog] Add Category Failure',
+  props<{ error: any;}>()
+);   
+
 export const getCategoryById = createAction(
-    '[Catalog] Get Category By Id',
-    props<{id: string}>());
+  '[Catalog] Get Category By Id',
+  props<{id: string}>()
+);
+export const getCategoryByIdSuccess = createAction(
+  '[Catalog] Get Category By Id Success',
+  props<{category: CategoryResponse}>()
+);
+export const getCategoryByIdFailure = createAction(
+  '[Catalog] Get Category By Id Failure',
+  props<{error: any}>()
+);
+
 export const getAllCategories = createAction(
-    '[Catalog] Get All Categories'
-    );
+  '[Catalog] Get All Categories'
+);
+export const getAllCategoriesSuccess = createAction(
+  '[Catalog] Get All Categories Success',
+  props<{ categories: CategoryResponse[];}>()
+);
+export const getAllCategoriesFailure = createAction(
+  '[Catalog] Get All Categories Failure',
+  props<{error: any}>()
+);       
+    
 export const updateCategoryById = createAction(
-    '[Catalog] Update Category',
-    props<{id: string, category: Category}>());
-export const deleteCategory = createAction(
-    '[Catalog] Delete Category',
-    props<{id: string}>());
+  '[Catalog] Update Category',
+  props<{id: string, category: Category}>()
+);
+export const updateCategoryByIdSuccess = createAction(
+  '[Catalog] Update Category Success',
+  props<{category: CategoryResponse}>()
+);
+export const updateCategoryByIdFailure = createAction(
+  '[Catalog] Update Category Failure',
+  props<{error: any}>()
+);     
+
+export const deleteCategoryById = createAction(
+  '[Catalog] Delete Category',
+  props<{id: string}>()
+);
+export const deleteCategoryByIdSuccess = createAction(
+  '[Catalog] Delete Category Success'
+);
+export const deleteCategoryByIdFailure = createAction(
+  '[Catalog] Delete Category Failure',
+  props<{error: any}>()
+);      
