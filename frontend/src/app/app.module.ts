@@ -18,7 +18,10 @@ import { MatSortModule } from '@angular/material/sort';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProductsTableComponent } from './catalog/products-table/products-table.component';
 import { ProductDialogBoxComponent } from './catalog/product-dialog-box/product-dialog-box.component';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -41,8 +44,10 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
     MatPaginatorModule,
     MatSortModule,
     BrowserAnimationsModule,
-    MatDialog,
-    MatDialogRef 
+    MatFormFieldModule,
+    MatDialogModule,
+    MatInputModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
