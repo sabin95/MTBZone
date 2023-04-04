@@ -18,6 +18,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ProductsTableComponent } from './catalog/products-table/products-table.component';
 import { ProductDialogBoxComponent } from './catalog/product-dialog-box/product-dialog-box.component';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { ProductDialogBoxComponent } from './catalog/product-dialog-box/product-
     CategoryComponent,
     ProductComponent,
     ProductsTableComponent,
+    ProductDialogBoxComponent,
     ProductDialogBoxComponent
   ],
   imports: [
@@ -39,6 +41,8 @@ import { ProductDialogBoxComponent } from './catalog/product-dialog-box/product-
     MatPaginatorModule,
     MatSortModule,
     BrowserAnimationsModule,
+    MatDialog,
+    MatDialogRef 
   ],
   providers: [],
   bootstrap: [AppComponent]

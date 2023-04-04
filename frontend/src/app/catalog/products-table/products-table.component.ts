@@ -7,6 +7,8 @@ import { Store } from '@ngrx/store';
 import { selectAllProducts } from '../../catalog.selectors';
 import { Observable } from 'rxjs';
 import { getAllProducts } from '../../catalog.actions';
+import { MatDialog } from '@angular/material/dialog';
+import { ProductDialogBoxComponent } from '../product-dialog-box/product-dialog-box.component';
 
 @Component({
   selector: 'app-products-table',
@@ -23,6 +25,7 @@ export class ProductsTableComponent {
 
   constructor(
     private store: Store<{ products: ProductResponse[] }>,
+    public dialog: MatDialog
   ) { }
 
   ngOnInit() {
@@ -36,5 +39,11 @@ export class ProductsTableComponent {
 
   onRowClicked(row: any) {
     console.log('Row clicked: ', row);
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(ProductDialogBoxComponent, {
+      width: '400px'
+    });  
   }
 }

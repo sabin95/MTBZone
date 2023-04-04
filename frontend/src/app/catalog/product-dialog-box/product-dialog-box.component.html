@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Add Product</h2>
+<div mat-dialog-content>
+  <mat-form-field>
+    <input matInput placeholder="Title" [(ngModel)]="title">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Price" [(ngModel)]="price" type="number">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Description" [(ngModel)]="description">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Category ID" [(ngModel)]="categoryId" type="number">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button color="primary" (click)="onSaveClick()">Save</button>
+</div>
