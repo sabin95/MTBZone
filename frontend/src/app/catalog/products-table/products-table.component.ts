@@ -2,11 +2,11 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ProductResponse } from '../models/productResponse.model';
+import { ProductResponse } from '../../models/productResponse.model';
 import { Store } from '@ngrx/store';
-import { selectAllProducts } from '../catalog.selectors';
+import { selectAllProducts } from '../../catalog.selectors';
 import { Observable } from 'rxjs';
-import { getAllProducts } from '../catalog.actions';
+import { getAllProducts } from '../../catalog.actions';
 
 @Component({
   selector: 'app-products-table',

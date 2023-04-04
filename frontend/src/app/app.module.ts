@@ -16,14 +16,16 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ProductsTableComponent } from './table/products-table.component';
+import { ProductsTableComponent } from './catalog/products-table/products-table.component';
+import { ProductDialogBoxComponent } from './catalog/product-dialog-box/product-dialog-box.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CategoryComponent,
     ProductComponent,
-    ProductsTableComponent
+    ProductsTableComponent,
+    ProductDialogBoxComponent
   ],
   imports: [
     BrowserModule,
