@@ -12,11 +12,18 @@ import { catalogReducer } from './catalog.reducer';
 import { CategoryComponent } from './catalog/category/category.component';
 import { ProductComponent } from './catalog/product/product.component';
 
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ProductsTableComponent } from './table/products-table.component';
+
 @NgModule({
   declarations: [
     AppComponent,
     CategoryComponent,
-    ProductComponent
+    ProductComponent,
+    ProductsTableComponent
   ],
   imports: [
     BrowserModule,
@@ -25,7 +32,11 @@ import { ProductComponent } from './catalog/product/product.component';
     EffectsModule.forRoot([CatalogEffects]),
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
