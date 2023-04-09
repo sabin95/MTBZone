@@ -20,7 +20,7 @@ export class CatalogEffects {
         this.catalogService.addProduct(action.product).pipe(
           map((response) => addProductSuccess({ product: response })),
           catchError((error) => {
-            const errorMessage = error?.error?.errorMessage || 'An unknown error occurred';
+            const errorMessage = error?.error;
             return of(addProductFailure({ error: errorMessage }));})
         )
       )

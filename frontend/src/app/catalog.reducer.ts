@@ -9,7 +9,7 @@ export interface CatalogState{
     AllProducts: ProductResponse[];
     ActualProduct: ProductResponse;
     loading: boolean;
-    error: any;
+    catalogError: string;
 }
 
 export const initialState: CatalogState = {
@@ -24,7 +24,7 @@ export const initialState: CatalogState = {
                     categoryId: '',
                     stock: 0},
     loading: false,
-    error: null
+    catalogError: ''
 }
 
 export const catalogReducer = createReducer(
@@ -35,11 +35,12 @@ export const catalogReducer = createReducer(
   on(addProductSuccess, (state, { product }) => (
     { ...state,
       products: [...state.AllProducts, product], 
+      catalogError: '',
       loading: false })),
   on(addProductFailure, (state, { error }) => (
     { ...state, 
       loading: false, 
-      error })),
+      catalogError: error })),
   on(getAllProducts, state => ({
     ...state
   })),  

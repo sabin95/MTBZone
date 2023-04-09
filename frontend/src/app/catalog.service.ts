@@ -14,7 +14,6 @@ export class CatalogService {
 
   addProduct(product: Product): Observable<any> {
     const url = `${this.apiUrl}Products/Add`;
-    console.log("product in service:", product);
     return this.http.post(url, product);
   }
 

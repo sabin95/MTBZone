@@ -25,5 +25,10 @@ export const selectCategoryById = createSelector(
 
 export const selectCatalogError = createSelector(
   selectCatalogState,
-  (state: CatalogState) => state.error
+  (state: CatalogState) => state.catalogError
+);
+
+export const selectCatalogLoading = createSelector(
+  selectCatalogState,
+  (state: CatalogState) => state.loading
 );
