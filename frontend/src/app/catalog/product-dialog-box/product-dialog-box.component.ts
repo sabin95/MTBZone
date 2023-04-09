@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { addProduct } from 'src/app/catalog.actions';
+import { selectCatalogError } from 'src/app/catalog.selectors';
 import { Product } from 'src/app/models/product.model';
 import { ProductResponse } from 'src/app/models/productResponse.model';
 
@@ -15,11 +17,14 @@ export class ProductDialogBoxComponent {
   price: number;
   description: string;
   categoryId: string;
+  error: any;
 
   constructor(
     public dialogRef: MatDialogRef<ProductDialogBoxComponent>,
-    private store: Store<{ products: ProductResponse[] }>
-    ) { }
+    private store: Store<{ products: ProductResponse[]}>
+    ) { 
+      this.error = this.store.select(selectCatalogError);
+    }
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -34,6 +39,8 @@ export class ProductDialogBoxComponent {
     };
     const product: Product = data as Product;
     this.store.dispatch(addProduct({ product }));
-    this.dialogRef.close(data);
+    if (!this.error) {
+      this.dialogRef.close(data);
+    }
   }
 }

@@ -22,3 +22,8 @@ export const selectCategoryById = createSelector(
   selectCatalogState,
   (state: CatalogState) => state.ActualCategory
 ); 
+
+export const selectCatalogError = createSelector(
+  selectCatalogState,
+  (state: CatalogState) => state.error
+);
