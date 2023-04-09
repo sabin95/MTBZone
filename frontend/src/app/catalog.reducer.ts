@@ -5,17 +5,13 @@ import { ProductResponse } from './models/productResponse.model';
 
 export interface CatalogState{
     AllCategories: CategoryResponse[];
-    AvailableCategories: CategoryResponse[];
     ActualCategory: CategoryResponse;
     AllProducts: ProductResponse[];
     ActualProduct: ProductResponse;
-    AvailableProducts: ProductResponse[];
-    OutOfStockProducts: ProductResponse[];
 }
 
 export const initialState: CatalogState = {
     AllCategories: [],
-    AvailableCategories: [],
     ActualCategory: {id: '',
                      name: ''},
     AllProducts: [],
@@ -25,8 +21,6 @@ export const initialState: CatalogState = {
                     description: '',
                     categoryId: '',
                     stock: 0},
-    AvailableProducts: [],
-    OutOfStockProducts: []
 }
 
 export const catalogReducer = createReducer(
