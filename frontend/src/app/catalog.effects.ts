@@ -33,7 +33,9 @@ export class CatalogEffects {
       switchMap((action) =>
         this.catalogService.getProductById(action.productId).pipe(
           map((response) => getProductByIdSuccess({ product: response })),
-          catchError((error) => of(getProductByIdFailure({ error })))
+          catchError((error) => {
+            const errorMessage = error?.error;
+            return of(getProductByIdFailure({ error: errorMessage }));})
         )
       )
     )
@@ -57,7 +59,9 @@ export class CatalogEffects {
       mergeMap((action) =>
         this.catalogService.updateProduct(action.id, action.product).pipe(
           map((product:any) => updateProductByIdSucess({product})),
-          catchError((error) => of(updateProductByIdFailure({error})))
+          catchError((error) => {
+            const errorMessage = error?.error;
+            return of(updateProductByIdFailure({ error: errorMessage }));})
         )
       )
     )

@@ -62,7 +62,8 @@ export class ProductsTableComponent {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(ProductDialogBoxComponent, {
-      width: '400px'
-    });  
+      width: '400px',
+      data: { editProduct: null }
+    });
   }
 }
