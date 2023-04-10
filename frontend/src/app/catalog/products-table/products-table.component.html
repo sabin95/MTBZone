@@ -1,6 +1,12 @@
+<app-context-menu *ngIf="contextMenuVisible" 
+[position]="contextMenuPosition" 
+[productId]="selectedProductId">
+</app-context-menu>
+
+
+<div class="products-table-container" (click)="onOutsideClick()">
 <mat-table [dataSource]="dataSource" matSort>
 
-  <!-- Define columns for the table -->
   <ng-container matColumnDef="id">
     <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
     <mat-cell *matCellDef="let product"> {{ product.id }} </mat-cell>
@@ -33,11 +39,10 @@
 
   <!-- Display the columns in the table -->
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClicked(row)"></mat-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClicked(row)" (contextmenu)="onRightClick($event, row)"></mat-row>
 </mat-table>
 
 <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
 
 <button mat-raised-button color="primary" (click)="openDialog()">Add Product</button>
-
-
+</div>

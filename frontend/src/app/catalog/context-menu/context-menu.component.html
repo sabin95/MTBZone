@@ -1,0 +1,15 @@
+<div class="context-menu" [ngStyle]="{'top': position.y + 'px', 'left': position.x + 'px'}">
+    <button mat-menu-item (click)="deleteProduct()">Delete Product</button>
+    <button mat-menu-item (click)="editProduct()">Edit Product</button>
+    <button mat-menu-item [matMenuTriggerFor]="increaseStockMenu">Increase Stock</button>
+  </div>
+  
+  <mat-menu #increaseStockMenu="matMenu">
+    <button *ngFor="let value of stockValues" mat-menu-item (click)="increaseStock(value)">
+      {{value}}
+    </button>
+    <mat-form-field>
+      <input matInput [(ngModel)]="customStockValue" placeholder="Custom" (keydown.enter)="increaseStock(customStockValue)" />
+    </mat-form-field>
+  </mat-menu>
+  

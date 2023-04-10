@@ -19,6 +19,9 @@ export class ProductsTableComponent {
   @Input() products$: Observable<ProductResponse[]>;
   dataSource: MatTableDataSource<ProductResponse>;
   displayedColumns: string[] = ['id', 'title', 'price', 'description', 'stock', 'categoryId'];
+  contextMenuVisible = false;
+  contextMenuPosition = { x: '0px', y: '0px' };
+  selectedProductId: string; 
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -39,6 +42,18 @@ export class ProductsTableComponent {
 
   onRowClicked(row: any) {
     console.log('Row clicked: ', row);
+  }
+
+  onRightClick(event: MouseEvent, row: any) {
+    event.preventDefault();
+    this.contextMenuPosition.x = event.clientX + 'px';
+    this.contextMenuPosition.y = event.clientY + 'px';
+    this.contextMenuVisible = true;
+    this.selectedProductId = row.id;
+  }
+
+  onOutsideClick() {
+    this.contextMenuVisible = false;
   }
 
   openDialog(): void {
