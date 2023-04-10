@@ -19,7 +19,9 @@ export class CatalogEffects {
       switchMap((action) =>
         this.catalogService.addProduct(action.product).pipe(
           map((response) => addProductSuccess({ product: response })),
-          catchError((error) => of(addProductFailure({ error })))
+          catchError((error) => {
+            const errorMessage = error?.error;
+            return of(addProductFailure({ error: errorMessage }));})
         )
       )
     )

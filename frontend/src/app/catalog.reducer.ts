@@ -1,21 +1,19 @@
 import { createReducer, on } from '@ngrx/store';
-import { getAllCategories, getAllCategoriesSuccess, getAllProducts, getAllProductsSuccess, getCategoryById, getCategoryByIdSuccess, getProductByIdSuccess, increaseStockPerProductSucess, updateCategoryByIdSuccess, updateProductByIdSucess } from './catalog.actions';
+import { addProduct, addProductFailure, addProductSuccess, getAllCategories, getAllCategoriesSuccess, getAllProducts, getAllProductsSuccess, getCategoryById, getCategoryByIdSuccess, getProductByIdSuccess, increaseStockPerProductSucess, updateCategoryByIdSuccess, updateProductByIdSucess } from './catalog.actions';
 import { CategoryResponse } from './models/categoryResponse.model';
 import { ProductResponse } from './models/productResponse.model';
 
 export interface CatalogState{
     AllCategories: CategoryResponse[];
-    AvailableCategories: CategoryResponse[];
     ActualCategory: CategoryResponse;
     AllProducts: ProductResponse[];
     ActualProduct: ProductResponse;
-    AvailableProducts: ProductResponse[];
-    OutOfStockProducts: ProductResponse[];
+    loading: boolean;
+    catalogError: string;
 }
 
 export const initialState: CatalogState = {
     AllCategories: [],
-    AvailableCategories: [],
     ActualCategory: {id: '',
                      name: ''},
     AllProducts: [],
@@ -25,12 +23,24 @@ export const initialState: CatalogState = {
                     description: '',
                     categoryId: '',
                     stock: 0},
-    AvailableProducts: [],
-    OutOfStockProducts: []
+    loading: false,
+    catalogError: ''
 }
 
 export const catalogReducer = createReducer(
   initialState,
+  on(addProduct, (state) => (
+    { ...state, 
+      loading: true })),
+  on(addProductSuccess, (state, { product }) => (
+    { ...state,
+      products: [...state.AllProducts, product], 
+      catalogError: '',
+      loading: false })),
+  on(addProductFailure, (state, { error }) => (
+    { ...state, 
+      loading: false, 
+      catalogError: error })),
   on(getAllProducts, state => ({
     ...state
   })),  
