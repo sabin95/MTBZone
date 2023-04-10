@@ -1,15 +1,16 @@
 <div class="context-menu" [ngStyle]="{'top': position.y + 'px', 'left': position.x + 'px'}">
-    <button mat-menu-item (click)="deleteProduct()">Delete Product</button>
-    <button mat-menu-item (click)="editProduct()">Edit Product</button>
-    <button mat-menu-item [matMenuTriggerFor]="increaseStockMenu">Increase Stock</button>
-  </div>
-  
-  <mat-menu #increaseStockMenu="matMenu">
-    <button *ngFor="let value of stockValues" mat-menu-item (click)="increaseStock(value)">
-      {{value}}
-    </button>
-    <mat-form-field>
-      <input matInput [(ngModel)]="customStockValue" placeholder="Custom" (keydown.enter)="increaseStock(customStockValue)" />
-    </mat-form-field>
-  </mat-menu>
-  
+    <div class="menu-item" (click)="deleteProduct(); hideContextMenu()">Delete Product</div>
+    <div class="menu-item" (click)="editProduct(); hideContextMenu()">Edit Product</div>
+    <div class="menu-item menu-item-with-submenu" (mouseenter)="showIncreaseStockSubmenu()" (mouseleave)="hideIncreaseStockSubmenu()">
+      Increase Stock
+      <div class="submenu" *ngIf="increaseStockSubmenuVisible">
+        <div *ngFor="let stockValue of stockValues" class="menu-item" (click)="increaseStock(stockValue); hideContextMenu()">
+          Increase Stock by {{ stockValue }}
+        </div>
+        <div class="menu-item custom-stock">
+          Custom:
+          <input [(ngModel)]="customStockValue" (keyup.enter)="increaseStock(customStockValue); hideContextMenu()" type="number" min="1" class="custom-stock-input">
+        </div>
+      </div>
+    </div>
+</div>

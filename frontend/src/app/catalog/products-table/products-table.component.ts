@@ -56,6 +56,10 @@ export class ProductsTableComponent {
     this.contextMenuVisible = false;
   }
 
+  onContextMenuClosed() {
+    this.contextMenuVisible = false;
+  }
+
   openDialog(): void {
     const dialogRef = this.dialog.open(ProductDialogBoxComponent, {
       width: '400px'

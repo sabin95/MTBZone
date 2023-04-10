@@ -1,7 +1,8 @@
 <app-context-menu *ngIf="contextMenuVisible" 
 [position]="contextMenuPosition" 
-[productId]="selectedProductId">
-</app-context-menu>
+[productId]="selectedProductId" 
+(contextMenuClosed)="onContextMenuClosed()"></app-context-menu>
+
 
 
 <div class="products-table-container" (click)="onOutsideClick()">
