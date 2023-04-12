@@ -1,0 +1,45 @@
+<form [formGroup]="categoryForm" (ngSubmit)="onAddCategory()">
+    <div class="form-group">
+      <label for="category-name">Name:</label>
+      <input type="text" id="category-name" formControlName="Name" class="form-control my-field" required>
+    </div>       
+    <button type="submit" class="btn btn-primary my-button">Add Category</button>
+  </form>
+  
+  <div>
+  <button class="my-button" (click)="getAllCategories()">Show all categories:</button>
+  <ul *ngIf="showCategories">
+    <li *ngFor="let category of categories$ | async">
+      <div class="product">
+        <div class="title">Name: {{ category.name }}</div>    
+        <div class="description">Id: {{ category.id }}</div> 
+      </div>
+    </li>
+  </ul>
+  </div>
+  
+  <div>
+    <input type="text" [(ngModel)]="categoryId" class="my-field">
+    <button class="my-button" (click)="getCategoryById(categoryId)">Get Category</button>
+  </div>
+  
+  <div *ngIf="(actualCategory$ | async) as actualCategory">
+    <p>Id: {{ actualCategory.id }}</p>
+  
+    <form #editForm="ngForm" (ngSubmit)="updateCategoryById()">
+      <div>
+        <label for="title">Name</label>
+        <input type="text" id="name" name="name" [(ngModel)]="editCategory.name" class="my-field" required>
+      </div>
+      <button type="submit" class="my-button" [disabled]="!editForm.valid">Update Category</button>      
+    </form>
+  
+    <div *ngIf="actualCategory">
+      <h2>Title: {{ actualCategory.name }}</h2>
+      <p>Price: {{ actualCategory.id }}</p>
+    </div>
+  
+    <button class="my-button" (click)="deleteCategoryById(categoryId)">Delete this category</button> 
+    
+  </div>
+    

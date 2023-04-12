@@ -13,6 +13,7 @@ var environment = builder.Configuration["ASPNETCORE_ENVIRONMENT"];
 var ordersExchange = builder.Configuration["ordersExchange"];
 var cartsReceiverQueue = builder.Configuration["cartsReceiverQueue"];
 var cartsReceiverExchange = builder.Configuration["cartsReceiverExchange"];
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // Add services to the container.
 
@@ -39,8 +40,19 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services
   .AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 builder.Services.AddSingleton<IHandler<CartOrderedEvent>, CartOrderedHandler>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin();
+                          builder.AllowAnyMethod();
+                          builder.AllowAnyHeader();
+                      });
+});
 
 var app = builder.Build();
+app.UseCors(MyAllowSpecificOrigins);
 var db = app.Services.GetService<OrderContext>();
 db!.Database.Migrate();
 var cartOrderedHandler = app.Services.GetService<IHandler<CartOrderedEvent>>();

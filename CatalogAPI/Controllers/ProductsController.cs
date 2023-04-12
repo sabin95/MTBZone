@@ -15,7 +15,7 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpPost("Add")]
-        public async Task<IActionResult> AddProduct(ProductCommand productCommand)
+        public async Task<IActionResult> AddProduct([FromBody] ProductCommand productCommand)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpPut("{productId}")]
-        public async Task<IActionResult> UpdateProductById(Guid productId, ProductCommand productCommand)
+        public async Task<IActionResult> UpdateProductById(Guid productId, [FromBody] ProductCommand productCommand)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace CatalogAPI.Controllers
         }
 
         [HttpPut("{productId}/IncreaseStock")]
-        public async Task<IActionResult> IncreaseStockPerProduct(Guid productId, long quantity)
+        public async Task<IActionResult> IncreaseStockPerProduct(Guid productId, [FromBody] long quantity)
         {
             try
             {

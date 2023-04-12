@@ -6,9 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.101.3" />
-    <PackageReference Include="AWSSDK.SQS" Version="3.7.100.67" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.101.24" />
+    <PackageReference Include="AWSSDK.SQS" Version="3.7.100.88" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />
   </ItemGroup>
 
