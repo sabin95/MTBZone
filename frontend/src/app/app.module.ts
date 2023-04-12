@@ -23,6 +23,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { ContextMenuComponent } from './catalog/context-menu/context-menu.component';
+import { MatMenuModule } from '@angular/material/menu';
+
 
 @NgModule({
   declarations: [
@@ -31,13 +34,15 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     ProductComponent,
     ProductsTableComponent,
     ProductDialogBoxComponent,
-    ProductDialogBoxComponent
+    ProductDialogBoxComponent,
+    ContextMenuComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     StoreModule.forRoot({ catalogState: catalogReducer }),
     EffectsModule.forRoot([CatalogEffects]),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
@@ -49,7 +54,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     MatDialogModule,
     MatInputModule,
     MatButtonModule,
-    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() })
+    MatMenuModule
   ],
   providers: [],
   bootstrap: [AppComponent]

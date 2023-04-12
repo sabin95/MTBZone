@@ -1,5 +1,5 @@
 import { createReducer, on } from '@ngrx/store';
-import { addProduct, addProductFailure, addProductSuccess, getAllCategories, getAllCategoriesSuccess, getAllProducts, getAllProductsSuccess, getCategoryById, getCategoryByIdSuccess, getProductByIdSuccess, increaseStockPerProductSucess, updateCategoryByIdSuccess, updateProductByIdSucess } from './catalog.actions';
+import { addProduct, addProductFailure, addProductSuccess, getAllCategories, getAllCategoriesSuccess, getAllProducts, getAllProductsSuccess, getCategoryById, getCategoryByIdSuccess, getProductById, getProductByIdFailure, getProductByIdSuccess, increaseStockPerProductSucess, updateCategoryByIdSuccess, updateProductById, updateProductByIdFailure, updateProductByIdSucess } from './catalog.actions';
 import { CategoryResponse } from './models/categoryResponse.model';
 import { ProductResponse } from './models/productResponse.model';
 
@@ -48,20 +48,38 @@ export const catalogReducer = createReducer(
     return {
       ...state,
       AllProducts: products,
+      catalogError: ''
     };
   }),
-  on(getProductByIdSuccess, (state, { product }) => {
-    return {
-      ...state,
-      ActualProduct: product,
-    };
-  }),
-  on(updateProductByIdSucess, (state, { product }) => {
-    return {
-      ...state,
-      ActualProduct: product,
-    };
-  }),
+  on(getProductById, state => ({
+    ...state,
+    loading: true
+  })),
+  on(getProductByIdSuccess, (state, { product }) => ({
+    ...state,
+    ActualProduct: product,
+    loading: false,
+    catalogError: '',
+  })),
+  on(getProductByIdFailure, (state, { error }) => ({
+    ...state,
+    catalogError : error
+  })),
+  on(updateProductById, state => ({
+    ...state,
+    loading: true
+  })),
+  on(updateProductByIdSucess, (state, { product }) => ({
+    ...state,
+    ActualProduct: product,
+    loading: false,
+    catalogError: '',
+  })),
+  on(updateProductByIdFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    catalogError : error
+  })),
   on(increaseStockPerProductSucess,(state, {product}) => {
     return {
       ...state,
