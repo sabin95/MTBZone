@@ -10,7 +10,6 @@ import { AppComponent } from './app.component';
 import { CatalogEffects } from './catalog.effects';
 import { catalogReducer } from './catalog.reducer';
 import { CategoryComponent } from './catalog/category/category.component';
-import { ProductComponent } from './catalog/product/product.component';
 
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -32,7 +31,6 @@ import { MatSelectModule } from '@angular/material/select';
   declarations: [
     AppComponent,
     CategoryComponent,
-    ProductComponent,
     ProductsTableComponent,
     ProductDialogBoxComponent,
     ProductDialogBoxComponent,

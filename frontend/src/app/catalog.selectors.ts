@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { CatalogState } from './catalog.reducer';
+import { ProductResponse } from './models/productResponse.model';
 
 export const selectCatalogState = createFeatureSelector<CatalogState>('catalogState');
 
@@ -8,10 +9,12 @@ export const selectAllProducts = createSelector(
   (state: CatalogState) => state.AllProducts
 );
 
-export const selectProductById = createSelector(
-  selectCatalogState,
-  (state: CatalogState) => state.ActualProduct
-); 
+export const selectProductById = (productId: string) =>
+  createSelector(
+    selectAllProducts,
+    (products: ProductResponse[]): ProductResponse | undefined =>
+      products.find((product) => product.id === productId)
+  );
 
 export const selectAllCategories = createSelector(
   selectCatalogState,
@@ -26,9 +29,4 @@ export const selectCategoryById = createSelector(
 export const selectCatalogError = createSelector(
   selectCatalogState,
   (state: CatalogState) => state.catalogError
-);
-
-export const selectCatalogLoading = createSelector(
-  selectCatalogState,
-  (state: CatalogState) => state.loading
 );

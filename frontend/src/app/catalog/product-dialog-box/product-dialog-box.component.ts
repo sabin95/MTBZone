@@ -3,10 +3,9 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Observable, filter, firstValueFrom, take } from 'rxjs';
 import { addProduct, getAllCategories, updateProductById } from 'src/app/catalog.actions';
-import { selectAllCategories, selectCatalogError, selectCatalogLoading } from 'src/app/catalog.selectors';
+import { selectAllCategories, selectCatalogError } from 'src/app/catalog.selectors';
 import { Product } from 'src/app/models/product.model';
 import { ProductResponse } from 'src/app/models/productResponse.model';
-import { Input } from '@angular/core';
 import { CategoryResponse } from 'src/app/models/categoryResponse.model';
 
 @Component({
@@ -58,6 +57,7 @@ export class ProductDialogBoxComponent {
       categoryId: this.categoryId
     };
     const product: Product = data as Product;
+  
     if (this.editProduct) {
       const updatedProduct: Product = {
         ...this.editProduct,
@@ -67,18 +67,12 @@ export class ProductDialogBoxComponent {
     } else {
       this.store.dispatch(addProduct({ product }));
     }
-
-    const catalogLoading$ = this.store.select(selectCatalogLoading);
-    await firstValueFrom(
-      catalogLoading$.pipe(filter(loading => !loading))
-    );
+  
     const catalogError$ = this.store.select(selectCatalogError);
-    const catalogError = await firstValueFrom(
+    this.errorMessage = await firstValueFrom(
       catalogError$.pipe(take(1))
     );
-    if (catalogError) {
-      this.errorMessage = catalogError;
-    } else {
+    if (!this.errorMessage) {
       this.dialogRef.close(data);
     }
   }

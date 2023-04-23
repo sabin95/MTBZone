@@ -8,7 +8,6 @@ export interface CatalogState{
     ActualCategory: CategoryResponse;
     AllProducts: ProductResponse[];
     ActualProduct: ProductResponse;
-    loading: boolean;
     catalogError: string;
 }
 
@@ -23,7 +22,6 @@ export const initialState: CatalogState = {
                     description: '',
                     categoryId: '',
                     stock: 0},
-    loading: false,
     catalogError: ''
 }
 
@@ -53,12 +51,10 @@ export const catalogReducer = createReducer(
   }),
   on(getProductById, state => ({
     ...state,
-    loading: true
   })),
   on(getProductByIdSuccess, (state, { product }) => ({
     ...state,
     ActualProduct: product,
-    loading: false,
     catalogError: '',
   })),
   on(getProductByIdFailure, (state, { error }) => ({
@@ -67,17 +63,14 @@ export const catalogReducer = createReducer(
   })),
   on(updateProductById, state => ({
     ...state,
-    loading: true
   })),
   on(updateProductByIdSucess, (state, { product }) => ({
     ...state,
     ActualProduct: product,
-    loading: false,
     catalogError: '',
   })),
   on(updateProductByIdFailure, (state, { error }) => ({
     ...state,
-    loading: false,
     catalogError : error
   })),
   on(increaseStockPerProductSucess,(state, {product}) => {
