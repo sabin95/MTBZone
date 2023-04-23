@@ -4,11 +4,12 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ProductResponse } from '../../models/productResponse.model';
 import { Store } from '@ngrx/store';
-import { selectAllProducts } from '../../catalog.selectors';
-import { Observable } from 'rxjs';
-import { getAllProducts } from '../../catalog.actions';
+import { selectAllCategories, selectAllProducts } from '../../catalog.selectors';
+import { Observable, combineLatest, map } from 'rxjs';
+import { getAllCategories, getAllProducts } from '../../catalog.actions';
 import { MatDialog } from '@angular/material/dialog';
 import { ProductDialogBoxComponent } from '../product-dialog-box/product-dialog-box.component';
+import { CategoryResponse } from 'src/app/models/categoryResponse.model';
 
 @Component({
   selector: 'app-products-table',
@@ -18,10 +19,12 @@ import { ProductDialogBoxComponent } from '../product-dialog-box/product-dialog-
 export class ProductsTableComponent {
   @Input() products$: Observable<ProductResponse[]>;
   dataSource: MatTableDataSource<ProductResponse>;
-  displayedColumns: string[] = ['id', 'title', 'price', 'description', 'stock', 'categoryId'];
+  displayedColumns: string[] = ['id', 'title', 'price', 'description', 'stock', 'categoryName'];
   contextMenuVisible = false;
   contextMenuPosition = { x: '0px', y: '0px' };
   selectedProductId: string; 
+  categories$: Observable<CategoryResponse[]>;
+  displayData$: Observable<any[]>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -29,15 +32,26 @@ export class ProductsTableComponent {
   constructor(
     private store: Store<{ products: ProductResponse[] }>,
     public dialog: MatDialog
-  ) { }
+  ) { 
+    this.store.dispatch(getAllCategories());
+  }
 
   ngOnInit() {
-    this.store.dispatch(getAllProducts());
-    this.store.select(selectAllProducts).subscribe(products => {
-      this.dataSource = new MatTableDataSource<ProductResponse>(products);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
+  this.store.dispatch(getAllProducts());
+  this.categories$ = this.store.select(selectAllCategories);
+
+  combineLatest([this.store.select(selectAllProducts), this.categories$]).subscribe(([products, categories]) => {
+    const productsWithCategoryName = products.map(product => {
+      const category = categories.find(cat => cat.id === product.categoryId);
+      return {
+        ...product,
+        categoryName: category ? category.name : 'N/A',
+      };
     });
+    this.dataSource = new MatTableDataSource<ProductResponse>(productsWithCategoryName);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  });
   }
 
   onRowClicked(row: any) {
@@ -65,5 +79,5 @@ export class ProductsTableComponent {
       width: '400px',
       data: { editProduct: null }
     });
-  }
+  }  
 }
