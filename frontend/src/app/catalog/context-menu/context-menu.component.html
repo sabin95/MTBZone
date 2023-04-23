@@ -1,0 +1,16 @@
+<div class="context-menu" [ngStyle]="{'top': position.y + 'px', 'left': position.x + 'px'}">
+    <div class="menu-item" (click)="deleteProduct(); hideContextMenu()">Delete Product</div>
+    <div class="menu-item" (click)="editProduct(); hideContextMenu()">Edit Product</div>
+    <div class="menu-item menu-item-with-submenu" (mouseenter)="showIncreaseStockSubmenu()" (mouseleave)="hideIncreaseStockSubmenu()">
+      Increase Stock
+      <div class="submenu" *ngIf="increaseStockSubmenuVisible">
+        <div *ngFor="let stockValue of stockValues" class="menu-item" (click)="increaseStock(stockValue); hideContextMenu()">
+          Increase Stock by {{ stockValue }}
+        </div>
+        <div class="menu-item custom-stock">
+          Custom:
+          <input [(ngModel)]="customStockValue" (keyup.enter)="increaseStock(customStockValue); hideContextMenu()" type="number" min="1" class="custom-stock-input">
+        </div>
+      </div>
+    </div>
+</div>
