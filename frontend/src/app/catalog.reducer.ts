@@ -27,18 +27,18 @@ export const initialState: CatalogState = {
 
 export const catalogReducer = createReducer(
   initialState,
-  on(addProduct, (state) => (
-    { ...state, 
-      loading: true })),
+  on(addProduct, state => ({
+    ...state
+  })),
   on(addProductSuccess, (state, { product }) => (
     { ...state,
       products: [...state.AllProducts, product], 
-      catalogError: '',
-      loading: false })),
+      catalogError: ''
+    })),
   on(addProductFailure, (state, { error }) => (
     { ...state, 
-      loading: false, 
-      catalogError: error })),
+      catalogError: error 
+    })),
   on(getAllProducts, state => ({
     ...state
   })),  
