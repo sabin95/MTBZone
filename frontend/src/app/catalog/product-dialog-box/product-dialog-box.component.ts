@@ -1,12 +1,13 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { filter, firstValueFrom, take } from 'rxjs';
-import { addProduct, updateProductById } from 'src/app/catalog.actions';
-import { selectCatalogError, selectCatalogLoading } from 'src/app/catalog.selectors';
+import { Observable, filter, firstValueFrom, take } from 'rxjs';
+import { addProduct, getAllCategories, updateProductById } from 'src/app/catalog.actions';
+import { selectAllCategories, selectCatalogError, selectCatalogLoading } from 'src/app/catalog.selectors';
 import { Product } from 'src/app/models/product.model';
 import { ProductResponse } from 'src/app/models/productResponse.model';
 import { Input } from '@angular/core';
+import { CategoryResponse } from 'src/app/models/categoryResponse.model';
 
 @Component({
   selector: 'app-product-dialog-box',
@@ -22,6 +23,7 @@ export class ProductDialogBoxComponent {
   id: string;
   stock: number;
   editProduct: ProductResponse | null = null;
+  categories$: Observable<CategoryResponse[]>;
 
 
   constructor(
@@ -33,6 +35,8 @@ export class ProductDialogBoxComponent {
     }
 
   ngOnInit() {
+    this.store.dispatch(getAllCategories());
+    this.categories$ = this.store.select(selectAllCategories);
     if (this.editProduct) {
       this.title = this.editProduct.title;
       this.price = this.editProduct.price;

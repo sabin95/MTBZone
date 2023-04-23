@@ -10,7 +10,12 @@
     <input matInput placeholder="Description" [(ngModel)]="description">
   </mat-form-field>
   <mat-form-field>
-    <input matInput placeholder="Category ID" [(ngModel)]="categoryId">
+    <mat-label>Category</mat-label>
+    <mat-select [(value)]="categoryId">
+      <mat-option *ngFor="let category of categories$ | async" [value]="category.id">
+        {{ category.name }}
+      </mat-option>
+    </mat-select>
   </mat-form-field>
   <div *ngIf="errorMessage">
     {{ errorMessage }}

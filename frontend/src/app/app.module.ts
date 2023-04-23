@@ -25,6 +25,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { ContextMenuComponent } from './catalog/context-menu/context-menu.component';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
 
 
 @NgModule({
@@ -54,7 +55,8 @@ import { MatMenuModule } from '@angular/material/menu';
     MatDialogModule,
     MatInputModule,
     MatButtonModule,
-    MatMenuModule
+    MatMenuModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]
