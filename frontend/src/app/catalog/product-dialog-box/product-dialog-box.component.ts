@@ -1,13 +1,14 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { addProduct, getAllCategories, updateProductById } from 'src/app/catalog.actions';
+import { Observable, Subject, filter, take, takeUntil } from 'rxjs';
+import { addProduct, addProductFailure, addProductSuccess, getAllCategories, updateProductById, updateProductByIdFailure, updateProductByIdSucess } from 'src/app/catalog.actions';
 import { selectAllCategories } from 'src/app/catalog.selectors';
 import { Product } from 'src/app/models/product.model';
 import { ProductResponse } from 'src/app/models/productResponse.model';
 import { CategoryResponse } from 'src/app/models/categoryResponse.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Actions } from '@ngrx/effects';
 
 
 @Component({
@@ -25,13 +26,15 @@ export class ProductDialogBoxComponent {
   stock: number;
   editProduct: ProductResponse | null = null;
   categories$: Observable<CategoryResponse[]>;
+  private destroy$: Subject<void> = new Subject();
 
 
   constructor(
     public dialogRef: MatDialogRef<ProductDialogBoxComponent>,
     private store: Store<{ products: ProductResponse[], catalogError: any}>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private actions$: Actions
     ) { 
       this.editProduct = data.editProduct || null;
     }
@@ -71,6 +74,24 @@ export class ProductDialogBoxComponent {
       this.store.dispatch(addProduct({ product }));
     }
   
-    this.dialogRef.close(data);
+    this.actions$.pipe(
+      filter(action =>
+        action.type === (this.editProduct ? updateProductByIdSucess.type : addProductSuccess.type) ||
+        action.type === (this.editProduct ? updateProductByIdFailure.type : addProductFailure.type)
+      ),
+      take(1),
+      takeUntil(this.destroy$) 
+    ).subscribe(action => {
+      if (action.type === (this.editProduct ? updateProductByIdSucess.type : addProductSuccess.type)) {
+        this.dialogRef.close(data);
+      }
+    });
   }
+  
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+  
 }
