@@ -7,7 +7,6 @@ import { selectAllCategories } from 'src/app/catalog.selectors';
 import { Product } from 'src/app/models/product.model';
 import { ProductResponse } from 'src/app/models/productResponse.model';
 import { CategoryResponse } from 'src/app/models/categoryResponse.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Actions } from '@ngrx/effects';
 
 
@@ -17,37 +16,31 @@ import { Actions } from '@ngrx/effects';
   styleUrls: ['./product-dialog-box.component.less']
 })
 export class ProductDialogBoxComponent {
-  title: string;
-  price: number;
-  description: string;
-  categoryId: string;
-  errorMessage: string;
-  id: string;
-  stock: number;
-  editProduct: ProductResponse | null = null;
+  dataProduct: Partial<ProductResponse>;
+  editProduct: ProductResponse;
   categories$: Observable<CategoryResponse[]>;
   private destroy$: Subject<void> = new Subject();
 
 
   constructor(
     public dialogRef: MatDialogRef<ProductDialogBoxComponent>,
-    private store: Store<{ products: ProductResponse[], catalogError: any}>,
+    private store: Store<{ products: ProductResponse[], catalogError: any }>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private snackBar: MatSnackBar,
     private actions$: Actions
-    ) { 
-      this.editProduct = data.editProduct || null;
-    }
+  ) {
+    this.editProduct = data.editProduct || null;
+    this.dataProduct = this.editProduct ? { ...this.editProduct } : {
+      title: '',
+      price: 0,
+      description: '',
+      categoryId: ''
+    };
+  }
+  
 
   ngOnInit() {
     this.store.dispatch(getAllCategories());
-    this.categories$ = this.store.select(selectAllCategories);
-    if (this.editProduct) {
-      this.title = this.editProduct.title;
-      this.price = this.editProduct.price;
-      this.description = this.editProduct.description;
-      this.categoryId = this.editProduct.categoryId;
-    }
+    this.categories$ = this.store.select(selectAllCategories);    
   }
   
 
@@ -57,10 +50,10 @@ export class ProductDialogBoxComponent {
 
   async onSaveClick(): Promise<void> {
     const data = {
-      title: this.title,
-      price: this.price,
-      description: this.description,
-      categoryId: this.categoryId
+      title: this.dataProduct.title,
+      price: this.dataProduct.price,
+      description: this.dataProduct.description,
+      categoryId: this.dataProduct.categoryId
     };
     const product: Product = data as Product;
   

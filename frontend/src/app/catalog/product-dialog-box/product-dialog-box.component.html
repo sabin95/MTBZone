@@ -1,25 +1,22 @@
 <h2 mat-dialog-title>Add Product</h2>
 <div mat-dialog-content>
   <mat-form-field>
-    <input matInput placeholder="Title" [(ngModel)]="title">
+    <input matInput placeholder="Title" [(ngModel)]="dataProduct.title">
   </mat-form-field>
   <mat-form-field>
-    <input matInput placeholder="Price" [(ngModel)]="price" type="number">
+    <input matInput placeholder="Price" [(ngModel)]="dataProduct.price" type="number">
   </mat-form-field>
   <mat-form-field>
-    <input matInput placeholder="Description" [(ngModel)]="description">
+    <input matInput placeholder="Description" [(ngModel)]="dataProduct.description">
   </mat-form-field>
   <mat-form-field>
     <mat-label>Category</mat-label>
-    <mat-select [(value)]="categoryId">
+    <mat-select [(value)]="dataProduct.categoryId">
       <mat-option *ngFor="let category of categories$ | async" [value]="category.id">
         {{ category.name }}
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <div *ngIf="errorMessage">
-    {{ errorMessage }}
-  </div>  
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">Cancel</button>
