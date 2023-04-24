@@ -8,7 +8,6 @@ export interface CatalogState{
     ActualCategory: CategoryResponse;
     AllProducts: ProductResponse[];
     ActualProduct: ProductResponse;
-    catalogError: string;
 }
 
 export const initialState: CatalogState = {
@@ -21,8 +20,7 @@ export const initialState: CatalogState = {
                     price: 0,
                     description: '',
                     categoryId: '',
-                    stock: 0},
-    catalogError: ''
+                    stock: 0}
 }
 
 export const catalogReducer = createReducer(
@@ -32,12 +30,10 @@ export const catalogReducer = createReducer(
   })),
   on(addProductSuccess, (state, { product }) => (
     { ...state,
-      products: [...state.AllProducts, product], 
-      catalogError: ''
+      products: [...state.AllProducts, product]
     })),
   on(addProductFailure, (state, { error }) => (
-    { ...state, 
-      catalogError: error 
+    { ...state,
     })),
   on(getAllProducts, state => ({
     ...state
@@ -45,8 +41,7 @@ export const catalogReducer = createReducer(
   on(getAllProductsSuccess, (state, { products }) => {
     return {
       ...state,
-      AllProducts: products,
-      catalogError: ''
+      AllProducts: products
     };
   }),
   on(getProductById, state => ({
@@ -54,24 +49,20 @@ export const catalogReducer = createReducer(
   })),
   on(getProductByIdSuccess, (state, { product }) => ({
     ...state,
-    ActualProduct: product,
-    catalogError: '',
+    ActualProduct: product
   })),
   on(getProductByIdFailure, (state, { error }) => ({
-    ...state,
-    catalogError : error
+    ...state
   })),
   on(updateProductById, state => ({
     ...state,
   })),
   on(updateProductByIdSucess, (state, { product }) => ({
     ...state,
-    ActualProduct: product,
-    catalogError: '',
+    ActualProduct: product
   })),
   on(updateProductByIdFailure, (state, { error }) => ({
-    ...state,
-    catalogError : error
+    ...state
   })),
   on(increaseStockPerProductSucess,(state, {product}) => {
     return {

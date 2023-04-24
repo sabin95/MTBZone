@@ -1,12 +1,14 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { Observable, filter, firstValueFrom, take } from 'rxjs';
+import { Observable } from 'rxjs';
 import { addProduct, getAllCategories, updateProductById } from 'src/app/catalog.actions';
-import { selectAllCategories, selectCatalogError } from 'src/app/catalog.selectors';
+import { selectAllCategories } from 'src/app/catalog.selectors';
 import { Product } from 'src/app/models/product.model';
 import { ProductResponse } from 'src/app/models/productResponse.model';
 import { CategoryResponse } from 'src/app/models/categoryResponse.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-product-dialog-box',
@@ -28,7 +30,8 @@ export class ProductDialogBoxComponent {
   constructor(
     public dialogRef: MatDialogRef<ProductDialogBoxComponent>,
     private store: Store<{ products: ProductResponse[], catalogError: any}>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private snackBar: MatSnackBar
     ) { 
       this.editProduct = data.editProduct || null;
     }
@@ -68,13 +71,6 @@ export class ProductDialogBoxComponent {
       this.store.dispatch(addProduct({ product }));
     }
   
-    const catalogError$ = this.store.select(selectCatalogError);
-    this.errorMessage = await firstValueFrom(
-      catalogError$.pipe(take(1))
-    );
-    if (!this.errorMessage) {
-      this.dialogRef.close(data);
-    }
+    this.dialogRef.close(data);
   }
-
 }
