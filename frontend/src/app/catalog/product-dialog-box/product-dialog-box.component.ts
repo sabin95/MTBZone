@@ -80,7 +80,15 @@ export class ProductDialogBoxComponent {
       }
     });
   }
-  
+
+  get isFormValid(): boolean {
+    return (
+      !!this.dataProduct.title &&
+      !!this.dataProduct.price &&
+      !!this.dataProduct.description &&
+      !!this.dataProduct.categoryId
+    );
+  } 
 
   ngOnDestroy() {
     this.destroy$.next();

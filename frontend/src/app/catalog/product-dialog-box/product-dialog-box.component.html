@@ -1,17 +1,17 @@
 <h2 mat-dialog-title>Add Product</h2>
 <div mat-dialog-content>
   <mat-form-field>
-    <input matInput placeholder="Title" [(ngModel)]="dataProduct.title">
+    <input matInput placeholder="Title" [(ngModel)]="dataProduct.title" required>
   </mat-form-field>
   <mat-form-field>
-    <input matInput placeholder="Price" [(ngModel)]="dataProduct.price" type="number">
+    <input matInput placeholder="Price" [(ngModel)]="dataProduct.price" type="number" required>
   </mat-form-field>
   <mat-form-field>
-    <input matInput placeholder="Description" [(ngModel)]="dataProduct.description">
+    <input matInput placeholder="Description" [(ngModel)]="dataProduct.description" required>
   </mat-form-field>
   <mat-form-field>
     <mat-label>Category</mat-label>
-    <mat-select [(value)]="dataProduct.categoryId">
+    <mat-select [(value)]="dataProduct.categoryId" required>
       <mat-option *ngFor="let category of categories$ | async" [value]="category.id">
         {{ category.name }}
       </mat-option>
@@ -20,5 +20,5 @@
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-button color="primary" (click)="onSaveClick()">Save</button>
+  <button mat-button color="primary" (click)="onSaveClick()" [disabled]="!isFormValid">Save</button>
 </div>
