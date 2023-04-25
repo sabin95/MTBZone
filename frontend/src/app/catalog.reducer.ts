@@ -8,8 +8,6 @@ export interface CatalogState{
     ActualCategory: CategoryResponse;
     AllProducts: ProductResponse[];
     ActualProduct: ProductResponse;
-    loading: boolean;
-    catalogError: string;
 }
 
 export const initialState: CatalogState = {
@@ -22,63 +20,49 @@ export const initialState: CatalogState = {
                     price: 0,
                     description: '',
                     categoryId: '',
-                    stock: 0},
-    loading: false,
-    catalogError: ''
+                    stock: 0}
 }
 
 export const catalogReducer = createReducer(
   initialState,
-  on(addProduct, (state) => (
-    { ...state, 
-      loading: true })),
+  on(addProduct, state => ({
+    ...state
+  })),
   on(addProductSuccess, (state, { product }) => (
     { ...state,
-      products: [...state.AllProducts, product], 
-      catalogError: '',
-      loading: false })),
+      products: [...state.AllProducts, product]
+    })),
   on(addProductFailure, (state, { error }) => (
-    { ...state, 
-      loading: false, 
-      catalogError: error })),
+    { ...state,
+    })),
   on(getAllProducts, state => ({
     ...state
   })),  
   on(getAllProductsSuccess, (state, { products }) => {
     return {
       ...state,
-      AllProducts: products,
-      catalogError: ''
+      AllProducts: products
     };
   }),
   on(getProductById, state => ({
     ...state,
-    loading: true
   })),
   on(getProductByIdSuccess, (state, { product }) => ({
     ...state,
-    ActualProduct: product,
-    loading: false,
-    catalogError: '',
+    ActualProduct: product
   })),
   on(getProductByIdFailure, (state, { error }) => ({
-    ...state,
-    catalogError : error
+    ...state
   })),
   on(updateProductById, state => ({
     ...state,
-    loading: true
   })),
   on(updateProductByIdSucess, (state, { product }) => ({
     ...state,
-    ActualProduct: product,
-    loading: false,
-    catalogError: '',
+    ActualProduct: product
   })),
   on(updateProductByIdFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    catalogError : error
+    ...state
   })),
   on(increaseStockPerProductSucess,(state, {product}) => {
     return {

@@ -33,10 +33,10 @@
     <mat-cell *matCellDef="let product"> {{ product.stock }} </mat-cell>
   </ng-container>
 
-  <ng-container matColumnDef="categoryId">
+  <ng-container matColumnDef="categoryName">
     <mat-header-cell *matHeaderCellDef mat-sort-header> Category </mat-header-cell>
-    <mat-cell *matCellDef="let product"> {{ product.categoryId }} </mat-cell>
-  </ng-container>
+    <mat-cell *matCellDef="let product"> {{product.categoryName}} </mat-cell>
+  </ng-container>  
 
   <!-- Display the columns in the table -->
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

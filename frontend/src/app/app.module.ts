@@ -10,7 +10,6 @@ import { AppComponent } from './app.component';
 import { CatalogEffects } from './catalog.effects';
 import { catalogReducer } from './catalog.reducer';
 import { CategoryComponent } from './catalog/category/category.component';
-import { ProductComponent } from './catalog/product/product.component';
 
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -26,13 +25,13 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { ContextMenuComponent } from './catalog/context-menu/context-menu.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     CategoryComponent,
-    ProductComponent,
     ProductsTableComponent,
     ProductDialogBoxComponent,
     ProductDialogBoxComponent,
@@ -56,7 +55,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatInputModule,
     MatButtonModule,
     MatMenuModule,
-    MatSelectModule
+    MatSelectModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

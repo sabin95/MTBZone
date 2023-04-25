@@ -4,28 +4,31 @@ import { switchMap, map, catchError, mergeMap, } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { addCategory, addCategoryFailure, addCategorySuccess, addProduct, addProductFailure, addProductSuccess, deleteCategoryById, deleteCategoryByIdFailure, deleteCategoryByIdSuccess, deleteProductById, deleteProductByIdFailure, deleteProductByIdSucess, getAllCategories, getAllCategoriesFailure, getAllCategoriesSuccess, getAllProducts, getAllProductsFailure, getAllProductsSuccess, getCategoryById, getCategoryByIdFailure, getCategoryByIdSuccess, getProductById, getProductByIdFailure, getProductByIdSuccess, increaseStockPerProduct, increaseStockPerProductFailure, increaseStockPerProductSucess, updateCategoryById, updateCategoryByIdFailure, updateCategoryByIdSuccess, updateProductById, updateProductByIdFailure, updateProductByIdSucess } from './catalog.actions';
 import { CatalogService } from './catalog.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
 export class CatalogEffects {
   constructor(
     private catalogActions$: Actions,
-    private catalogService: CatalogService
+    private catalogService: CatalogService,
+    private snackBar: MatSnackBar
   ) {}
 
-  
   addProductEffect$ = createEffect(() =>
-    this.catalogActions$.pipe(
-      ofType(addProduct),
-      switchMap((action) =>
-        this.catalogService.addProduct(action.product).pipe(
-          map((response) => addProductSuccess({ product: response })),
-          catchError((error) => {
-            const errorMessage = error?.error;
-            return of(addProductFailure({ error: errorMessage }));})
-        )
+  this.catalogActions$.pipe(
+    ofType(addProduct),
+    switchMap((action) =>
+      this.catalogService.addProduct(action.product).pipe(
+        map((response) => addProductSuccess({ product: response })),
+        catchError((error) => {
+          const errorMessage = error?.error;
+          this.snackBar.open(errorMessage, 'Close', { duration: 3000 });
+          return of(addProductFailure({ error: errorMessage }));
+        })
       )
     )
-  );
+  )
+);
 
   getProductByIdEffect$ = createEffect(() =>
     this.catalogActions$.pipe(
@@ -54,18 +57,20 @@ export class CatalogEffects {
   );
 
   UpdateProductEffect$ = createEffect(() =>
-    this.catalogActions$.pipe(
-      ofType(updateProductById),
-      mergeMap((action) =>
-        this.catalogService.updateProduct(action.id, action.product).pipe(
-          map((product:any) => updateProductByIdSucess({product})),
-          catchError((error) => {
-            const errorMessage = error?.error;
-            return of(updateProductByIdFailure({ error: errorMessage }));})
-        )
+  this.catalogActions$.pipe(
+    ofType(updateProductById),
+    mergeMap((action) =>
+      this.catalogService.updateProduct(action.id, action.product).pipe(
+        map((product: any) => updateProductByIdSucess({ product })),
+        catchError((error) => {
+          const errorMessage = error?.error;
+          this.snackBar.open(errorMessage, 'Close', { duration: 3000 });
+          return of(updateProductByIdFailure({ error: errorMessage }));
+        })
       )
     )
-  );
+  )
+);
 
   deleteProductEffect$ = createEffect(() =>
     this.catalogActions$.pipe(

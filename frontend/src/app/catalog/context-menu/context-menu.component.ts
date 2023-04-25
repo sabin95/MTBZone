@@ -1,9 +1,9 @@
 import { Component, Input, Output, EventEmitter, Renderer2, ElementRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
-import { Observable, filter, firstValueFrom, take } from 'rxjs';
+import { Observable, filter, firstValueFrom, take, tap } from 'rxjs';
 import { deleteProductById, getProductById, increaseStockPerProduct } from 'src/app/catalog.actions';
-import { selectCatalogLoading, selectProductById } from 'src/app/catalog.selectors';
+import { selectProductById } from 'src/app/catalog.selectors';
 import { ProductDialogBoxComponent } from '../product-dialog-box/product-dialog-box.component';
 import { ProductResponse } from 'src/app/models/productResponse.model';
 
@@ -16,7 +16,7 @@ export class ContextMenuComponent {
   @Input() position: { x: string; y: string };
   @Input() productId: string;
   @Output() contextMenuClosed = new EventEmitter<void>();
-  actualProduct$: Observable<ProductResponse>;
+  actualProduct$: Observable<ProductResponse | undefined>;
 
   stockValues = [1, 2, 5, 10, 20, 50, 100];
   customStockValue: number;
@@ -39,22 +39,16 @@ export class ContextMenuComponent {
   }
 
   async editProduct() {
-    this.store.dispatch(getProductById({productId: this.productId}));
-
-    const catalogLoading$ = this.store.select(selectCatalogLoading);
-    await firstValueFrom(
-      catalogLoading$.pipe(filter(loading => !loading))
-    );
-
-    this.actualProduct$ = this.store.select(selectProductById);
-    this.actualProduct$.subscribe((product) => {
+    this.actualProduct$ = this.store.select(selectProductById(this.productId));
+    const product = await firstValueFrom(this.actualProduct$);
+    if (product) {
       this.updatedProduct = { ...product };
-    });
-    
-    if (this.updatedProduct) {      
       this.openEditDialog();
     }
   }
+  
+  
+
 
   openEditDialog() {
     if (this.updatedProduct) {
