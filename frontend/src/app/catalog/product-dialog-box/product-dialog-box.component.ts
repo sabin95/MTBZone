@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Observable, Subject, filter, take, takeUntil } from 'rxjs';
-import { addProduct, addProductFailure, addProductSuccess, getAllCategories, updateProductById, updateProductByIdFailure, updateProductByIdSucess } from 'src/app/catalog.actions';
+import { addProduct, addProductFailure, addProductSuccess, getAllCategories, updateProductById, updateProductByIdFailure, updateProductByIdSuccess } from 'src/app/catalog.actions';
 import { selectAllCategories } from 'src/app/catalog.selectors';
 import { Product } from 'src/app/models/product.model';
 import { ProductResponse } from 'src/app/models/productResponse.model';
@@ -69,13 +69,13 @@ export class ProductDialogBoxComponent {
   
     this.actions$.pipe(
       filter(action =>
-        action.type === (this.editProduct ? updateProductByIdSucess.type : addProductSuccess.type) ||
+        action.type === (this.editProduct ? updateProductByIdSuccess.type : addProductSuccess.type) ||
         action.type === (this.editProduct ? updateProductByIdFailure.type : addProductFailure.type)
       ),
       take(1),
       takeUntil(this.destroy$) 
     ).subscribe(action => {
-      if (action.type === (this.editProduct ? updateProductByIdSucess.type : addProductSuccess.type)) {
+      if (action.type === (this.editProduct ? updateProductByIdSuccess.type : addProductSuccess.type)) {
         this.dialogRef.close(data);
       }
     });
