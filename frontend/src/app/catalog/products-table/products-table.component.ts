@@ -10,6 +10,7 @@ import { getAllCategories, getAllProducts } from '../../catalog.actions';
 import { MatDialog } from '@angular/material/dialog';
 import { ProductDialogBoxComponent } from '../product-dialog-box/product-dialog-box.component';
 import { CategoryResponse } from 'src/app/models/categoryResponse.model';
+import { CategoryDialogBoxComponent } from '../category-dialog-box/category-dialog-box.component';
 
 @Component({
   selector: 'app-products-table',
@@ -74,8 +75,15 @@ export class ProductsTableComponent {
     this.contextMenuVisible = false;
   }
 
-  openDialog(): void {
+  openAddProductDialog(): void {
     const dialogRef = this.dialog.open(ProductDialogBoxComponent, {
+      width: '400px',
+      data: { editProduct: null }
+    });
+  }  
+
+  openAddCategoryDialog(): void {
+    const dialogRef = this.dialog.open(CategoryDialogBoxComponent, {
       width: '400px',
       data: { editProduct: null }
     });

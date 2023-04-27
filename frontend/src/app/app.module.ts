@@ -26,6 +26,7 @@ import { ContextMenuComponent } from './catalog/context-menu/context-menu.compon
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { CategoryDialogBoxComponent } from './catalog/category-dialog-box/category-dialog-box.component';
 
 
 @NgModule({
@@ -35,7 +36,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     ProductsTableComponent,
     ProductDialogBoxComponent,
     ProductDialogBoxComponent,
-    ContextMenuComponent
+    ContextMenuComponent,
+    CategoryDialogBoxComponent
   ],
   imports: [
     BrowserModule,
