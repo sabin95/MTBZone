@@ -1,7 +1,7 @@
-<app-context-menu *ngIf="contextMenuVisible" 
+<app-context-menu-products *ngIf="contextMenuVisible" 
 [position]="contextMenuPosition" 
 [productId]="selectedProductId" 
-(contextMenuClosed)="onContextMenuClosed()"></app-context-menu>
+(contextMenuClosed)="onContextMenuClosed()"></app-context-menu-products>
 
 
 
@@ -38,7 +38,6 @@
     <mat-cell *matCellDef="let product"> {{product.categoryName}} </mat-cell>
   </ng-container>  
 
-  <!-- Display the columns in the table -->
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClicked(row)" (contextmenu)="onRightClick($event, row)"></mat-row>
 </mat-table>

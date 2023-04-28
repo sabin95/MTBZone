@@ -1,0 +1,54 @@
+:host {
+    position: fixed;
+    display: inline-block;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    min-width: 200px;
+    z-index: 1000;
+  }
+  
+.menu-item {
+    display: block;
+    padding: 8px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    color: rgba(0, 0, 0, 0.87);
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+}
+  
+
+.submenu {
+    position: absolute;
+    display: inline-block;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    min-width: 200px;
+    z-index: 1001;
+    left: 100%;
+    top: 0;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.3s linear;
+  }
+  
+.menu-item-with-submenu:hover > .submenu {
+    visibility: visible;
+    opacity: 1;
+}
+
+.custom-stock {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.custom-stock-input {
+    width: 50%;
+}
+  
+  

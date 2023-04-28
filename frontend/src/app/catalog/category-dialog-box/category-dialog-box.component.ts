@@ -24,7 +24,7 @@ export class CategoryDialogBoxComponent {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private actions$: Actions
   ) {
-    this.editCategory = data.editProduct || null;
+    this.editCategory = data.editCategory || null;
     this.dataCategory = this.editCategory ? { ...this.editCategory } : {
       name: ''
     };
@@ -39,7 +39,6 @@ export class CategoryDialogBoxComponent {
       name: this.dataCategory.name
     };
     const category: Category = data as Category;
-  
     if (this.editCategory) {
       const updatedCategory: Category = {
         ...this.editCategory,
@@ -47,7 +46,7 @@ export class CategoryDialogBoxComponent {
       };
       this.store.dispatch(updateCategoryById({ id: this.editCategory.id, category: updatedCategory }));
     } else {
-      this.store.dispatch(addCategory({ category: category }));
+      this.store.dispatch(addCategory({ category }));
     }
   
     this.actions$.pipe(

@@ -9,7 +9,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CatalogEffects } from './catalog.effects';
 import { catalogReducer } from './catalog.reducer';
-import { CategoryComponent } from './catalog/category/category.component';
 
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -22,22 +21,25 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { ContextMenuComponent } from './catalog/context-menu/context-menu.component';
+import { ContextMenuProductsComponent } from './catalog/context-menu-products/context-menu-products.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CategoryDialogBoxComponent } from './catalog/category-dialog-box/category-dialog-box.component';
+import { CategoriesTableComponent } from './catalog/categories-table/categories-table.component';
+import { ContextMenuCategoriesComponent } from './catalog/context-menu-categories/context-menu-categories.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    CategoryComponent,
     ProductsTableComponent,
     ProductDialogBoxComponent,
     ProductDialogBoxComponent,
-    ContextMenuComponent,
-    CategoryDialogBoxComponent
+    ContextMenuProductsComponent,
+    CategoryDialogBoxComponent,
+    CategoriesTableComponent,
+    ContextMenuCategoriesComponent
   ],
   imports: [
     BrowserModule,
