@@ -1,0 +1,26 @@
+<app-context-menu-categories *ngIf="contextMenuVisible" 
+[position]="contextMenuPosition" 
+[categoryId]="selectedCategoryId" 
+(contextMenuClosed)="onContextMenuClosed()"></app-context-menu-categories>
+
+
+
+<div class="categories-table-container" (click)="onOutsideClick()">
+<mat-table [dataSource]="dataSource" matSort>
+
+  <ng-container matColumnDef="id">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+    <mat-cell *matCellDef="let category"> {{ category.id }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+    <mat-cell *matCellDef="let category"> {{ category.name }} </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClicked(row)" (contextmenu)="onRightClick($event, row)"></mat-row>
+</mat-table>
+
+<mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+</div>

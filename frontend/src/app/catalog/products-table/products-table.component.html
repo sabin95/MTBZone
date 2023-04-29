@@ -1,7 +1,7 @@
-<app-context-menu *ngIf="contextMenuVisible" 
+<app-context-menu-products *ngIf="contextMenuVisible" 
 [position]="contextMenuPosition" 
 [productId]="selectedProductId" 
-(contextMenuClosed)="onContextMenuClosed()"></app-context-menu>
+(contextMenuClosed)="onContextMenuClosed()"></app-context-menu-products>
 
 
 
@@ -38,12 +38,12 @@
     <mat-cell *matCellDef="let product"> {{product.categoryName}} </mat-cell>
   </ng-container>  
 
-  <!-- Display the columns in the table -->
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClicked(row)" (contextmenu)="onRightClick($event, row)"></mat-row>
 </mat-table>
 
 <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
 
-<button mat-raised-button color="primary" (click)="openDialog()">Add Product</button>
+<button mat-raised-button color="primary" class="addButton" (click)="openAddProductDialog()">Add Product</button>
+<button mat-raised-button color="primary" class="addButton" (click)="openAddCategoryDialog()">Add Category</button>
 </div>

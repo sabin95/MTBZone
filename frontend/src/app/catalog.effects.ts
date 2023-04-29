@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { switchMap, map, catchError, mergeMap, } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { addCategory, addCategoryFailure, addCategorySuccess, addProduct, addProductFailure, addProductSuccess, deleteCategoryById, deleteCategoryByIdFailure, deleteCategoryByIdSuccess, deleteProductById, deleteProductByIdFailure, deleteProductByIdSucess, getAllCategories, getAllCategoriesFailure, getAllCategoriesSuccess, getAllProducts, getAllProductsFailure, getAllProductsSuccess, getCategoryById, getCategoryByIdFailure, getCategoryByIdSuccess, getProductById, getProductByIdFailure, getProductByIdSuccess, increaseStockPerProduct, increaseStockPerProductFailure, increaseStockPerProductSucess, updateCategoryById, updateCategoryByIdFailure, updateCategoryByIdSuccess, updateProductById, updateProductByIdFailure, updateProductByIdSucess } from './catalog.actions';
+import { addCategory, addCategoryFailure, addCategorySuccess, addProduct, addProductFailure, addProductSuccess, deleteCategoryById, deleteCategoryByIdFailure, deleteCategoryByIdSuccess, deleteProductById, deleteProductByIdFailure, deleteProductByIdSucess, getAllCategories, getAllCategoriesFailure, getAllCategoriesSuccess, getAllProducts, getAllProductsFailure, getAllProductsSuccess, getCategoryById, getCategoryByIdFailure, getCategoryByIdSuccess, getProductById, getProductByIdFailure, getProductByIdSuccess, increaseStockPerProduct, increaseStockPerProductFailure, increaseStockPerProductSucess, updateCategoryById, updateCategoryByIdFailure, updateCategoryByIdSuccess, updateProductById, updateProductByIdFailure, updateProductByIdSuccess } from './catalog.actions';
 import { CatalogService } from './catalog.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -61,7 +61,7 @@ export class CatalogEffects {
     ofType(updateProductById),
     mergeMap((action) =>
       this.catalogService.updateProduct(action.id, action.product).pipe(
-        map((product: any) => updateProductByIdSucess({ product })),
+        map((product: any) => updateProductByIdSuccess({ product })),
         catchError((error) => {
           const errorMessage = error?.error;
           this.snackBar.open(errorMessage, 'Close', { duration: 3000 });

@@ -8,11 +8,11 @@ import { ProductDialogBoxComponent } from '../product-dialog-box/product-dialog-
 import { ProductResponse } from 'src/app/models/productResponse.model';
 
 @Component({
-  selector: 'app-context-menu',
-  templateUrl: './context-menu.component.html',
-  styleUrls: ['./context-menu.component.less']
+  selector: 'app-context-menu-products',
+  templateUrl: './context-menu-products.component.html',
+  styleUrls: ['./context-menu-products.component.less']
 })
-export class ContextMenuComponent {
+export class ContextMenuProductsComponent {
   @Input() position: { x: string; y: string };
   @Input() productId: string;
   @Output() contextMenuClosed = new EventEmitter<void>();

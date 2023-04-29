@@ -46,7 +46,7 @@ export const updateProductById = createAction(
   '[Catalog] Update Product',
   props<{ id: string, product: Product;}>()
 );
-export const updateProductByIdSucess = createAction(
+export const updateProductByIdSuccess = createAction(
   '[Catalog] Update Product Success',
   props<{ product: ProductResponse;}>()
 );
