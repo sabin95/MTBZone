@@ -1,0 +1,4 @@
+<div class="context-menu" [ngStyle]="{'top': position.y + 'px', 'left': position.x + 'px'}">
+    <div class="menu-item" (click)="deleteCategory(); hideContextMenu()">Delete Category</div>
+    <div class="menu-item" (click)="editCategory(); hideContextMenu()">Edit Category</div>
+</div>

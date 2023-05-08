@@ -1,21 +1,17 @@
 import { createReducer, on } from '@ngrx/store';
-import { getAllCategories, getAllCategoriesSuccess, getAllProducts, getAllProductsSuccess, getCategoryById, getCategoryByIdSuccess, getProductByIdSuccess, increaseStockPerProductSucess, updateCategoryByIdSuccess, updateProductByIdSucess } from './catalog.actions';
+import { addProduct, addProductFailure, addProductSuccess, getAllCategories, getAllCategoriesSuccess, getAllProducts, getAllProductsSuccess, getCategoryById, getCategoryByIdSuccess, getProductById, getProductByIdFailure, getProductByIdSuccess, increaseStockPerProductSucess, updateCategoryByIdSuccess, updateProductById, updateProductByIdFailure, updateProductByIdSuccess } from './catalog.actions';
 import { CategoryResponse } from './models/categoryResponse.model';
 import { ProductResponse } from './models/productResponse.model';
 
 export interface CatalogState{
     AllCategories: CategoryResponse[];
-    AvailableCategories: CategoryResponse[];
     ActualCategory: CategoryResponse;
     AllProducts: ProductResponse[];
     ActualProduct: ProductResponse;
-    AvailableProducts: ProductResponse[];
-    OutOfStockProducts: ProductResponse[];
 }
 
 export const initialState: CatalogState = {
     AllCategories: [],
-    AvailableCategories: [],
     ActualCategory: {id: '',
                      name: ''},
     AllProducts: [],
@@ -24,34 +20,50 @@ export const initialState: CatalogState = {
                     price: 0,
                     description: '',
                     categoryId: '',
-                    stock: 0},
-    AvailableProducts: [],
-    OutOfStockProducts: []
+                    stock: 0}
 }
 
 export const catalogReducer = createReducer(
   initialState,
+  on(addProduct, state => ({
+    ...state
+  })),
+  on(addProductSuccess, (state, { product }) => (
+    { ...state,
+      products: [...state.AllProducts, product]
+    })),
+  on(addProductFailure, (state, { error }) => (
+    { ...state,
+    })),
   on(getAllProducts, state => ({
     ...state
   })),  
   on(getAllProductsSuccess, (state, { products }) => {
     return {
       ...state,
-      AllProducts: products,
+      AllProducts: products
     };
   }),
-  on(getProductByIdSuccess, (state, { product }) => {
-    return {
-      ...state,
-      ActualProduct: product,
-    };
-  }),
-  on(updateProductByIdSucess, (state, { product }) => {
-    return {
-      ...state,
-      ActualProduct: product,
-    };
-  }),
+  on(getProductById, state => ({
+    ...state,
+  })),
+  on(getProductByIdSuccess, (state, { product }) => ({
+    ...state,
+    ActualProduct: product
+  })),
+  on(getProductByIdFailure, (state, { error }) => ({
+    ...state
+  })),
+  on(updateProductById, state => ({
+    ...state,
+  })),
+  on(updateProductByIdSuccess, (state, { product }) => ({
+    ...state,
+    ActualProduct: product
+  })),
+  on(updateProductByIdFailure, (state, { error }) => ({
+    ...state
+  })),
   on(increaseStockPerProductSucess,(state, {product}) => {
     return {
       ...state,
