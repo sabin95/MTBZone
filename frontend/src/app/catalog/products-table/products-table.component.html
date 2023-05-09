@@ -1,0 +1,49 @@
+<app-context-menu-products *ngIf="contextMenuVisible" 
+[position]="contextMenuPosition" 
+[productId]="selectedProductId" 
+(contextMenuClosed)="onContextMenuClosed()"></app-context-menu-products>
+
+
+
+<div class="products-table-container" (click)="onOutsideClick()">
+<mat-table [dataSource]="dataSource" matSort>
+
+  <ng-container matColumnDef="id">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> ID </mat-header-cell>
+    <mat-cell *matCellDef="let product"> {{ product.id }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="title">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Title </mat-header-cell>
+    <mat-cell *matCellDef="let product"> {{ product.title }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="price">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Price </mat-header-cell>
+    <mat-cell *matCellDef="let product"> {{ product.price | currency:'USD' }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="description">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Description </mat-header-cell>
+    <mat-cell *matCellDef="let product"> {{ product.description }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="stock">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Stock </mat-header-cell>
+    <mat-cell *matCellDef="let product"> {{ product.stock }} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="categoryName">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Category </mat-header-cell>
+    <mat-cell *matCellDef="let product"> {{product.categoryName}} </mat-cell>
+  </ng-container>  
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClicked(row)" (contextmenu)="onRightClick($event, row)"></mat-row>
+</mat-table>
+
+<mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+<button mat-raised-button color="primary" class="addButton" (click)="openAddProductDialog()">Add Product</button>
+<button mat-raised-button color="primary" class="addButton" (click)="openAddCategoryDialog()">Add Category</button>
+</div>
