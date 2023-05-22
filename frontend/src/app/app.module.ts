@@ -28,7 +28,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CategoryDialogBoxComponent } from './catalog/category-dialog-box/category-dialog-box.component';
 import { CategoriesTableComponent } from './catalog/categories-table/categories-table.component';
 import { ContextMenuCategoriesComponent } from './catalog/context-menu-categories/context-menu-categories.component';
-
+import { LoginComponent } from './Auth/login/login.component';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox'; 
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -39,7 +42,8 @@ import { ContextMenuCategoriesComponent } from './catalog/context-menu-categorie
     ContextMenuProductsComponent,
     CategoryDialogBoxComponent,
     CategoriesTableComponent,
-    ContextMenuCategoriesComponent
+    ContextMenuCategoriesComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -60,7 +64,10 @@ import { ContextMenuCategoriesComponent } from './catalog/context-menu-categorie
     MatButtonModule,
     MatMenuModule,
     MatSelectModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]
