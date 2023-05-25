@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using IdentityAPI.Results;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdentityAPI.Data
 {

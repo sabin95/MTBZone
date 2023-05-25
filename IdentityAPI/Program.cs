@@ -1,4 +1,5 @@
 using IdentityAPI.Data;
+using IdentityAPI.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<IdentityContext>(options =>
     options.UseSqlServer(ConnectionString),
     ServiceLifetime.Singleton);
+builder.Services.AddScoped<IIdentityService, IdentityService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

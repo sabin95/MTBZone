@@ -1,14 +1,14 @@
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Security.Cryptography;
 
-namespace IdentityAPI
+namespace IdentityAPI.Results
 {
     public class User
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
-        public string Role { get; set; }
+        public UserRoles Role { get; set; }
         public string PasswordHash { get; set; }
         public string Salt { get; set; }
 
@@ -20,9 +20,9 @@ namespace IdentityAPI
                 rng.GetBytes(salt);
             }
 
-            this.Salt = Convert.ToBase64String(salt);
+            Salt = Convert.ToBase64String(salt);
 
-            this.PasswordHash = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+            PasswordHash = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password: password,
                 salt: salt,
                 prf: KeyDerivationPrf.HMACSHA256,
@@ -34,12 +34,12 @@ namespace IdentityAPI
         {
             var hash = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password: password,
-                salt: Convert.FromBase64String(this.Salt),
+                salt: Convert.FromBase64String(Salt),
                 prf: KeyDerivationPrf.HMACSHA256,
                 iterationCount: 10000,
                 numBytesRequested: 256 / 8));
 
-            return this.PasswordHash == hash;
+            return PasswordHash == hash;
         }
     }
 }

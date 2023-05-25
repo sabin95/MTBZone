@@ -1,8 +1,7 @@
+using IdentityAPI.Commands;
+using IdentityAPI.Repository;
+using IdentityAPI.Results;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace IdentityAPI.Controllers
 {
@@ -10,33 +9,32 @@ namespace IdentityAPI.Controllers
     [ApiController]
     public class IdentityController : ControllerBase
     {
-        private readonly IConfiguration _config;
+        private readonly IIdentityService _identityService;
 
-        public IdentityController(IConfiguration config)
+        public IdentityController(IIdentityService identityService)
         {
-            _config = config;
+            _identityService = identityService;
         }
 
         [HttpPost("token")]
-        public IActionResult GenerateToken([FromBody] User user)
+        public async Task<IActionResult> GenerateToken([FromBody] User user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtSettings:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var token = await _identityService.GenerateToken(user);
+            return Ok(new { token });
+        }
 
-            var claims = new[]
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] UserRegisterCommand userRegisterCommand, string password)
+        {
+            try
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                new Claim(ClaimTypes.Role, user.Role),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            };
-
-            var token = new JwtSecurityToken(_config["JwtSettings:Issuer"],
-            _config["JwtSettings:Audience"],
-            claims,
-            expires: DateTime.Now.AddHours(4),
-            signingCredentials: credentials);
-
-            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
+                var user = await _identityService.RegisterUser(userRegisterCommand, password);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
