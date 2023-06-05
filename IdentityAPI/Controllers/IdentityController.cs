@@ -17,18 +17,18 @@ namespace IdentityAPI.Controllers
         }
 
         [HttpPost("token")]
-        public async Task<IActionResult> GenerateToken([FromBody] User user)
+        public async Task<IActionResult> GenerateToken([FromBody] UserGenerateTokenCommand userGenerateTokenCommand)
         {
-            var token = await _identityService.GenerateToken(user);
+            var token = await _identityService.GenerateToken(userGenerateTokenCommand);
             return Ok(new { token });
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserRegisterCommand userRegisterCommand, string password)
+        public async Task<IActionResult> Register([FromBody] UserRegisterCommand userRegisterCommand)
         {
             try
             {
-                var user = await _identityService.RegisterUser(userRegisterCommand, password);
+                var user = await _identityService.RegisterUser(userRegisterCommand);
                 return Ok(user);
             }
             catch (Exception ex)

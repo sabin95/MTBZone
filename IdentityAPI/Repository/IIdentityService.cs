@@ -5,8 +5,8 @@ namespace IdentityAPI.Repository
 {
     public interface IIdentityService
     {
-        Task<string> GenerateToken(User user);
-        Task<User> RegisterUser(UserRegisterCommand userRegisterCommand, string password);
+        Task<string> GenerateToken(UserGenerateTokenCommand userGenerateTokenCommand);
+        Task<User> RegisterUser(UserRegisterCommand userRegisterCommand);
 
     }
 }
