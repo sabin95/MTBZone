@@ -32,6 +32,8 @@ import { LoginComponent } from './Auth/login/login.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox'; 
 import { MatIconModule } from '@angular/material/icon';
+import { IdentityEffects } from './Auth/authentication.effects';
+import { identityReducer } from './Auth/authentication.reducer';
 
 @NgModule({
   declarations: [
@@ -48,8 +50,14 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    StoreModule.forRoot({ catalogState: catalogReducer }),
-    EffectsModule.forRoot([CatalogEffects]),
+    StoreModule.forRoot({
+      catalogState: catalogReducer,
+      identityState: identityReducer
+    }),
+    EffectsModule.forRoot([
+      CatalogEffects, 
+      IdentityEffects
+    ]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
     HttpClientModule,
     ReactiveFormsModule,

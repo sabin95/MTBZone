@@ -16,7 +16,7 @@ namespace IdentityAPI.Controllers
             _identityService = identityService;
         }
 
-        [HttpPost("token")]
+        [HttpPost("generateToken")]
         public async Task<IActionResult> GenerateToken([FromBody] UserGenerateTokenCommand userGenerateTokenCommand)
         {
             var token = await _identityService.GenerateToken(userGenerateTokenCommand);

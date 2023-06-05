@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { User } from './models/user.model';
+import { Observable } from 'rxjs';
+import { UserLogin } from './models/userLogin.model';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,8 @@ import { User } from './models/user.model';
 export class AuthService {
   constructor(private http: HttpClient) { }
 
-  login(user: User) {
-    return this.http.post<{ token: string }>('https://localhost:7124/api/identity/token', user);
+  login(user: UserLogin): Observable<{ token: string }> {
+    return this.http.post<{ token: string }>('https://localhost:7110/api/identity/generateToken', user);
   }
+  
 }
