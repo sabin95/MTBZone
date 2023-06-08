@@ -28,12 +28,12 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CategoryDialogBoxComponent } from './catalog/category-dialog-box/category-dialog-box.component';
 import { CategoriesTableComponent } from './catalog/categories-table/categories-table.component';
 import { ContextMenuCategoriesComponent } from './catalog/context-menu-categories/context-menu-categories.component';
-import { LoginComponent } from './Auth/login/login.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox'; 
 import { MatIconModule } from '@angular/material/icon';
 import { IdentityEffects } from './Auth/authentication.effects';
 import { identityReducer } from './Auth/authentication.reducer';
+import { AuthenticationComponent } from './Auth/authentication/authentication.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +45,7 @@ import { identityReducer } from './Auth/authentication.reducer';
     CategoryDialogBoxComponent,
     CategoriesTableComponent,
     ContextMenuCategoriesComponent,
-    LoginComponent
+    AuthenticationComponent
   ],
   imports: [
     BrowserModule,

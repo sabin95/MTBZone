@@ -19,5 +19,15 @@ on(authenticationActions.loginSuccess, (state, { token }) => ({
 })),
 on(authenticationActions.loginFailure, (state, { error }) => ({ 
     ...state, 
-    error }))
+    error 
+})),
+on(authenticationActions.registerSuccess, (state, { token }) => ({ 
+    ...state, 
+token 
+})),
+on(authenticationActions.registerFailure, (state, { error }) => ({ 
+    ...state, 
+    error 
+}))
 );
+  

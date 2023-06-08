@@ -20,4 +20,16 @@ export class IdentityEffects {
       )
     )
   );
+
+  register$ = createEffect(() =>
+  this.actions$.pipe(
+    ofType(authenticationActions.register),
+    mergeMap(action =>
+      this.authService.register(action.user).pipe(
+        map(response => authenticationActions.registerSuccess(response)),
+        catchError(error => of(authenticationActions.registerFailure({ error })))
+        )
+      )
+    )
+  );
 }
