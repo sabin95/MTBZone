@@ -1,9 +1,11 @@
 ﻿using CatalogAPI.Common.Commands;
 using CatalogAPI.Common.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CatalogAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class CategoriesController : Controller
     {

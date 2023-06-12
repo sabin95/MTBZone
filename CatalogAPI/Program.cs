@@ -1,10 +1,16 @@
 using CatalogAPI.Common.Data;
 using CatalogAPI.Common.Repository;
 using CatalogAPI.EventHandlers.Orders;
+using CommonLogic;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using MTBZone.Messaging.Receiver;
 using MTBZone.Messaging.Sender;
 using OrdersAPI.Events;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var ConnectionString = builder.Configuration["ConnectionString"];
@@ -12,13 +18,38 @@ var environment = builder.Configuration["ASPNETCORE_ENVIRONMENT"];
 var ordersReceiverQueue = builder.Configuration["ordersReceiverQueue"];
 var ordersReceiverExchange = builder.Configuration["ordersReceiverExchange"];
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+var jwtValidIssuer = builder.Configuration["JwtSettings:Issuer"];
+var jwtValidAudience = builder.Configuration["JwtSettings:Audience"];
+var jwtSigningKey = builder.Configuration["JwtSettings:Key"];
+
 
 // Add services to the container.
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x =>
+{
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = jwtValidIssuer,
+        ValidAudience = jwtValidAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSigningKey)),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true
+    };
+});
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddDbContext<CatalogContext>(options =>
     options.UseSqlServer(ConnectionString, b => b.MigrationsAssembly("CatalogAPI.Common")),
     ServiceLifetime.Singleton
@@ -65,6 +96,7 @@ db.Database.Migrate();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
